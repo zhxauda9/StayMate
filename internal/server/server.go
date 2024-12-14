@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/zhxauda9/StayMate/internal/dal"
 	"github.com/zhxauda9/StayMate/internal/handler"
 	"github.com/zhxauda9/StayMate/internal/service"
@@ -16,9 +17,10 @@ func InitServer() (*http.ServeMux, error) {
 
 	db, err := Connect_DB()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error connecting to the database -> %v", err)
 	}
 
+	// Booking
 	booking_repo := dal.NewBookingRepository(db)
 	booking_service := service.NewBookingService(booking_repo)
 	booking_handler := handler.NewBookingHandler(booking_service)
@@ -35,17 +37,13 @@ func InitServer() (*http.ServeMux, error) {
 
 func Connect_DB() (*sql.DB, error) {
 	psqlInfo := fmt.Sprintf(
-		`host=%s port=%v user=%s passsword=%s dbname=%s sslmode=disable`,
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
+		"user=%s password=%s dbname=%s sslmode=disable",
+		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"),
 	)
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error opening the database -> %v", err)
 	}
 	defer db.Close()
 

@@ -1,19 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"os"
 
+	"github.com/zhxauda9/StayMate/internal/config"
+	"github.com/zhxauda9/StayMate/internal/myLogger"
 	"github.com/zhxauda9/StayMate/internal/server"
 )
 
+const address = "127.0.0.1:8080"
+
 func main() {
-	fmt.Println("Hotel managment system")
+	config.LoadEnvVariables()
+	logger := myLogger.NewZeroLogger()
+
+	logger.Info().Msg("Starting application")
 
 	mux, err := server.InitServer()
 	if err != nil {
-		os.Exit(1)
+		logger.Fatal().Str("Error", err.Error()).Msg("Error inizializing server")
 	}
-	http.ListenAndServe(":8080", mux)
+
+	logger.Info().Str("Address", address).Msg("Starting server!")
+	http.ListenAndServe(address, mux)
 }
