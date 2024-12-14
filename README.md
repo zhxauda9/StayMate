@@ -17,9 +17,11 @@ Stay Mate is a software solution designed to improve and automate hotel manageme
    ```
 2. **Define enviromental variables. (You can use .env file)**:
    ```bash
-   DB_USER="username"
-   DB_PASSWORD="password"
-   DB_NAME="dbname"
+    DB_HOST="localhost"
+    DB_PORT="port"
+    DB_USER="user"
+    DB_PASSWORD="password"
+    DB_NAME="database"
    ```
 3. **Build the programm**:
    ```bash

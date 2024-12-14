@@ -14,13 +14,16 @@ func main() {
 	config.LoadEnvVariables()
 	logger := myLogger.NewZeroLogger()
 
-	logger.Info().Msg("Starting application")
+	// В файле main.go
+	logger.Info().Msg("Starting the application")
 
 	mux, err := server.InitServer()
 	if err != nil {
-		logger.Fatal().Str("Error", err.Error()).Msg("Error inizializing server")
+		logger.Fatal().Err(err).Msg("Error initializing server")
 	}
 
-	logger.Info().Str("Address", address).Msg("Starting server!")
-	http.ListenAndServe(address, mux)
+	logger.Info().Msg("Server initialized successfully, starting HTTP server...")
+	if err := http.ListenAndServe(address, mux); err != nil {
+		logger.Fatal().Err(err).Msg("Error starting HTTP server")
+	}
 }
