@@ -15,13 +15,20 @@ Stay Mate is a software solution designed to improve and automate hotel manageme
    git clone https://github.com/your-repository-url/stalemate.git
    cd stalemate
    ```
-
-2. **Build the programm**:
+2. **Define enviromental variables. (You can use .env file)**:
+   ```bash
+   DB_HOST="localhost"
+   DB_PORT=5432
+   DB_USER="username"
+   DB_PASSWORD="password"
+   DB_NAME="dbname"
+   ```
+3. **Build the programm**:
    ```bash
    go build -o main cmd/main.go
    ```
 
-3. **Start the Server**:
+4. **Start the Server**:
    ```bash
    ./main
    ```
