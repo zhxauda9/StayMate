@@ -1,7 +1,7 @@
 1) AIDA let's use gorm: https://gorm.io/. cause in the assignment teacher suggest this package
 2) Let's don't use gorilla/mux. In server.go we are using default http.mux. But you used gorilla mux in handler/booking_handler.go
     when you try to get variables from request like "id"
-    USE: r.URL.Query().Get("id") 
+    USE: r.PathValue("id")
     instead 
     vars := mux.Vars(r)
 	idStr := vars["id"]

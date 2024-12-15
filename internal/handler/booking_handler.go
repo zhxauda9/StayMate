@@ -44,7 +44,7 @@ func (h *bookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *bookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting id: %v", err), http.StatusBadRequest)
@@ -63,7 +63,7 @@ func (h *bookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *bookingHandler) PutBooking(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting id: %v", err), http.StatusBadRequest)
@@ -85,7 +85,7 @@ func (h *bookingHandler) PutBooking(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *bookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting id: %v", err), http.StatusBadRequest)
