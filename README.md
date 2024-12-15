@@ -47,6 +47,16 @@ Stay Mate is a software solution designed to improve and automate hotel manageme
 | PUT    | `/bookings/{id}`    | Updates an existing order.        | 200 OK     |
 | DELETE | `/bookings/{id}`    | Deletes an order.                 | 204 No Content  |
 
+#### User
+
+| Method | Endpoint          | Description                        | Response                   |
+|--------|-------------------|------------------------------------|----------------------------|
+| POST   | `/user`           | Adds a new user item.             | 201 Created                |
+| GET    | `/user`           | Retrieves all user items.          | 200 OK                     |
+| GET    | `/user/{id}`      | Retrieves a specific user item.    | 200 OK     |
+| PUT    | `/user/{id}`      | Updates an existing user item.     | 200 OK     |
+| DELETE | `/user/{id}`      | Deletes a user item.               | 204 No Content  |
+
 #### Rooms
 
 | Method | Endpoint          | Description                        | Response                   |
@@ -62,7 +72,7 @@ Stay Mate is a software solution designed to improve and automate hotel manageme
 - **Database**: PostgreSQL
 - **Version Control**: Git
 - **Libraries**:
-  - `gorm` for ORM
-
+   - `gorm` for ORM
+   - `zerolog` for logging
 ---
 Feel free to reach out to us for any questions or suggestions!
