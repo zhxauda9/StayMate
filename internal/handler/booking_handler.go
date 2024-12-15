@@ -3,11 +3,11 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/zhxauda9/StayMate/internal/service"
-	"github.com/zhxauda9/StayMate/models"
 	"net/http"
 	"strconv"
+
+	"github.com/zhxauda9/StayMate/internal/service"
+	"github.com/zhxauda9/StayMate/models"
 )
 
 type bookingHandler struct {
@@ -44,9 +44,13 @@ func (h *bookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *bookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	idStr := vars["id"]
+	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting id: %v", err), http.StatusBadRequest)
+		return
+	}
+
 	booking, err := h.booking_service.GetBookingByID(id)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error fetching booking: %v", err), http.StatusNotFound)
@@ -59,9 +63,12 @@ func (h *bookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *bookingHandler) PutBooking(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	idStr := vars["id"]
+	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting id: %v", err), http.StatusBadRequest)
+		return
+	}
 	var booking models.Booking
 	// Парсим данные для обновления из тела запроса
 	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
@@ -78,9 +85,13 @@ func (h *bookingHandler) PutBooking(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *bookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	idStr := vars["id"]
+	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting id: %v", err), http.StatusBadRequest)
+		return
+	}
+
 	err = h.booking_service.DeleteBooking(id)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error deleting booking: %v", err), http.StatusInternalServerError)

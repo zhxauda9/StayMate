@@ -29,6 +29,16 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("PUT /bookings/{id}", booking_handler.PutBooking)
 	mux.HandleFunc("DELETE /bookings/{id}", booking_handler.DeleteBooking)
 
+	user_repo := dal.NewUserRepository(db)
+	user_service := service.NewUserService(user_repo)
+	user_handler := handler.NewUserHandler(user_service)
+
+	mux.HandleFunc("POST /user", user_handler.PostUser)
+	mux.HandleFunc("GET /user", user_handler.GetUsers)
+	mux.HandleFunc("GET /user/{id}", user_handler.GetUser)
+	mux.HandleFunc("PUT /user/{id}", user_handler.UpdateUser)
+	mux.HandleFunc("DELETE /user/{id}", user_handler.DeleteUser)
+
 	return mux, nil
 }
 
