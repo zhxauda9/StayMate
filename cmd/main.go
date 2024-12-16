@@ -14,7 +14,6 @@ func main() {
 	config.LoadEnvVariables()
 	logger := myLogger.NewZeroLogger()
 
-	// В файле main.go
 	logger.Info().Msg("Starting the application")
 
 	mux, err := server.InitServer()
