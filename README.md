@@ -4,8 +4,8 @@
 Stay Mate is a software solution designed to improve and automate hotel management processes. By integrating key features such as reservation management, customer tracking, and room availability, the system aims to simplify daily operations and enhance efficiency for hotel staff and management.
 
 ## Team Members
-- **Temutjin Koszhanov**
-- **Aida Zhalgasova**
+- **Temutjin Koszhanov (SE-2308)**
+- **Aida Zhalgassova (SE-2307)**
 
 
 ## How to Run the Project
