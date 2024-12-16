@@ -1,7 +1,10 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
+// Модель User для MongoDB
 type User struct {
-	id    int    `json:"id"`
-	name  string `json:"name"`
-	email string `json:"email"`
+	ID    primitive.ObjectID `json:"id" bson:"_id"`
+	Name  string             `json:"name"`
+	Email string             `json:"email"`
 }

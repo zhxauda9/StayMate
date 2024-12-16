@@ -1,42 +1,29 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/zhxauda9/StayMate/draft/internal/db"
+	"github.com/zhxauda9/StayMate/draft/internal/handlers"
 	"log"
-
-	"github.com/jackc/pgx/v4"
+	"net/http"
 )
 
 func main() {
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:2005@localhost:1195/StayMate")
-	if err != nil {
-		log.Fatal("Unable to connect to database:", err)
-	}
-	defer conn.Close(context.Background())
+	// Создание нового маршрутизатора
+	mux := mux.NewRouter()
 
-	fmt.Println("Successfully connected to the database")
+	// Подключение к базе данных
+	db.Connect()
+	defer db.Disconnect()
 
-	rows, err := conn.Query(context.Background(), "SELECT * FROM hotels")
-	if err != nil {
-		log.Fatal("Query execution failed:", err)
-	}
-	defer rows.Close()
+	// Настройка маршрутов
+	mux.HandleFunc("/bookings", handlers.GetBookings).Methods("GET")
+	mux.HandleFunc("/bookings", handlers.CreateBooking).Methods("POST")
+	mux.HandleFunc("/rooms", handlers.GetRooms).Methods("GET")
+	mux.HandleFunc("/rooms", handlers.CreateRoom).Methods("POST")
+	mux.HandleFunc("/users", handlers.GetUsers).Methods("GET")
+	mux.HandleFunc("/users", handlers.CreateUser).Methods("POST")
 
-	for rows.Next() {
-		var id int
-		var name string
-		var city string
-		var price float64
-		var roomsAvailable int
-		if err := rows.Scan(&id, &name, &city, &price, &roomsAvailable); err != nil {
-			log.Fatal("Row scan failed:", err)
-		}
-		fmt.Printf("Hotel ID: %d, Name: %s, City: %s, Price: %.2f, Rooms Available: %d\n", id, name, city, price, roomsAvailable)
-	}
-
-	if err := rows.Err(); err != nil {
-		log.Fatal("Row iteration failed:", err)
-	}
-
+	// Запуск HTTP сервера
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }

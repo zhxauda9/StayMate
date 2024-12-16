@@ -1,8 +1,11 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
+// Модель Room для MongoDB
 type Room struct {
-	id     int     `json:"id"`
-	number int     `json:"number"`
-	class  string  `json:"type"`
-	price  float64 `json:"price"`
+	ID     primitive.ObjectID `json:"id" bson:"_id"`
+	Number int                `json:"number"`
+	Class  string             `json:"type"`
+	Price  float64            `json:"price"`
 }
