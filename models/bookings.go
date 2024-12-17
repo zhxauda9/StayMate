@@ -1,12 +1,11 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import _ "gorm.io/gorm"
 
-// Модель Booking для MongoDB
 type Booking struct {
-	ID       primitive.ObjectID `json:"id" bson:"_id"`
-	UserID   int                `json:"user_id"`
-	RoomID   int                `json:"room_id"`
-	CheckIn  string             `json:"check_in"`
-	CheckOut string             `json:"check_out"`
+	ID       int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	UserID   int    `json:"user_id" gorm:"not null"`
+	RoomID   int    `json:"room_id" gorm:"not null"`
+	CheckIn  string `json:"check_in" gorm:"not null"`
+	CheckOut string `json:"check_out" gorm:"not null"`
 }

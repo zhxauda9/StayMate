@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
 
@@ -11,7 +12,8 @@ import (
 )
 
 type bookingHandler struct {
-	booking_service service.BookingServ
+	bookingService service.BookingServ
+	validate       *validator.Validate
 }
 
 func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +23,13 @@ func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.booking_service.CreateBooking(booking)
+	// Validate booking data
+	if err := h.validate.Struct(booking); err != nil {
+		http.Error(w, fmt.Sprintf("Validation error: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	err := h.bookingService.CreateBooking(booking)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error creating booking: %v", err), http.StatusInternalServerError)
 		return
@@ -31,8 +39,15 @@ func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(booking)
 }
 
+func NewBookingHandler(bookingService service.BookingServ) *bookingHandler {
+	return &bookingHandler{
+		bookingService: bookingService,
+		validate:       validator.New(),
+	}
+}
+
 func (h *bookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
-	bookings, err := h.booking_service.GetAllBookings()
+	bookings, err := h.bookingService.GetAllBookings()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error fetching bookings: %v", err), http.StatusInternalServerError)
 		return
@@ -51,7 +66,7 @@ func (h *bookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	booking, err := h.booking_service.GetBookingByID(id)
+	booking, err := h.bookingService.GetBookingByID(id)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error fetching booking: %v", err), http.StatusNotFound)
 		return
@@ -75,7 +90,7 @@ func (h *bookingHandler) PutBooking(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error decoding booking data: %v", err), http.StatusBadRequest)
 		return
 	}
-	err = h.booking_service.UpdateBooking(id, booking)
+	err = h.bookingService.UpdateBooking(id, booking)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error updating booking: %v", err), http.StatusInternalServerError)
 		return
@@ -92,14 +107,10 @@ func (h *bookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.booking_service.DeleteBooking(id)
+	err = h.bookingService.DeleteBooking(id)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error deleting booking: %v", err), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-}
-
-func NewBookingHandler(booking_service service.BookingServ) *bookingHandler {
-	return &bookingHandler{booking_service: booking_service}
 }

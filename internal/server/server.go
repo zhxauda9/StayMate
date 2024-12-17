@@ -1,8 +1,9 @@
 package server
 
 import (
-	"database/sql"
 	"fmt"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"net/http"
 	"os"
 
@@ -29,33 +30,28 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("PUT /bookings/{id}", booking_handler.PutBooking)
 	mux.HandleFunc("DELETE /bookings/{id}", booking_handler.DeleteBooking)
 
-	user_repo := dal.NewUserRepository(db)
-	user_service := service.NewUserService(user_repo)
-	user_handler := handler.NewUserHandler(user_service)
-
-	mux.HandleFunc("POST /user", user_handler.PostUser)
-	mux.HandleFunc("GET /user", user_handler.GetUsers)
-	mux.HandleFunc("GET /user/{id}", user_handler.GetUser)
-	mux.HandleFunc("PUT /user/{id}", user_handler.UpdateUser)
-	mux.HandleFunc("DELETE /user/{id}", user_handler.DeleteUser)
+	//user_repo := dal.NewUserRepository(db)
+	//user_service := service.NewUserService(user_repo)
+	//user_handler := handler.NewUserHandler(user_service)
+	//
+	//mux.HandleFunc("POST /user", user_handler.PostUser)
+	//mux.HandleFunc("GET /user", user_handler.GetUsers)
+	//mux.HandleFunc("GET /user/{id}", user_handler.GetUser)
+	//mux.HandleFunc("PUT /user/{id}", user_handler.UpdateUser)
+	//mux.HandleFunc("DELETE /user/{id}", user_handler.DeleteUser)
 
 	return mux, nil
 }
 
-func Connect_DB() (*sql.DB, error) {
+func Connect_DB() (*gorm.DB, error) {
 	psqlInfo := fmt.Sprintf(
 		"user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"),
 	)
 
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("error opening the database -> %v", err)
-	}
-
-	err = db.Ping()
-	if err != nil {
-		return nil, fmt.Errorf("error pinging the database -> %v", err)
 	}
 	return db, nil
 }

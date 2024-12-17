@@ -1,10 +1,16 @@
 package service
 
 import (
+	"errors"
 	"fmt"
+
 	"github.com/zhxauda9/StayMate/internal/dal"
 	"github.com/zhxauda9/StayMate/models"
 )
+
+type bookingService struct {
+	bookingRepo dal.BookingRepo
+}
 
 type BookingServ interface {
 	CreateBooking(booking models.Booking) error
@@ -14,28 +20,22 @@ type BookingServ interface {
 	DeleteBooking(id int) error
 }
 
-type bookingService struct {
-	bookingRepo dal.BookingRepo
-}
-
 func (s *bookingService) CreateBooking(booking models.Booking) error {
-	userExists, err := s.bookingRepo.CheckUserExists(booking.UserID)
-	if err != nil {
-		return fmt.Errorf("error checking if user exists: %v", err)
+	if !s.bookingRepo.CheckUserExists(booking.UserID) {
+		return errors.New("user does not exist")
 	}
-	if !userExists {
-		return fmt.Errorf("user with id %d does not exist", booking.UserID)
+	if !s.bookingRepo.CheckRoomExists(booking.RoomID) {
+		return errors.New("room does not exist")
 	}
-
-	roomExists, err := s.bookingRepo.CheckRoomExists(booking.RoomID)
-	if err != nil {
-		return fmt.Errorf("error checking if room exists: %v", err)
-	}
-	if !roomExists {
-		return fmt.Errorf("room with id %d does not exist", booking.RoomID)
+	if s.bookingRepo.BookingExists(booking.RoomID, booking.CheckIn, booking.CheckOut) {
+		return errors.New("room already booked for the selected dates")
 	}
 
 	return s.bookingRepo.CreateBooking(booking)
+}
+
+func NewBookingService(bookingRepo dal.BookingRepo) BookingServ {
+	return &bookingService{bookingRepo: bookingRepo}
 }
 
 func (s *bookingService) GetBookingByID(id int) (models.Booking, error) {
@@ -68,8 +68,4 @@ func (s *bookingService) DeleteBooking(id int) error {
 		return fmt.Errorf("error in service layer while deleting booking: %v", err)
 	}
 	return nil
-}
-
-func NewBookingService(bookingRepo dal.BookingRepo) BookingServ {
-	return &bookingService{bookingRepo: bookingRepo}
 }
