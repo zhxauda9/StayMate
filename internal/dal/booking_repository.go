@@ -13,7 +13,6 @@ type BookingRepo interface {
 	UpdateBooking(id int, booking models.Booking) error
 	DeleteBooking(id int) error
 	CheckUserExists(userID int) bool
-	CheckRoomExists(roomID int) bool
 	BookingExists(roomID int, checkIn, checkOut string) bool
 }
 
@@ -50,12 +49,6 @@ func (r *bookingRepository) GetAllBookings() ([]models.Booking, error) {
 func (r *bookingRepository) CheckUserExists(userID int) bool {
 	var count int64
 	r.db.Model(&models.User{}).Where("id = ?", userID).Count(&count)
-	return count > 0
-}
-
-func (r *bookingRepository) CheckRoomExists(roomID int) bool {
-	var count int64
-	r.db.Model(&models.Room{}).Where("id = ?", roomID).Count(&count)
 	return count > 0
 }
 

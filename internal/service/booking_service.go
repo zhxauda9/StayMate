@@ -24,9 +24,7 @@ func (s *bookingService) CreateBooking(booking models.Booking) error {
 	if !s.bookingRepo.CheckUserExists(booking.UserID) {
 		return errors.New("user does not exist")
 	}
-	if !s.bookingRepo.CheckRoomExists(booking.RoomID) {
-		return errors.New("room does not exist")
-	}
+	
 	if s.bookingRepo.BookingExists(booking.RoomID, booking.CheckIn, booking.CheckOut) {
 		return errors.New("room already booked for the selected dates")
 	}
