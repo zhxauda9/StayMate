@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/zhxauda9/StayMate/draft/internal/db"
 	"github.com/zhxauda9/StayMate/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"net/http"
 )
 
 // Создание нового пользователя

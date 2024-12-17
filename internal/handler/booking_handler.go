@@ -3,9 +3,10 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
+
+	"github.com/go-playground/validator/v10"
 
 	"github.com/zhxauda9/StayMate/internal/service"
 	"github.com/zhxauda9/StayMate/models"
@@ -23,7 +24,6 @@ func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate booking data
 	if err := h.validate.Struct(booking); err != nil {
 		http.Error(w, fmt.Sprintf("Validation error: %v", err), http.StatusBadRequest)
 		return

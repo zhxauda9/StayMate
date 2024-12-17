@@ -2,6 +2,7 @@ package dal
 
 import (
 	"fmt"
+
 	"github.com/zhxauda9/StayMate/models"
 	"gorm.io/gorm"
 )
@@ -59,6 +60,7 @@ func (r *bookingRepository) BookingExists(roomID int, checkIn, checkOut string) 
 		Count(&count)
 	return count > 0
 }
+
 func (r *bookingRepository) UpdateBooking(id int, booking models.Booking) error {
 	var existingBooking models.Booking
 	if err := r.db.First(&existingBooking, id).Error; err != nil {

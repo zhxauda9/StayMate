@@ -2,10 +2,11 @@ package server
 
 import (
 	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"net/http"
 	"os"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	_ "github.com/lib/pq"
 	"github.com/zhxauda9/StayMate/internal/dal"

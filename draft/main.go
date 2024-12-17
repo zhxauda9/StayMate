@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/zhxauda9/StayMate/draft/internal/db"
 	"github.com/zhxauda9/StayMate/draft/internal/handlers"
-	"log"
-	"net/http"
 )
 
 func main() {
