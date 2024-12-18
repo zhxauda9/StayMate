@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -14,6 +15,10 @@ import (
 	"github.com/zhxauda9/StayMate/internal/service"
 )
 
+func serveHTML(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, filepath.Join("web", "index.html"))
+}
+
 func InitServer() (*http.ServeMux, error) {
 	mux := http.NewServeMux()
 
@@ -21,6 +26,11 @@ func InitServer() (*http.ServeMux, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to the database -> %v", err)
 	}
+
+	mux.HandleFunc("/", serveHTML)
+	// fs := http.FileServer(http.Dir("./web"))
+	// http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	booking_repo := dal.NewBookingRepository(db)
 	booking_service := service.NewBookingService(booking_repo)
 	booking_handler := handler.NewBookingHandler(booking_service)
