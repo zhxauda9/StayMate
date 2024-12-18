@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot Coffee Shop - Order Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin-top: 20px;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        section {
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        pre {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container my-5">
+    <header class="text-center">
+        <h1 class="display-4">Hot Coffee Shop - Order Management</h1>
+        <p class="lead">by Nursultan Nurgaliyev and Ilya Gussak</p>
+    </header>
+
+    <!-- Order Creation Form -->
+    <section id="create-order" class="my-4 p-3 bg-dark text-white rounded mt-5">
+        <h2>Create Order</h2>
+        <form id="order-form">
+            <div class="form-group">
+                <label for="customer-name">Customer Name:</label>
+                <input type="text" class="form-control" id="customer-name" placeholder="Enter customer name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="product-id">Select Product:</label>
+                <select class="form-control" id="product-id">
+                    <option value="">Select a product</option>
+                    <!-- Options will be populated here by JavaScript -->
+                </select>
+                <button type="button" id="add-item-button" class="btn btn-info mt-3">Add Item</button>
+            </div>
+            <button type="submit" id="create-order-button" class="btn btn-info mt-3">Order</button>
+        </form>
+
+        <div id="items-container">
+            <h2 class="text-center">Items in cart</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover text-center">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Ingredients</th>
+                        <th scope="col">Actions</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                    </thead>
+                    <tbody id="items-cart-table-body">
+                    <!-- Rows will be added here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Actions -->
+    <section id="order-actions" class="my-4 p-3 bg-dark text-white rounded mt-5 d-flex flex-wrap justify-content-around">
+        <button id="get-orders-button" class="btn btn-info">Get All Orders</button>
+    </section>
+
+    <!-- Order List -->
+    <section id="order-list" class="my-4 bg-dark text-white rounded p-4">
+        <h2 class="text-center">Order List</h2>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Customer Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Items</th>
+                    <th scope="col">Created At</th>
+                </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                <!-- Rows will be added here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<script type="module">
+    var menuItems = []
+    var orderItems = []
+
+
+
+    async function fetchOrders() {
+        const response = await fetch('/orders');
+        if (!response.ok) throw new Error('Error fetching orders');
+        return await response.json();
+    }
+
+
+    function fetchMenuItems() {
+        fetch('/menu')
+            .then(response => response.json())
+            .then(data => {
+                const productSelect = document.getElementById('product-id');
+                menuItems = [];
+                data.forEach(item => {
+                    menuItems.push(item);
+                    const option = document.createElement('option');
+                    option.value = item.product_id; // Use product_id as value
+                    option.textContent = `${item.name} - $${item.price.toFixed(2)}`; // Display name and price
+                    productSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching menu items:', error));
+    }
+
+    async function fetchMenu() {
+        const response = await fetch('/menu');
+        if (!response.ok) throw new Error('Error fetching menu');
+        return await response.json();
+    }
+
+    async function loadItems() {
+        const itemsCartList = document.getElementById('items-cart-table-body');
+        itemsCartList.innerHTML = '';
+        orderItems.forEach((item, index) => { // Added index parameter for deletion
+            const row = document.createElement('tr');
+            console.log(item);
+            row.innerHTML = `
+                    <td>${item.product_id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.description}</td>
+                    <td>${item.ingredients.map(ingredient => `${ingredient.ingredient_id} (x${ingredient.quantity})`).join(', ')}</td>
+                    <td>$${item.price}</td>
+                    <td><input type="number" class="form-control" id="quantity_${item.product_id}" placeholder="Enter quantity" min="1" value="${item.quantity}" required></td>
+                    <td><button class="btn btn-danger" id="delete_${item.product_id}">Delete</button></td> <!-- New delete button -->
+                `;
+
+            // Add an event listener to the input to update the orderItems array
+            const quantityInput = row.querySelector(`#quantity_${item.product_id}`);
+            quantityInput.addEventListener('change', (event) => {
+                const newQuantity = parseInt(event.target.value, 10);
+                if (newQuantity > 0) {
+                    // Update the quantity in the orderItems array
+                    item.quantity = newQuantity;
+                } else {
+                    // Optionally handle invalid quantity input
+                    alert('Quantity must be greater than 0.');
+                }
+            });
+
+            // Add event listener to the delete button
+            const deleteButton = row.querySelector(`#delete_${item.product_id}`);
+            deleteButton.addEventListener('click', () => {
+                // Remove the item from the orderItems array
+                orderItems.splice(index, 1); // Use the index to remove the correct item
+                loadItems(); // Refresh the cart display
+            });
+
+            itemsCartList.appendChild(row);
+        });
+    }
+
+    async function loadOrders() {
+        async function closeOrder(orderId) {
+            const response = await fetch(`/orders/${orderId}/close`, {
+                method: 'POST',
+            });
+            if (!response.ok) throw new Error('Error closing order');
+        }
+
+        async function deleteOrder(orderId) {
+            const response = await fetch(`/orders/${orderId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) throw new Error('Error deleting order');
+        }
+
+        const orders = await fetchOrders();
+        const ordersList = document.getElementById('orders-table-body');
+        ordersList.innerHTML = '';
+        orders.forEach((order) => {
+            const row = document.createElement('tr');
+
+            // Check if the order is closed
+            const isClosed = order.status === 'closed';
+
+            row.innerHTML = `
+                    <td>${order.order_id}</td>
+                    <td>${order.customer_name}</td>
+                    <td>${order.status}</td>
+                    <td>${order.items.map(item => `${item.product_id} (x${item.quantity})`).join(', ')}</td>
+                    <td>${order.created_at}</td>
+                    <td><button class="btn btn-danger" id="delete_${order.order_id}" ${isClosed ? 'disabled' : ''}>Delete</button></td>
+                    <td><button class="btn btn-warning" id="close_${order.order_id}" ${isClosed ? 'disabled' : ''}>Close</button></td>
+                `;
+
+            // Add event listener to the close button
+            const closeButton = row.querySelector(`#close_${order.order_id}`);
+            closeButton.addEventListener('click', async () => {
+                await closeOrder(order.order_id);
+                alert('Order closed successfully!');
+                loadOrders()
+            });
+
+            // Add event listener to the delete button
+            const deleteButton = row.querySelector(`#delete_${order.order_id}`);
+            deleteButton.addEventListener('click', async () => {
+                await deleteOrder(order.order_id);
+                alert('Order deleted successfully!');
+                loadOrders()
+            });
+
+            ordersList.appendChild(row);
+        });
+    }
+
+    async function createOrder(order) {
+        // Prompt for Basic Auth credentials
+        // const username = prompt("Enter your username:");
+        // const password = prompt("Enter your password:");
+
+        // Encode credentials in Base64
+        //const credentials = btoa(`${username}:${password}`);
+        try {
+            const response = await fetch(`/orders`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    //'Authorization': `Basic ${credentials}`, // Include Basic Auth
+                },
+                body: JSON.stringify(order),
+            });
+            if (!response.ok) {
+                const errorText = await response.text(); // Get error response text
+                throw new Error(`Error creating order: ${errorText}`);
+            }
+            loadOrders()
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
+    }
+
+    function validateInputs(inputs) {
+        return Object.values(inputs).every(value => value !== '' && value !== null && value !== undefined);
+    }
+
+    document.getElementById('add-item-button').addEventListener('click', async () => {
+        let productId = document.getElementById('product-id');
+        const item = menuItems.find(item => item.product_id == productId.value);
+
+        if (item) {
+            // Check if the item is already in orderItems
+            const existingItem = orderItems.find(orderItem => orderItem.product_id === item.product_id);
+
+            if (existingItem) {
+                // If the item exists, increment the quantity by 1
+                existingItem.quantity += 1;
+            } else {
+                // If the item does not exist, add it to the orderItems with quantity 1
+                item.quantity = 1;
+                orderItems.push(item);
+            }
+
+            // Clear the input field
+            productId.value = '';
+
+            // Load the updated items
+            loadItems();
+        } else {
+            alert('Item not found!');
+        }
+    });
+
+    document.getElementById('order-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const customerName = document.getElementById('customer-name').value.trim();
+        const createdAt = new Date().toLocaleString();
+
+        const inputs = { customerName };
+        if (!validateInputs(inputs)) {
+            //alert('All fields are required!');
+            return;
+        }
+
+        const order = {
+            customer_name: customerName,
+            items: orderItems.map(item =>  ({ product_id: item.product_id, quantity: item.quantity })),
+            status: "open",
+            created_at: createdAt,
+        };
+
+        try {
+            await createOrder(order);
+            itemsCartList = []
+            loadOrders();
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    document.getElementById('get-orders-button').addEventListener('click', async () => {
+        try {
+            loadOrders()
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // Load orders initially
+    // loadOrders();
+    document.addEventListener("DOMContentLoaded", function() {
+        // if menuItems is empty fetch
+        if (menuItems.length === 0) {
+            fetchMenuItems();
+        }
+        loadOrders();
+    });
+</script>
+</body>
+</html>

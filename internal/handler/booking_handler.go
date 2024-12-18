@@ -86,7 +86,6 @@ func (h *bookingHandler) PutBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var booking models.Booking
-	// Парсим данные для обновления из тела запроса
 	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
 		http.Error(w, fmt.Sprintf("Error decoding booking data: %v", err), http.StatusBadRequest)
 		return
