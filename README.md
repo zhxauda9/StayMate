@@ -89,7 +89,7 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
 ## **Technologies Used** 🛠️
 - **Programming Language**: Go (Golang) 1.22.3 🖥️
 - **Database**: PostgreSQL 🗃️
-- **Version Control**: GitHub 🧑‍💻
+- **Version Control**: Git 🧑‍💻
 - **Libraries**:
     - **GORM**: For ORM (Object-Relational Mapping) 📦
     - **Zerolog**: For structured logging 📜
@@ -107,6 +107,32 @@ Rooms can be added, updated, or removed from the system. Each room is linked to 
 
 ### **User Management** 👥
 User data such as name, email, and booking history can be managed. The system helps in tracking customer interactions and improves the overall customer experience.
+
+
+## How to Run the Project
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/zhxauda9/StayMate.git
+   cd StayMate
+   ```
+2. **Define enviromental variables. (You can use .env file)**:
+   ```bash
+    DB_HOST="localhost"
+    DB_PORT="port"
+    DB_USER="user"
+    DB_PASSWORD="password"
+    DB_NAME="database"
+   ```
+3. **Build the programm from the root directory**:
+   ```bash
+   go build -o main cmd/main.go
+   ```
+
+4. **Start the Server**:
+   ```bash
+   ./main
+   ```
 
 ## **Contribution** 📝
 If you want to contribute to the project, feel free to fork the repository, make changes, and create pull requests. We appreciate all contributions!

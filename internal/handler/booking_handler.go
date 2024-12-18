@@ -17,6 +17,13 @@ type bookingHandler struct {
 	validate       *validator.Validate
 }
 
+func NewBookingHandler(bookingService service.BookingServ) *bookingHandler {
+	return &bookingHandler{
+		bookingService: bookingService,
+		validate:       validator.New(),
+	}
+}
+
 func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
 	var booking models.Booking
 	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
@@ -35,15 +42,9 @@ func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(booking)
-}
-
-func NewBookingHandler(bookingService service.BookingServ) *bookingHandler {
-	return &bookingHandler{
-		bookingService: bookingService,
-		validate:       validator.New(),
-	}
 }
 
 func (h *bookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
@@ -95,6 +96,8 @@ func (h *bookingHandler) PutBooking(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error updating booking: %v", err), http.StatusInternalServerError)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(booking)
 }
