@@ -16,7 +16,7 @@ import (
 )
 
 func serveHTML(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, filepath.Join("web", "index.html"))
+	http.ServeFile(w, r, filepath.Join("web", "home.html"))
 }
 
 func InitServer() (*http.ServeMux, error) {
@@ -27,9 +27,13 @@ func InitServer() (*http.ServeMux, error) {
 		return nil, fmt.Errorf("error connecting to the database -> %v", err)
 	}
 
+	fs := http.FileServer(http.Dir("./web"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	mux.HandleFunc("/", serveHTML)
-	// fs := http.FileServer(http.Dir("./web"))
-	// http.Handle("/static/", http.StripPrefix("/static/", fs))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "home.html") // например, для главной страницы
+	})
 
 	booking_repo := dal.NewBookingRepository(db)
 	booking_service := service.NewBookingService(booking_repo)
