@@ -8,12 +8,13 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: grey;
+            background-color: #f8f9fa;
             margin-top: 20px;
         }
 
         header {
             margin-bottom: 30px;
+            color: #343a40;
         }
 
         section {
@@ -23,17 +24,29 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
+
+        .form-section {
+            background-color: #e9ecef;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .table {
+            background-color: #ffffff;
+        }
     </style>
 </head>
 <body>
 <div class="container my-5">
-    <header class="text-center" style="color: white">
+    <header class="text-center">
         <h1 class="display-4">Stay Mate: Booking Management</h1>
-        <p class="lead">Manage bookings and users easily</p>
+        <p class="lead">Manage bookings and users with ease</p>
     </header>
 
     <!-- Create Booking -->
-    <section id="create-booking" class="my-4 p-3 bg-dark text-white rounded">
+    <section id="create-booking" class="form-section my-4 p-3 rounded">
         <h2>Create Booking</h2>
         <form id="create-booking-form">
             <div class="form-group">
@@ -46,21 +59,37 @@
             </div>
             <div class="form-group">
                 <label for="check-in">Check-In:</label>
-                <input type="text" id="check-in" class="form-control" placeholder="Enter check-in date" required>
+                <input type="date" id="check-in" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="check-out">Check-Out:</label>
-                <input type="text" id="check-out" class="form-control" placeholder="Enter check-out date" required>
+                <input type="date" id="check-out" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-info mt-3">Create Booking</button>
+            <button type="submit" class="btn btn-primary">Create Booking</button>
+        </form>
+    </section>
+
+    <!-- Create User -->
+    <section id="create-user" class="form-section my-4 p-3 rounded">
+        <h2>Create User</h2>
+        <form id="create-user-form">
+            <div class="form-group">
+                <label for="user-name">Name:</label>
+                <input type="text" id="user-name" class="form-control" placeholder="Enter name" required>
+            </div>
+            <div class="form-group">
+                <label for="user-email">Email:</label>
+                <input type="email" id="user-email" class="form-control" placeholder="Enter email" required>
+            </div>
+            <button type="submit" class="btn btn-success">Create User</button>
         </form>
     </section>
 
     <!-- Bookings Table -->
-    <section id="bookings" class="my-4 bg-dark text-white rounded p-4">
+    <section id="bookings" class="my-4 p-4 rounded">
         <h2>Bookings</h2>
-        <table class="table table-dark table-hover text-center">
-            <thead>
+        <table class="table table-hover text-center">
+            <thead class="thead-dark">
             <tr>
                 <th>ID</th>
                 <th>User ID</th>
@@ -76,14 +105,15 @@
     </section>
 
     <!-- Users Table -->
-    <section id="users" class="my-4 bg-dark text-white rounded p-4">
+    <section id="users" class="my-4 p-4 rounded">
         <h2>Users</h2>
-        <table class="table table-dark table-hover text-center">
-            <thead>
+        <table class="table table-hover text-center">
+            <thead class="thead-dark">
             <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody id="users-table">
@@ -93,17 +123,22 @@
 </div>
 
 <script>
-    const BASE_URL = 'http://localhost:8080'; // Update this to match your backend
+    const BASE_URL = 'http://localhost:8080'; // Backend server URL
 
-    // Fetch and display bookings
     async function loadBookings() {
-        const response = await fetch(`${BASE_URL}/bookings`);
-        const bookings = await response.json();
-        const table = document.getElementById('bookings-table');
-        table.innerHTML = '';
-        bookings.forEach(booking => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+        try {
+            const response = await fetch(`${BASE_URL}/bookings`);
+            if (!response.ok) {
+                throw new Error('Failed to load bookings.');
+            }
+
+            const bookings = await response.json();
+            console.log(bookings); // Лог данных
+            const table = document.getElementById('bookings-table');
+            table.innerHTML = '';
+            bookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
                 <td>${booking.id}</td>
                 <td>${booking.user_id}</td>
                 <td>${booking.room_id}</td>
@@ -114,11 +149,15 @@
                     <button class="btn btn-danger btn-sm" onclick="deleteBooking(${booking.id})">Delete</button>
                 </td>
             `;
-            table.appendChild(row);
-        });
+                table.appendChild(row);
+            });
+        } catch (error) {
+            console.error(error);
+            alert("Error loading bookings.");
+        }
     }
 
-    // Fetch and display users
+
     async function loadUsers() {
         const response = await fetch(`${BASE_URL}/users`);
         const users = await response.json();
@@ -130,50 +169,171 @@
                 <td>${user.id}</td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="updateUser(${user.id})">Update</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
+                </td>
             `;
             table.appendChild(row);
         });
     }
 
-    // Create a new booking
+    function isValidDate(date) {
+        return !isNaN(Date.parse(date));
+    }
+
     document.getElementById('create-booking-form').addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        const userId = document.getElementById('user-id').value;
+        const roomId = document.getElementById('room-id').value;
+        const checkIn = document.getElementById('check-in').value;
+        const checkOut = document.getElementById('check-out').value;
+
+        if (!userId || !roomId || !isValidDate(checkIn) || !isValidDate(checkOut)) {
+            alert("Please provide valid input data.");
+            return;
+        }
+
         const booking = {
-            user_id: document.getElementById('user-id').value,
-            room_id: document.getElementById('room-id').value,
-            check_in: document.getElementById('check-in').value,
-            check_out: document.getElementById('check-out').value,
+            user_id: parseInt(userId),
+            room_id: parseInt(roomId),
+            check_in: new Date(checkIn).toISOString(),
+            check_out: new Date(checkOut).toISOString(),
         };
-        await fetch(`${BASE_URL}/bookings`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(booking),
-        });
-        loadBookings();
+
+        try {
+            const response = await fetch(`${BASE_URL}/bookings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(booking),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create booking.");
+            }
+
+            alert("Booking created successfully!");
+            loadBookings();
+        } catch (error) {
+            console.error(error);
+            alert("Error: Failed to create booking.");
+        }
     });
 
-    // Delete a booking
+
+
+    document.getElementById('create-user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = {
+            name: document.getElementById('user-name').value,
+            email: document.getElementById('user-email').value,
+        };
+
+        try {
+            const response = await fetch(`${BASE_URL}/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create user.");
+            }
+
+            alert("User created successfully!");
+            loadUsers();
+        } catch (error) {
+            console.error(error);
+            alert("Error: Failed to create user.");
+        }
+    });
+
+
     async function deleteBooking(id) {
-        await fetch(`${BASE_URL}/bookings/${id}`, {
-            method: 'DELETE',
-        });
-        loadBookings();
+        if (confirm("Are you sure you want to delete the booking?")) {
+            try {
+                const response = await fetch(`${BASE_URL}/bookings/${id}`, { method: 'DELETE' });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete booking.');
+                }
+
+                alert("Booking deleted.");
+                loadBookings();
+            } catch (error) {
+                console.error(error);
+                alert("Error deleting booking.");
+            }
+        } else {
+            alert("Deletion cancelled.");
+        }
     }
 
-    // Update a booking (prompt for new data)
+
+    async function deleteUser(id) {
+        if(confirm("Are you sure you want to delete the user?")){
+            await fetch(`${BASE_URL}/users/${id}`, { method: 'DELETE' });
+            alert("User deleted.")
+            loadUsers();
+        }else {
+            alert("Deletion cancelled.");
+        }
+
+    }
+
     async function updateBooking(id) {
-        const checkIn = prompt('Enter new check-in date:');
-        const checkOut = prompt('Enter new check-out date:');
-        if (!checkIn || !checkOut) return;
-        await fetch(`${BASE_URL}/bookings/${id}`, {
+        const userID = prompt('Enter new user ID:');
+        const roomID = prompt('Enter new room ID:');
+        const checkIn = prompt('Enter new check-in date (YYYY-MM-DD):');
+        const checkOut = prompt('Enter new check-out date (YYYY-MM-DD):');
+
+        if (!isValidDate(checkIn) || !isValidDate(checkOut)) {
+            alert("Invalid date format.");
+            return;
+        }
+
+        const booking = {
+            user_id: parseInt(userID),
+            room_id: parseInt(roomID),
+            check_in: new Date(checkIn).toISOString(),
+            check_out: new Date(checkOut).toISOString(),
+        };
+
+        try {
+            const response = await fetch(`${BASE_URL}/bookings/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(booking),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update booking.");
+            }
+
+            alert("Booking updated successfully!");
+            loadBookings();
+        } catch (error) {
+            console.error(error);
+            alert("Error: Failed to update booking.");
+        }
+    }
+
+
+
+    async function updateUser(id) {
+        const name = prompt('Enter new name:');
+        const email = prompt('Enter new email:');
+        if (!name || !email) return;
+        await fetch(`${BASE_URL}/users/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ check_in: checkIn, check_out: checkOut }),
+            body: JSON.stringify({ name, email }),
         });
-        loadBookings();
+        alert("User updated!");
+        loadUsers();
     }
 
-    // Load initial data
     loadBookings();
     loadUsers();
 </script>
