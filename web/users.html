@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <base href="/"/>
+    <base href="/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users</title>
@@ -39,59 +40,73 @@
         }
     </style>
 </head>
+
 <body>
-<div class="container my-5">
-    <header class="text-center"  style="color: white">
-        <h1 class="display-4">Stay Mate: Booking Management</h1>
-        <p class="lead">Manage bookings and users with ease</p>
-    </header>
+    <div class="container my-5">
+        <header class="text-center" style="color: white">
+            <h1 class="display-4">Stay Mate: Booking Management</h1>
+            <p class="lead">Manage bookings and users with ease</p>
+        </header>
 
-    <!-- Create User -->
-    <section id="create-user" class="form-section my-4 p-3 rounded">
-        <h2>Create User</h2>
-        <form id="create-user-form">
-            <div class="form-group">
-                <label for="user-name">Name:</label>
-                <input type="text" id="user-name" class="form-control" placeholder="Enter name" required>
-            </div>
-            <div class="form-group">
-                <label for="user-email">Email:</label>
-                <input type="email" id="user-email" class="form-control" placeholder="Enter email" required>
-            </div>
-            <button type="submit" class="btn btn-success">Create User</button>
-        </form>
-    </section>
+        <!-- Create User -->
+        <section id="create-user" class="form-section my-4 p-3 rounded">
+            <h2>Create User</h2>
+            <form id="create-user-form">
+                <div class="form-group">
+                    <label for="user-name">Name:</label>
+                    <input type="text" id="user-name" class="form-control" placeholder="Enter name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email:</label>
+                    <input type="email" id="user-email" class="form-control" placeholder="Enter email" required>
+                </div>
+                <button type="submit" class="btn btn-success">Create User</button>
+            </form>
+        </section>
 
-    <!-- Users Table -->
-    <section id="users" class="my-4 p-4 rounded">
-        <h2>Users</h2>
-        <table class="table table-hover text-center">
-            <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody id="users-table">
-            </tbody>
-        </table>
-    </section>
-</div>
+        <!-- Search User by ID -->
+        <section id="search-user" class="form-section my-4 p-3 rounded">
+            <h2>Search User by ID</h2>
+            <form id="search-user-form">
+                <div class="form-group">
+                    <label for="search-user-id">User ID:</label>
+                    <input type="number" id="search-user-id" class="form-control" placeholder="Enter user ID" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <div id="search-result" class="mt-4"></div>
+        </section>
 
-<script>
-    const BASE_URL = 'http://localhost:8080'; // Backend server URL
+        <!-- Users Table -->
+        <section id="users" class="my-4 p-4 rounded">
+            <h2>Users</h2>
+            <table class="table table-hover text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table">
+                </tbody>
+            </table>
+        </section>
+    </div>
 
-    async function loadUsers() {
-        try{
-        const response = await fetch(`${BASE_URL}/users`);
-        const users = await response.json();
-        const table = document.getElementById('users-table');
-        table.innerHTML = '';
-        users.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+    <script>
+        const BASE_URL = 'http://localhost:8080'; // Backend server URL
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${BASE_URL}/users`);
+                const users = await response.json();
+                const table = document.getElementById('users-table');
+                table.innerHTML = '';
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                 <td>${user.id}</td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
@@ -100,67 +115,92 @@
                     <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
                 </td>
             `;
-            table.appendChild(row);
-        });
-        } catch (error){
-            console.error(error);
-            alert("Ошибка загрузки бронирований.");
+                    table.appendChild(row);
+                });
+            } catch (error) {
+                console.error(error);
+                alert("Ошибка загрузки бронирований.");
+            }
         }
-    }
-    loadUsers();
+        loadUsers();
 
 
-    document.getElementById('create-user-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const user = {
-            name: document.getElementById('user-name').value,
-            email: document.getElementById('user-email').value,
-        };
+        document.getElementById('create-user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = {
+                name: document.getElementById('user-name').value,
+                email: document.getElementById('user-email').value,
+            };
 
-        try {
-            const response = await fetch(`${BASE_URL}/users`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user),
-            });
+            try {
+                const response = await fetch(`${BASE_URL}/users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user),
+                });
 
-            if (!response.ok) {
-                throw new Error("Failed to create user.");
+                if (!response.ok) {
+                    throw new Error("Failed to create user.");
+                }
+
+                alert("User created successfully!");
+                loadUsers();
+            } catch (error) {
+                console.error(error);
+                alert("Error: Failed to create user.");
+            }
+        });
+
+
+        async function deleteUser(id) {
+            if (confirm("Are you sure you want to delete the user?")) {
+                await fetch(`${BASE_URL}/users/${id}`, { method: 'DELETE' });
+                alert("User deleted.")
+                loadUsers();
+            } else {
+                alert("Deletion cancelled.");
             }
 
-            alert("User created successfully!");
-            loadUsers();
-        } catch (error) {
-            console.error(error);
-            alert("Error: Failed to create user.");
-        }
-    });
-
-
-    async function deleteUser(id) {
-        if(confirm("Are you sure you want to delete the user?")){
-            await fetch(`${BASE_URL}/users/${id}`, { method: 'DELETE' });
-            alert("User deleted.")
-            loadUsers();
-        }else {
-            alert("Deletion cancelled.");
         }
 
-    }
+        async function updateUser(id) {
+            const name = prompt('Enter new name:');
+            const email = prompt('Enter new email:');
+            if (!name || !email) return;
+            await fetch(`${BASE_URL}/users/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email }),
+            });
+            alert("User updated!");
+            loadUsers();
+        }
+        document.getElementById('search-user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById('search-user-id').value;
+            const resultDiv = document.getElementById('search-result');
+            resultDiv.innerHTML = '';
 
-    async function updateUser(id) {
-        const name = prompt('Enter new name:');
-        const email = prompt('Enter new email:');
-        if (!name || !email) return;
-        await fetch(`${BASE_URL}/users/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email }),
+            try {
+                const response = await fetch(`${BASE_URL}/users/${userId}`);
+                if (!response.ok) throw new Error('User not found.');
+                const user = await response.json();
+
+                resultDiv.innerHTML = `
+                <div class="alert alert-info">
+                    <p><strong>ID:</strong> ${user.id}</p>
+                    <p><strong>Name:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                </div>
+            `;
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = `
+                <div class="alert alert-danger">Error: User not found.</div>
+            `;
+            }
         });
-        alert("User updated!");
-        loadUsers();
-    }
-
-</script>
+    </script>
 </body>
+
 </html>
