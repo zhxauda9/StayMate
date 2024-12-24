@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-	"github.com/zhxauda9/StayMate/internal/dal"
+	"github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/models"
 )
 
@@ -16,10 +16,10 @@ type UserService interface {
 }
 
 type userService struct {
-	repo dal.UserRepo
+	repo postgres.UserRepo
 }
 
-func NewUserService(repo dal.UserRepo) UserService {
+func NewUserService(repo postgres.UserRepo) UserService {
 	return &userService{repo: repo}
 }
 

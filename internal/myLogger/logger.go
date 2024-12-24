@@ -19,6 +19,8 @@ import (
 	The Msg("message text") method outputs the log message.
 */
 
+var Log *zerolog.Logger
+
 func NewZeroLogger() *zerolog.Logger {
 	logger := zerolog.New(
 		zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339},

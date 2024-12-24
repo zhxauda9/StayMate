@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/zhxauda9/StayMate/internal/dal"
+	"github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/models"
 )
 
 type bookingService struct {
-	bookingRepo dal.BookingRepo
+	bookingRepo postgres.BookingRepo
 }
 
 type BookingServ interface {
@@ -32,7 +32,7 @@ func (s *bookingService) CreateBooking(booking models.Booking) error {
 	return s.bookingRepo.CreateBooking(booking)
 }
 
-func NewBookingService(bookingRepo dal.BookingRepo) BookingServ {
+func NewBookingService(bookingRepo postgres.BookingRepo) BookingServ {
 	return &bookingService{bookingRepo: bookingRepo}
 }
 

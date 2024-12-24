@@ -10,8 +10,9 @@ import (
 	"gorm.io/gorm"
 
 	_ "github.com/lib/pq"
-	"github.com/zhxauda9/StayMate/internal/dal"
+	dalpostgres "github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/internal/handler"
+	l "github.com/zhxauda9/StayMate/internal/myLogger"
 	"github.com/zhxauda9/StayMate/internal/service"
 )
 
@@ -22,20 +23,23 @@ func serveHTML(w http.ResponseWriter, r *http.Request) {
 func InitServer() (*http.ServeMux, error) {
 	mux := http.NewServeMux()
 
+	l.Log.Info().Msg("Trying to connect to database...")
 	db, err := Connect_DB()
 	if err != nil {
+		l.Log.Error().Msg("Failed to connect to database")
 		return nil, fmt.Errorf("error connecting to the database -> %v", err)
 	}
+	l.Log.Info().Msg("Successfully connected to database")
 
 	fs := http.FileServer(http.Dir("./web"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	mux.HandleFunc("/", serveHTML)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "home.html") // например, для главной страницы
+		http.ServeFile(w, r, "home.html")
 	})
 
-	booking_repo := dal.NewBookingRepository(db)
+	booking_repo := dalpostgres.NewBookingRepository(db)
 	booking_service := service.NewBookingService(booking_repo)
 	booking_handler := handler.NewBookingHandler(booking_service)
 
@@ -45,7 +49,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("PUT /bookings/{id}", booking_handler.PutBooking)
 	mux.HandleFunc("DELETE /bookings/{id}", booking_handler.DeleteBooking)
 
-	user_repo := dal.NewUserRepository(db)
+	user_repo := dalpostgres.NewUserRepository(db)
 	user_service := service.NewUserService(user_repo)
 	user_handler := handler.NewUserHandler(user_service)
 
