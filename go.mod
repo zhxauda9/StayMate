@@ -13,8 +13,11 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
+require gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+
 require (
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
+	github.com/go-mail/mail/v2 v2.3.0
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
