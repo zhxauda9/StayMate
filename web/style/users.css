@@ -1,0 +1,30 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: darkslategray;
+    margin-top: 20px;
+}
+
+header {
+    margin-bottom: 30px;
+    color: #343a40;
+}
+
+section {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.form-section {
+    background-color: #e9ecef;
+}
+
+button {
+    cursor: pointer;
+}
+
+.table {
+    background-color: #ffffff;
+}

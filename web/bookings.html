@@ -1,230 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <base href="/"/>
+    <base href="/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookings</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: darkslategray;
-            margin-top: 20px;
-        }
-
-        header {
-            margin-bottom: 30px;
-            color: #343a40;
-        }
-
-        section {
-            padding: 15px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .form-section {
-            background-color: #e9ecef;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        .table {
-            background-color: #ffffff;
-        }
-    </style>
+    <link rel="stylesheet" href="static/style/bookings.css">
 </head>
+
 <body>
-<div class="container my-5">
-    <header class="text-center" style="color: white">
-        <h1 class="display-4">Stay Mate: Booking Management</h1>
-        <p class="lead">Manage bookings and users with ease</p>
-    </header>
+    <div class="container my-5">
+        <header class="text-center" style="color: white">
+            <h1 class="display-4">Stay Mate: Booking Management</h1>
+            <p class="lead">Manage bookings and users with ease</p>
+        </header>
 
-    <!-- Create Booking -->
-    <section id="create-booking" class="form-section my-4 p-3 rounded">
-        <h2>Create Booking</h2>
-        <form id="create-booking-form">
-            <div class="form-group">
-                <label for="user-id">User ID:</label>
-                <input type="number" id="user-id" class="form-control" placeholder="Enter user ID" required>
-            </div>
-            <div class="form-group">
-                <label for="room-id">Room ID:</label>
-                <input type="number" id="room-id" class="form-control" placeholder="Enter room ID" required>
-            </div>
-            <div class="form-group">
-                <label for="check-in">Check-In:</label>
-                <input type="date" id="check-in" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="check-out">Check-Out:</label>
-                <input type="date" id="check-out" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Create Booking</button>
-        </form>
-    </section>
+        <!-- Create Booking -->
+        <section id="create-booking" class="form-section my-4 p-3 rounded">
+            <h2>Create Booking</h2>
+            <form id="create-booking-form">
+                <div class="form-group">
+                    <label for="user-id">User ID:</label>
+                    <input type="number" id="user-id" class="form-control" placeholder="Enter user ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="room-id">Room ID:</label>
+                    <input type="number" id="room-id" class="form-control" placeholder="Enter room ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="check-in">Check-In:</label>
+                    <input type="date" id="check-in" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="check-out">Check-Out:</label>
+                    <input type="date" id="check-out" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Booking</button>
+            </form>
+        </section>
 
-    <!-- Bookings Table -->
-    <section id="bookings" class="my-4 p-4 rounded">
-        <h2>Bookings</h2>
-        <table class="table table-hover text-center">
-            <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>User ID</th>
-                <th>Room ID</th>
-                <th>Check-In</th>
-                <th>Check-Out</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody id="bookings-table">
-            </tbody>
-        </table>
-    </section>
-</div>
-<script>
-    const BASE_URL = 'http://localhost:8080';
+        <!-- Bookings Table -->
+        <section id="bookings" class="my-4 p-4 rounded">
+            <h2>Bookings</h2>
+            <table class="table table-hover text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>User ID</th>
+                        <th>Room ID</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-table">
+                </tbody>
+            </table>
+        </section>
+    </div>
+    <script src="static/scripts/bookings.js">
 
-    async function loadBookings() {
-        try {
-            const response = await fetch(`${BASE_URL}/bookings`);
-            if (!response.ok) {
-                throw new Error('Не удалось загрузить бронирования.');
-            }
-
-            const bookings = await response.json();
-            const table = document.getElementById('bookings-table');
-            table.innerHTML = '';
-            bookings.forEach(booking => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                <td>${booking.id}</td>
-                <td>${booking.user_id}</td>
-                <td>${booking.room_id}</td>
-                <td>${booking.check_in}</td>
-                <td>${booking.check_out}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="updateBooking(${booking.id})">Update</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteBooking(${booking.id})">Delete</button>
-                </td>
-            `;
-                table.appendChild(row);
-            });
-        } catch (error) {
-            console.error(error);
-            alert("Ошибка загрузки бронирований.");
-        }
-    }
-
-    loadBookings();
-
-    function isValidDate(date) {
-        return !isNaN(Date.parse(date));
-    }
-
-    document.getElementById('create-booking-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const userId = document.getElementById('user-id').value;
-        const roomId = document.getElementById('room-id').value;
-        const checkIn = document.getElementById('check-in').value;
-        const checkOut = document.getElementById('check-out').value;
-
-        if (!userId || !roomId || !isValidDate(checkIn) || !isValidDate(checkOut)) {
-            alert("Please provide valid input data.");
-            return;
-        }
-
-        const booking = {
-            user_id: parseInt(userId),
-            room_id: parseInt(roomId),
-            check_in: new Date(checkIn).toISOString(),
-            check_out: new Date(checkOut).toISOString(),
-        };
-
-        try {
-            const response = await fetch(`${BASE_URL}/bookings`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(booking),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to create booking.");
-            }
-
-            alert("Booking created successfully!");
-            loadBookings();
-        } catch (error) {
-            console.error(error);
-            alert("Error: Failed to create booking.");
-        }
-    });
-
-    async function deleteBooking(id) {
-        if (confirm("Are you sure you want to delete the booking?")) {
-            try {
-                const response = await fetch(`${BASE_URL}/bookings/${id}`, { method: 'DELETE' });
-
-                if (!response.ok) {
-                    throw new Error('Failed to delete booking.');
-                }
-
-                alert("Booking deleted.");
-                loadBookings();
-            } catch (error) {
-                console.error(error);
-                alert("Error deleting booking.");
-            }
-        } else {
-            alert("Deletion cancelled.");
-        }
-    }
-
-    async function updateBooking(id) {
-        const userID = prompt('Enter new user ID:');
-        const roomID = prompt('Enter new room ID:');
-        const checkIn = prompt('Enter new check-in date (YYYY-MM-DD):');
-        const checkOut = prompt('Enter new check-out date (YYYY-MM-DD):');
-
-        if (!isValidDate(checkIn) || !isValidDate(checkOut)) {
-            alert("Invalid date format.");
-            return;
-        }
-
-        const booking = {
-            user_id: parseInt(userID),
-            room_id: parseInt(roomID),
-            check_in: new Date(checkIn).toISOString(),
-            check_out: new Date(checkOut).toISOString(),
-        };
-
-        try {
-            const response = await fetch(`${BASE_URL}/bookings/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(booking),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update booking.");
-            }
-
-            alert("Booking updated successfully!");
-            loadBookings();
-        } catch (error) {
-            console.error(error);
-            alert("Error: Failed to update booking.");
-        }
-    }
-
-</script>
+    </script>
 </body>
+
 </html>
