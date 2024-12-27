@@ -59,6 +59,16 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("PUT /users/{id}", user_handler.UpdateUser)
 	mux.HandleFunc("DELETE /users/{id}", user_handler.DeleteUser)
 
+	smtpHost := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	email := os.Getenv("EMAIL")
+	password := os.Getenv("PASSWORD")
+	mailServ, err := service.NewMailService(smtpHost, smtpPort, email, password)
+	if err != nil {
+		os.Exit(1)
+	}
+	mailServ.Send([]string{"tamutdzhin@gmail.com"}, "BROO", "Hello from temu", "bro.txt", "text/plain", []byte("Hello bro"))
+
 	return mux, nil
 }
 
