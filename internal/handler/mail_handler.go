@@ -64,8 +64,12 @@ func (h *mailHandler) ServeMail(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 }
 
+func (h *mailHandler) SendMailHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // testing don't work yet
-func (h *mailHandler) SendFileMailHandler(w http.ResponseWriter, r *http.Request) {
+func (h *mailHandler) SendMailFileHandler(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		myLogger.Log.Error().Err(err).Msg("Unable to get file from form")

@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("send-email-form");
+    const form = document.getElementById("api/mail");
 
     form.addEventListener("submit", function (event) {
         event.preventDefault(); // Остановить стандартное поведение формы

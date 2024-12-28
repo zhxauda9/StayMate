@@ -105,5 +105,5 @@ document.getElementById('search-user-form').addEventListener('submit', async (e)
 });
 
 function sendEmail(userId) {
-    window.location.href = `/send-email?userId=${userId}`;
+    window.location.href = `/mail?userId=${userId}`;
 }

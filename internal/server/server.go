@@ -67,8 +67,8 @@ func InitServer() (*http.ServeMux, error) {
 	}
 	mail_handler := handler.NewMailHandler(mailServ, user_service)
 
-	mux.HandleFunc("GET /send-email", mail_handler.ServeMail)
-
+	mux.HandleFunc("GET /mail", mail_handler.ServeMail)
+	mux.HandleFunc("POST /api/mail", mail_handler.SendMailHandler)
 	return mux, nil
 }
 
