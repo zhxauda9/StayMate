@@ -31,13 +31,11 @@ func InitServer() (*http.ServeMux, error) {
 	}
 	l.Log.Info().Msg("Successfully connected to database")
 
+	// Serving static files (html, css, js, ...)
 	fs := http.FileServer(http.Dir("./web"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	mux.HandleFunc("/", serveHTML)
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "home.html")
-	})
 
 	booking_repo := dalpostgres.NewBookingRepository(db)
 	booking_service := service.NewBookingService(booking_repo)
@@ -67,7 +65,9 @@ func InitServer() (*http.ServeMux, error) {
 	if err != nil {
 		os.Exit(1)
 	}
-	mailServ.Send([]string{"tamutdzhin@gmail.com"}, "BROO", "Hello from temu", "bro.txt", "text/plain", []byte("Hello bro"))
+	mail_handler := handler.NewMailHandler(mailServ, user_service)
+
+	mux.HandleFunc("GET /send-email", mail_handler.ServeMail)
 
 	return mux, nil
 }

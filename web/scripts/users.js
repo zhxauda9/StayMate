@@ -15,6 +15,7 @@ async function loadUsers() {
         <td>
             <button class="btn btn-warning btn-sm" onclick="updateUser(${user.id})">Update</button>
             <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
+            <button class="btn btn-info btn-sm" onclick="sendEmail(${user.id})">Send Email</button>
         </td>
     `;
             table.appendChild(row);
@@ -102,3 +103,7 @@ document.getElementById('search-user-form').addEventListener('submit', async (e)
     `;
     }
 });
+
+function sendEmail(userId) {
+    window.location.href = `/send-email?userId=${userId}`;
+}
