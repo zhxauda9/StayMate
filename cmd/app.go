@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 	"time"
 
@@ -37,9 +36,6 @@ func InitApp() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
-	// WaitGroup to handle active connections
-	var wg sync.WaitGroup
-
 	// Start the server in a goroutine
 	go func() {
 		l.Log.Info().Str("Address", address).Msg("Server initialized successfully, starting HTTP server")
@@ -63,7 +59,5 @@ func InitApp() {
 		l.Log.Info().Msg("Server shutdown gracefully")
 	}
 
-	// Wait for all ongoing connections to complete
-	wg.Wait()
 	l.Log.Info().Msg("Application exited successfully")
 }
