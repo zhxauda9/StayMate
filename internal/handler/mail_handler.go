@@ -108,6 +108,7 @@ func (h *mailHandler) SendMailHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Failed sending email")
 		http.Error(w, "Failed sending email", http.StatusInternalServerError)
+		return
 	}
 
 	l.Log.Info().Strs("emails", emails).Str("subject", subject[0]).Str("message", message[0]).Msg("Mails sended successfully")
