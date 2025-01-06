@@ -7,17 +7,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Send Email</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #4d029c, #055cf3);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: #fff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .form-section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: #2575fc;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1a5ab6;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container my-5">
-        <header class="text-center">
+    <div class="container">
+        <header class="text-center mb-4">
             <h1 class="display-4">Send Email</h1>
-            <p class="lead">Send a message to a user</p>
+            <p class="lead">Easily send a message to your users</p>
         </header>
 
-        <section id="send-email" class="form-section my-4 p-3 rounded">
-            <h2>Compose Message</h2>
+        <section id="send-email" class="form-section">
+            <h2 class="text-center mb-4">Compose Message</h2>
             <form id="send-email-form">
                 <div class="form-group">
                     <label for="email-recipients">Recipient:</label>
@@ -41,13 +98,19 @@
                     <textarea id="message" name="message" class="form-control" rows="4" placeholder="Enter your message"
                         required></textarea>
                 </div>
+
                 <div class="form-group">
                     <label for="file">Attach File:</label>
                     <input type="file" id="file" name="attachment" class="form-control-file">
                 </div>
-                <button type="submit" class="btn btn-primary">Send Email</button>
+
+                <button type="submit" class="btn btn-primary btn-block">Send Email</button>
             </form>
         </section>
+
+        <footer>
+            <p>&copy; 2024 Staymate. All Rights Reserved.</p>
+        </footer>
     </div>
     <script src="/static/scripts/email.js"></script>
 </body>
