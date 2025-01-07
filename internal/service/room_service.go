@@ -14,7 +14,7 @@ type roomService struct {
 type RoomServ interface {
 	CreateRoom(room models.Room) error
 	GetRoomByID(id int) (models.Room, error)
-	GetAllRooms(sort string) ([]models.Room, error)
+	GetAllRooms(sort string, page int) ([]models.Room, error)
 	UpdateRoom(id int, room models.Room) error
 	DeleteRoom(id int) error
 }
@@ -38,11 +38,15 @@ func (s *roomService) GetRoomByID(id int) (models.Room, error) {
 	return room, nil
 }
 
-func (s *roomService) GetAllRooms(sort string) ([]models.Room, error) {
-	rooms, err := s.roomRepo.GetAllRooms(sort)
+func (s *roomService) GetAllRooms(sort string, page int) ([]models.Room, error) {
+	const limit = 10
+	offset := (page - 1) * limit
+
+	rooms, err := s.roomRepo.GetAllRooms(sort, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("error in service layer while fetching all rooms: %v", err)
 	}
+
 	return rooms, nil
 }
 

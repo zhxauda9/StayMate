@@ -41,7 +41,7 @@
     </section>
 
     <form id="sort-form">
-        <label for="sort" style="color: white">Sort by:</label>
+        <label for="sort" style="color: black">Sort by:</label>
         <select id="sort" name="sort">
             <option value="price asc">Price: Low to High</option>
             <option value="price desc">Price: High to Low</option>
@@ -65,7 +65,13 @@
             <tbody id="rooms-table">
             </tbody>
         </table>
+        <div class="pagination mt-4">
+            <button id="prevBtn" class="btn btn-secondary" disabled>Back</button>
+            <span id="currentPage">Page 1</span>
+            <button id="nextBtn" class="btn btn-secondary">Next</button>
+        </div>
     </section>
+
 </div>
 <script src="static/scripts/rooms.js">
 

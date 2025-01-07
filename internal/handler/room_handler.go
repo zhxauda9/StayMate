@@ -55,13 +55,20 @@ func (h *roomHandler) GetRooms(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to fetch all rooms.")
 
 	sort := r.URL.Query().Get("sort")
+	pageStr := r.URL.Query().Get("page")
 
-	rooms, err := h.roomService.GetAllRooms(sort)
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	rooms, err := h.roomService.GetAllRooms(sort, page)
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Error fetching rooms")
 		http.Error(w, "Error fetching rooms", http.StatusInternalServerError)
 		return
 	}
+
 	l.Log.Info().Msg("Fetched all rooms successfully")
 
 	w.Header().Set("Content-Type", "application/json")

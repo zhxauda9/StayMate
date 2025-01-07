@@ -1,8 +1,19 @@
 const BASE_URL = 'http://localhost:8080';
 
+let currentPage = 1;
+const limit = 10;
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const currentPageSpan = document.getElementById("currentPage");
+
+
+function updateButtons() {
+    prevBtn.disabled = currentPage === 1;
+}
+
 async function loadRooms(sort='') {
     try {
-        let url = `${BASE_URL}/rooms?sort=${sort}`;
+        let url = `${BASE_URL}/rooms?limit=${limit}&page=${currentPage}&sort=${sort}`;
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Failed to load rooms');
@@ -25,13 +36,31 @@ async function loadRooms(sort='') {
         `;
             table.appendChild(row);
         });
+        currentPageSpan.textContent = `Page ${currentPage}`;
     } catch (error) {
         console.error(error);
         alert("Failed to load rooms");
     }
 }
+prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+        currentPage--;
+        loadRooms();
+        updateButtons();
+    }
+});
+
+nextBtn.addEventListener("click", () => {
+    currentPage++;
+    loadRooms();
+    updateButtons();
+});
+
+
 
 loadRooms();
+
+
 
 document.getElementById('sort-form').addEventListener('submit', (e) => {
     e.preventDefault();
