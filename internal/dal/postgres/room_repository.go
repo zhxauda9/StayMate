@@ -9,7 +9,7 @@ import (
 type RoomRepo interface {
 	CreateRoom(room models.Room) error
 	GetRoomByID(id int) (models.Room, error)
-	GetAllRooms() ([]models.Room, error)
+	GetAllRooms(sort string) ([]models.Room, error)
 	UpdateRoom(id int, room models.Room) error
 	DeleteRoom(id int) error
 	RoomExists(roomID int) bool
@@ -41,9 +41,13 @@ func (r *roomRepository) GetRoomByID(id int) (models.Room, error) {
 	return room, nil
 }
 
-func (r *roomRepository) GetAllRooms() ([]models.Room, error) {
+func (r *roomRepository) GetAllRooms(sort string) ([]models.Room, error) {
 	var rooms []models.Room
-	if err := r.db.Find(&rooms).Error; err != nil {
+	query := r.db
+	if sort != "" {
+		query = query.Order(sort)
+	}
+	if err := query.Find(&rooms).Error; err != nil {
 		return nil, fmt.Errorf("error fetching all rooms: %v", err)
 	}
 	return rooms, nil

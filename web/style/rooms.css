@@ -28,3 +28,32 @@ button {
 .table {
     background-color: #ffffff;
 }
+#sort-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#sort-form label {
+    font-weight: bold;
+    color: #343a40;
+}
+
+#sort-form select, #sort-form button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+}
+
+#sort-form button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+#sort-form button:hover {
+    background-color: #0056b3;
+}

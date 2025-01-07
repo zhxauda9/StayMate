@@ -1,8 +1,9 @@
 const BASE_URL = 'http://localhost:8080';
 
-async function loadRooms() {
+async function loadRooms(sort='') {
     try {
-        const response = await fetch(`${BASE_URL}/rooms`);
+        let url = `${BASE_URL}/rooms?sort=${sort}`;
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Failed to load rooms');
         }
@@ -32,6 +33,11 @@ async function loadRooms() {
 
 loadRooms();
 
+document.getElementById('sort-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const sortSelect = document.getElementById('sort').value.trim();
+    loadRooms(sortSelect);
+});
 
 document.getElementById('create-room-form').addEventListener('submit', async (e) => {
     e.preventDefault();
