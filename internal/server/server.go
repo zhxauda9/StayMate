@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 
 	_ "github.com/lib/pq"
+	"github.com/zhxauda9/StayMate/internal/dal/migrations"
 	dalpostgres "github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/internal/handler"
 	"github.com/zhxauda9/StayMate/internal/middleware"
@@ -33,6 +34,11 @@ func InitServer() (*http.ServeMux, error) {
 	}
 	l.Log.Info().Msg("Successfully connected to database")
 
+	// Migrations
+	err = migrations.AutoMigrateDatabase(db)
+	if err != nil {
+		return nil, err
+	}
 	// Serving static files (html, css, js, ...)
 	fs := http.FileServer(http.Dir("./web"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -65,7 +71,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.Handle("GET /users/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.GetUserByID))))
 	mux.Handle("PUT /users/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.UpdateUser))))
 	mux.Handle("DELETE /users/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.DeleteUser))))
-  
+
 	room_repo := dalpostgres.NewRoomRepository(db)
 	room_service := service.NewRoomService(room_repo)
 	room_handler := handler.NewRoomHandler(room_service)

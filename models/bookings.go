@@ -1,8 +1,12 @@
 package models
 
-import _ "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	_ "gorm.io/gorm"
+)
 
 type Booking struct {
+	gorm.Model
 	ID       int    `json:"id" gorm:"primaryKey;autoIncrement"`
 	UserID   int    `json:"user_id" gorm:"not null"`
 	RoomID   int    `json:"room_id" gorm:"not null"`
