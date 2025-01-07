@@ -53,17 +53,19 @@ func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(booking)
 }
 
+// handler.go
 func (h *bookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to fetch all bookings.")
 
-	bookings, err := h.bookingService.GetAllBookings()
+	filterStart := r.URL.Query().Get("filterStart")
+	filterEnd := r.URL.Query().Get("filterEnd")
+	bookings, err := h.bookingService.GetBookingsFiltered(filterStart, filterEnd)
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Error fetching bookings")
 		http.Error(w, "Error fetching bookings", http.StatusInternalServerError)
 		return
 	}
-	l.Log.Info().Msg("Fetched all bookings successfully")
-
+	l.Log.Info().Msg("Fetched filtered bookings successfully")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(bookings)
