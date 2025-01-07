@@ -16,6 +16,7 @@ async function loadRooms() {
             <td>${room.number}</td>
             <td>${room.class}</td>
             <td>${room.price}</td>
+            <td>${room.status}</td>
             <td>
                 <button class="btn btn-warning btn-sm" onclick="updateRoom(${room.id})">Update</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteRoom(${room.id})">Delete</button>
@@ -38,6 +39,7 @@ document.getElementById('create-room-form').addEventListener('submit', async (e)
     const number = document.getElementById('number').value;
     const classRoom = document.getElementById('class').value;
     const price = document.getElementById('price').value;
+    const status=document.getElementById('status').value;
 
     if (!number || !classRoom || !price) {
         alert("Please provide valid input data.");
@@ -48,6 +50,7 @@ document.getElementById('create-room-form').addEventListener('submit', async (e)
         number: parseInt(number),
         class: classRoom,
         price: parseFloat(price),
+        status:status,
     };
 
     try {
@@ -92,6 +95,7 @@ async function updateRoom(id) {
     const number = prompt('Enter new number:');
     const classRoom = prompt('Enter new class:');
     const price = prompt('Enter new price numeric(10,2):');
+    const status=prompt('Enter new status:')
 
     if (!number || !classRoom || !price) {
         alert("Please provide valid input data.");
@@ -102,6 +106,7 @@ async function updateRoom(id) {
         number: parseInt(number),
         class: classRoom,
         price: parseFloat(price),
+        status:status,
     };
 
     try {

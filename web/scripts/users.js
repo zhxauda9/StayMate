@@ -12,6 +12,7 @@ async function loadUsers() {
         <td>${user.id}</td>
         <td>${user.name}</td>
         <td>${user.email}</td>
+        <td>${user.status ? user.status : 'No status'}</td>
         <td>
             <button class="btn btn-warning btn-sm" onclick="updateUser(${user.id})">Update</button>
             <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
@@ -33,6 +34,7 @@ document.getElementById('create-user-form').addEventListener('submit', async (e)
     const user = {
         name: document.getElementById('user-name').value,
         email: document.getElementById('user-email').value,
+        status: document.getElementById('user-status').value,
     };
 
     try {
@@ -69,11 +71,12 @@ async function deleteUser(id) {
 async function updateUser(id) {
     const name = prompt('Enter new name:');
     const email = prompt('Enter new email:');
+    const status=prompt('Enter new status:');
     if (!name || !email) return;
     await fetch(`${BASE_URL}/users/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({ name, email,status }),
     });
     alert("User updated!");
     loadUsers();
@@ -94,6 +97,7 @@ document.getElementById('search-user-form').addEventListener('submit', async (e)
             <p><strong>ID:</strong> ${user.id}</p>
             <p><strong>Name:</strong> ${user.name}</p>
             <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Status:</strong> ${user.status}</p>
         </div>
     `;
     } catch (error) {

@@ -24,7 +24,7 @@ func NewUserService(repo postgres.UserRepo) UserService {
 }
 
 func (s *userService) CreateUser(user models.User) error {
-	if user.Name == "" || user.Email == "" {
+	if user.Name == "" || user.Email == "" || user.Status == "" {
 		return errors.New("name and email cannot be empty")
 	}
 	return s.repo.CreateUser(user)
@@ -39,7 +39,7 @@ func (s *userService) GetAllUsers() ([]models.User, error) {
 }
 
 func (s *userService) UpdateUser(id int, user models.User) error {
-	if user.Name == "" && user.Email == "" {
+	if user.Name == "" && user.Email == "" && user.Status == "" {
 		return errors.New("nothing to update, name or email must be provided")
 	}
 	return s.repo.UpdateUser(id, user)

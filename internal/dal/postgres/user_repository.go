@@ -25,7 +25,7 @@ func NewUserRepository(db *gorm.DB) UserRepo {
 }
 
 func (r *userRepository) CreateUser(user models.User) error {
-	if user.Name == "" || user.Email == "" {
+	if user.Name == "" || user.Email == "" || user.Status == "" {
 		return errors.New("name and email fields cannot be empty")
 	}
 	if err := r.db.Create(&user).Error; err != nil {
@@ -66,6 +66,9 @@ func (r *userRepository) UpdateUser(id int, user models.User) error {
 	}
 	if user.Email != "" {
 		existingUser.Email = user.Email
+	}
+	if user.Status != "" {
+		existingUser.Status = user.Status
 	}
 	if err := r.db.Save(&existingUser).Error; err != nil {
 		return fmt.Errorf("error updating user: %v", err)
