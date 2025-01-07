@@ -76,11 +76,11 @@ func InitServer() (*http.ServeMux, error) {
 	room_service := service.NewRoomService(room_repo)
 	room_handler := handler.NewRoomHandler(room_service)
 
-	mux.HandleFunc("POST /rooms", room_handler.PostRoom)
-	mux.HandleFunc("GET /rooms", room_handler.GetRooms)
-	mux.HandleFunc("GET /rooms/{id}", room_handler.GetRoom)
-	mux.HandleFunc("PUT /rooms/{id}", room_handler.PutRoom)
-	mux.HandleFunc("DELETE /rooms/{id}", room_handler.DeleteRoom)
+	mux.Handle("POST /rooms", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.PostRoom))))
+	mux.Handle("GET /rooms", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.GetRooms))))
+	mux.Handle("GET /rooms/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.GetRoom))))
+	mux.Handle("PUT /rooms/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.PutRoom))))
+	mux.Handle("DELETE /rooms/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.DeleteRoom))))
 
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")
