@@ -57,6 +57,16 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("PUT /users/{id}", user_handler.UpdateUser)
 	mux.HandleFunc("DELETE /users/{id}", user_handler.DeleteUser)
 
+	room_repo := dalpostgres.NewRoomRepository(db)
+	room_service := service.NewRoomService(room_repo)
+	room_handler := handler.NewRoomHandler(room_service)
+
+	mux.HandleFunc("POST /rooms", room_handler.PostRoom)
+	mux.HandleFunc("GET /rooms", room_handler.GetRooms)
+	mux.HandleFunc("GET /rooms/{id}", room_handler.GetRoom)
+	mux.HandleFunc("PUT /rooms/{id}", room_handler.PutRoom)
+	mux.HandleFunc("DELETE /rooms/{id}", room_handler.DeleteRoom)
+
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")
 	email := os.Getenv("EMAIL")
