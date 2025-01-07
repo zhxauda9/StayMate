@@ -14,11 +14,16 @@ type BookingRepo interface {
 	UpdateBooking(id int, booking models.Booking) error
 	DeleteBooking(id int) error
 	CheckUserExists(userID int) bool
+	CheckRoomExists(roomID int) bool
 	BookingExists(roomID int, checkIn, checkOut string) bool
 }
 
 type bookingRepository struct {
 	db *gorm.DB
+}
+
+func NewBookingRepository(db *gorm.DB) BookingRepo {
+	return &bookingRepository{db: db}
 }
 
 func (r *bookingRepository) CreateBooking(booking models.Booking) error {
@@ -50,6 +55,12 @@ func (r *bookingRepository) GetAllBookings() ([]models.Booking, error) {
 func (r *bookingRepository) CheckUserExists(userID int) bool {
 	var count int64
 	r.db.Model(&models.User{}).Where("id = ?", userID).Count(&count)
+	return count > 0
+}
+
+func (r *bookingRepository) CheckRoomExists(roomID int) bool {
+	var count int64
+	r.db.Model(&models.Room{}).Where("id = ?", roomID).Count(&count)
 	return count > 0
 }
 
@@ -87,8 +98,4 @@ func (r *bookingRepository) DeleteBooking(id int) error {
 		return fmt.Errorf("error deleting booking: %v", err)
 	}
 	return nil
-}
-
-func NewBookingRepository(db *gorm.DB) BookingRepo {
-	return &bookingRepository{db: db}
 }
