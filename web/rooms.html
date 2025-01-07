@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/style/rooms.css">
+</head>
+
+<body>
+<div class="container my-5">
+    <header class="text-center" style="color: white">
+        <h1 class="display-4">Stay Mate: Booking Management</h1>
+        <p class="lead">Manage bookings, rooms and users with ease</p>
+    </header>
+
+    <section id="create-room" class="form-section my-4 p-3 rounded">
+        <h2>Create Room</h2>
+        <form id="create-room-form">
+            <div class="form-group">
+                <label for="number">Number:</label>
+                <input type="number" id="number" class="form-control" placeholder="Enter number" required>
+            </div>
+            <div class="form-group">
+                <label for="class">Class:</label>
+                <input type="text" id="class" class="form-control" placeholder="Enter class" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" step="0.01" min="0" id="price" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Room</button>
+        </form>
+    </section>
+
+    <section id="rooms" class="my-4 p-4 rounded">
+        <h2>Rooms</h2>
+        <table class="table table-hover text-center">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Number</th>
+                <th>Class</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody id="rooms-table">
+            </tbody>
+        </table>
+    </section>
+</div>
+<script src="static/scripts/rooms.js">
+
+</script>
+</body>
+
+</html>

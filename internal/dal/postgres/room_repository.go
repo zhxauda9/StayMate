@@ -25,7 +25,7 @@ func NewRoomRepository(db *gorm.DB) RoomRepo {
 
 func (r *roomRepository) CreateRoom(room models.Room) error {
 	if err := r.db.Create(&room).Error; err != nil {
-		return fmt.Errorf("error inserting booking %v", err)
+		return fmt.Errorf("error inserting room %v", err)
 	}
 	return nil
 }
