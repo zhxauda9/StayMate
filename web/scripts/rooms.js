@@ -11,9 +11,9 @@ function updateButtons() {
     prevBtn.disabled = currentPage === 1;
 }
 
-async function loadRooms(sort='') {
+async function loadRooms(filterStart='',filterEnd='',sort='') {
     try {
-        let url = `${BASE_URL}/rooms?limit=${limit}&page=${currentPage}&sort=${sort}`;
+        let url = `${BASE_URL}/rooms?filterStart=${filterStart}&filterEnd=${filterEnd}&limit=${limit}&page=${currentPage}&sort=${sort}`;
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Failed to load rooms');
@@ -56,16 +56,19 @@ nextBtn.addEventListener("click", () => {
     updateButtons();
 });
 
-
-
 loadRooms();
 
-
+document.getElementById('filter-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const filterStart = document.getElementById('filterStart').value.trim();
+    const filterEnd=document.getElementById('filterEnd').value.trim();
+    loadRooms(filterStart,filterEnd,'');
+});
 
 document.getElementById('sort-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const sortSelect = document.getElementById('sort').value.trim();
-    loadRooms(sortSelect);
+    loadRooms('','',sortSelect);
 });
 
 document.getElementById('create-room-form').addEventListener('submit', async (e) => {

@@ -95,19 +95,18 @@ func (r *bookingRepository) DeleteBooking(id int) error {
 func (r *bookingRepository) GetAllBookings(sort, filterStart, filterEnd string, limit, offset int) ([]models.Booking, error) {
 	var bookings []models.Booking
 	query := r.db.Model(&models.Booking{})
+
+	if sort != "" {
+		query = query.Order(sort)
+	}
+
 	if filterStart != "" && filterEnd != "" {
 		query = query.Where("check_in >= ? AND check_in <= ?", filterStart, filterEnd)
 	}
-	if err := query.Find(&bookings).Error; err != nil {
-		return nil, fmt.Errorf("error fetching filtered bookings: %v", err)
+
+	if err := query.Limit(limit).Offset(offset).Find(&bookings).Error; err != nil {
+		return nil, fmt.Errorf("error fetching bookings: %v", err)
 	}
 
-	query1 := r.db
-	if sort != "" {
-		query1 = query1.Order(sort)
-	}
-	if err := query1.Limit(limit).Offset(offset).Find(&bookings).Error; err != nil {
-		return nil, fmt.Errorf("error fetching all bookings: %v", err)
-	}
 	return bookings, nil
 }

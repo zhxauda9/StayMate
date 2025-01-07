@@ -53,6 +53,15 @@
             </form>
         </section>
 
+        <form id="sort-form">
+            <label for="sort" style="color: black">Sort by:</label>
+            <select id="sort" name="sort">
+                <option value="user_id asc">user ID: Low to High</option>
+                <option value="user_id desc">user ID: High to Low</option>
+            </select>
+            <button type="submit">Sort</button>
+        </form>
+
         <section id="bookings" class="my-4 p-4 rounded">
             <h2>Bookings</h2>
             <table class="table table-hover text-center">
@@ -69,6 +78,11 @@
                 <tbody id="bookings-table">
                 </tbody>
             </table>
+            <div class="pagination mt-4">
+                <button id="prevBtn" class="btn btn-secondary" disabled>Back</button>
+                <span id="currentPage">Page 1</span>
+                <button id="nextBtn" class="btn btn-secondary">Next</button>
+            </div>
         </section>
     </div>
     <script src="static/scripts/bookings.js">
