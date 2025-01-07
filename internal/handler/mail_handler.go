@@ -2,16 +2,15 @@ package handler
 
 import (
 	"fmt"
+	"github.com/zhxauda9/StayMate/internal/config"
+	l "github.com/zhxauda9/StayMate/internal/myLogger"
+	"github.com/zhxauda9/StayMate/internal/service"
+	"github.com/zhxauda9/StayMate/models"
 	"io"
 	"net/http"
 	"net/mail"
 	"strconv"
 	"text/template"
-
-	"github.com/zhxauda9/StayMate/internal/config"
-	l "github.com/zhxauda9/StayMate/internal/myLogger"
-	"github.com/zhxauda9/StayMate/internal/service"
-	"github.com/zhxauda9/StayMate/models"
 )
 
 type mailHandler struct {
@@ -103,7 +102,7 @@ func (h *mailHandler) SendMailHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Message field is missing", http.StatusBadRequest)
 		return
 	}
-
+	l.Log.Debug().Strs("emails", emails).Msg("Trying to send emails...")
 	err := h.mailService.Send(emails, subject[0], message[0], "", "", nil)
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Failed sending email")

@@ -20,9 +20,18 @@ type BookingServ interface {
 	DeleteBooking(id int) error
 }
 
+func NewBookingService(bookingRepo postgres.BookingRepo) BookingServ {
+	return &bookingService{bookingRepo: bookingRepo}
+}
+
 func (s *bookingService) CreateBooking(booking models.Booking) error {
 	if !s.bookingRepo.CheckUserExists(booking.UserID) {
+
 		return errors.New("user does not exist")
+	}
+
+	if !s.bookingRepo.CheckRoomExists(booking.RoomID) {
+		return errors.New("room does not exist")
 	}
 
 	if s.bookingRepo.BookingExists(booking.RoomID, booking.CheckIn, booking.CheckOut) {
@@ -30,10 +39,6 @@ func (s *bookingService) CreateBooking(booking models.Booking) error {
 	}
 
 	return s.bookingRepo.CreateBooking(booking)
-}
-
-func NewBookingService(bookingRepo postgres.BookingRepo) BookingServ {
-	return &bookingService{bookingRepo: bookingRepo}
 }
 
 func (s *bookingService) GetBookingByID(id int) (models.Booking, error) {
