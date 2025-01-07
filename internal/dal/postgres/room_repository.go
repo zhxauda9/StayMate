@@ -44,20 +44,18 @@ func (r *roomRepository) GetRoomByID(id int) (models.Room, error) {
 
 func (r *roomRepository) GetAllRooms(sort, filterStart, filterEnd string, limit, offset int) ([]models.Room, error) {
 	var rooms []models.Room
-	query := r.db
+	query := r.db.Model(&models.Room{})
+
+	if filterStart != "" && filterEnd != "" {
+		query = query.Where("price >= ? AND price <= ?", filterStart, filterEnd)
+	}
+
 	if sort != "" {
 		query = query.Order(sort)
 	}
-	if err := query.Limit(limit).Offset(offset).Find(&rooms).Error; err != nil {
-		return nil, fmt.Errorf("error fetching all rooms: %v", err)
-	}
 
-	query1 := r.db.Model(&models.Room{})
-	if filterStart != "" && filterEnd != "" {
-		query1 = query1.Where("price >= ? AND check_in <= ?", filterStart, filterEnd)
-	}
-	if err := query1.Find(&rooms).Error; err != nil {
-		return nil, fmt.Errorf("error fetching filtered rooms: %v", err)
+	if err := query.Limit(limit).Offset(offset).Find(&rooms).Error; err != nil {
+		return nil, fmt.Errorf("error fetching rooms: %v", err)
 	}
 
 	return rooms, nil

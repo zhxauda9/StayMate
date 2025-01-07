@@ -1,8 +1,18 @@
 const BASE_URL = 'http://localhost:8080';
 
-async function loadBookings(filterStart='',filterEnd='') {
+let currentPage = 1;
+const limit = 10;
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const currentPageSpan = document.getElementById("currentPage");
+
+function updateButtons() {
+    prevBtn.disabled = currentPage === 1;
+}
+
+async function loadBookings(filterStart='',filterEnd='',sort='') {
     try {
-        let url = `${BASE_URL}/bookings?filterStart=${filterStart}&filterEnd=${filterEnd}`;
+        let url = `${BASE_URL}/bookings?filterStart=${filterStart}&filterEnd=${filterEnd}&limit=${limit}&page=${currentPage}&sort=${sort}`;
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Не удалось загрузить бронирования.');
@@ -25,11 +35,26 @@ async function loadBookings(filterStart='',filterEnd='') {
         `;
             table.appendChild(row);
         });
+        currentPageSpan.textContent = `Page ${currentPage}`;
     } catch (error) {
         console.error(error);
         alert("Ошибка загрузки бронирований.");
     }
 }
+
+prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+        currentPage--;
+        loadBookings();
+        updateButtons();
+    }
+});
+
+nextBtn.addEventListener("click", () => {
+    currentPage++;
+    loadBookings();
+    updateButtons();
+});
 
 loadBookings();
 
@@ -37,8 +62,15 @@ document.getElementById('filter-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const filterStart = document.getElementById('filterStart').value.trim();
     const filterEnd=document.getElementById('filterEnd').value.trim();
-    loadBookings(filterStart,filterEnd);
+    loadBookings(filterStart,filterEnd,'');
 });
+
+document.getElementById('sort-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const sortSelect = document.getElementById('sort').value.trim();
+    loadBookings('', '', sortSelect);
+});
+
 
 function isValidDate(date) {
     return !isNaN(Date.parse(date));

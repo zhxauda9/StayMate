@@ -23,11 +23,9 @@ func NewMailHandler(mailService service.MailServiceImpl, userService service.Use
 	return &mailHandler{mailService: mailService, userService: userService}
 }
 
-// Serves template
 func (h *mailHandler) ServeMail(w http.ResponseWriter, r *http.Request) {
 	userIdParam := r.URL.Query().Get("userId")
 
-	// if parametr doesn't provided
 	if userIdParam == "" {
 		userIdParam = "1"
 	}
@@ -37,9 +35,14 @@ func (h *mailHandler) ServeMail(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
 		return
 	}
+	sort := r.URL.Query().Get("sort")
+	pageStr := r.URL.Query().Get("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
 
-	// Getting user
-	users, err := h.userService.GetAllUsers()
+	users, err := h.userService.GetAllUsers(sort, page)
 	if err != nil {
 		http.Error(w, "Could not get users", http.StatusInternalServerError)
 		return
