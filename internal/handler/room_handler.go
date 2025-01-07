@@ -54,7 +54,9 @@ func (h *roomHandler) PostRoom(w http.ResponseWriter, r *http.Request) {
 func (h *roomHandler) GetRooms(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to fetch all rooms.")
 
-	rooms, err := h.roomService.GetAllRooms()
+	sort := r.URL.Query().Get("sort")
+
+	rooms, err := h.roomService.GetAllRooms(sort)
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Error fetching rooms")
 		http.Error(w, "Error fetching rooms", http.StatusInternalServerError)
