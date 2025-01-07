@@ -14,9 +14,11 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
 - **[Temutjin Koszhanov](https://github.com/Temutjin2k)** (SE-2308) 👨🏻‍💻
 - **[Aida Zhalgassova](https://github.com/zhxauda9)** (SE-2307) 👩🏻‍💻
 
+## **Home Page** 🏠
+![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/home.png)
 
 ## **Admin Panel** 🛠️
-### **Bookings CRUD** 📅
+### **Bookings** 📅
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/booking.png)
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/booking_records.png)
 ### **Users** 👤
@@ -93,4 +95,4 @@ If you want to contribute to the project, feel free to fork the repository, make
 For questions or suggestions, feel free to reach out to us! We’d love to hear from you. 💬
 
 ---
-Stay Mate: Simplifying hotel management with smart technology. 🌟
+Stay Mate: Simplifying hotel management for you. 🌟
