@@ -40,29 +40,31 @@ func InitServer() (*http.ServeMux, error) {
 	// Serves home page
 	mux.HandleFunc("/", serveHTML)
 
-	rateLimitter := rate.NewLimiter(1, 3)                                  // Rate limit of 1 request per second with a burst of 3 requests
-	limiterMiddlware := middleware.RateLimiterMiddlewareFunc(rateLimitter) // Middleware Function to wrap handlers
+	rateLimitter := rate.NewLimiter(1, 3)                                 // Rate limit of 1 request per second with a burst of 3 requests
+	limitMiddleware := middleware.RateLimiterMiddlewareFunc(rateLimitter) // Middleware Function to rate limit handlers
+	logMiddleware := middleware.LoggingMiddlewareFunc(l.Log)              // Middleware Function for logging
+
 	// Init booking service
 	booking_repo := dalpostgres.NewBookingRepository(db)
 	booking_service := service.NewBookingService(booking_repo)
 	booking_handler := handler.NewBookingHandler(booking_service)
 
-	mux.Handle("POST /bookings", limiterMiddlware(http.HandlerFunc(booking_handler.PostBooking)))
-	mux.Handle("GET /bookings", limiterMiddlware(http.HandlerFunc(booking_handler.GetBookings)))
-	mux.Handle("GET /bookings/{id}", limiterMiddlware(http.HandlerFunc(booking_handler.GetBooking)))
-	mux.Handle("PUT /bookings/{id}", limiterMiddlware(http.HandlerFunc(booking_handler.PutBooking)))
-	mux.Handle("DELETE /bookings/{id}", limiterMiddlware(http.HandlerFunc(booking_handler.DeleteBooking)))
+	mux.Handle("POST /bookings", logMiddleware(limitMiddleware(http.HandlerFunc(booking_handler.PostBooking))))
+	mux.Handle("GET /bookings", logMiddleware(limitMiddleware(http.HandlerFunc(booking_handler.GetBookings))))
+	mux.Handle("GET /bookings/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(booking_handler.GetBooking))))
+	mux.Handle("PUT /bookings/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(booking_handler.PutBooking))))
+	mux.Handle("DELETE /bookings/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(booking_handler.DeleteBooking))))
 
 	// Init user service
 	user_repo := dalpostgres.NewUserRepository(db)
 	user_service := service.NewUserService(user_repo)
 	user_handler := handler.NewUserHandler(user_service)
 
-	mux.Handle("POST /users", limiterMiddlware(http.HandlerFunc(user_handler.CreateUser)))
-	mux.Handle("GET /users", limiterMiddlware(http.HandlerFunc(user_handler.GetUsers)))
-	mux.Handle("GET /users/{id}", limiterMiddlware(http.HandlerFunc(user_handler.GetUserByID)))
-	mux.Handle("PUT /users/{id}", limiterMiddlware(http.HandlerFunc(user_handler.UpdateUser)))
-	mux.Handle("DELETE /users/{id}", limiterMiddlware(http.HandlerFunc(user_handler.DeleteUser)))
+	mux.Handle("POST /users", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.CreateUser))))
+	mux.Handle("GET /users", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.GetUsers))))
+	mux.Handle("GET /users/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.GetUserByID))))
+	mux.Handle("PUT /users/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.UpdateUser))))
+	mux.Handle("DELETE /users/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(user_handler.DeleteUser))))
 
 	// Init Mailing service
 	smtpHost := os.Getenv("SMTP_HOST")
@@ -75,9 +77,9 @@ func InitServer() (*http.ServeMux, error) {
 	}
 	mail_handler := handler.NewMailHandler(mailServ, user_service)
 
-	mux.Handle("GET /mail", limiterMiddlware(http.HandlerFunc(mail_handler.ServeMail)))
-	mux.Handle("POST /api/mail", limiterMiddlware(http.HandlerFunc(mail_handler.SendMailHandler)))
-	mux.Handle("POST /api/mailFile", limiterMiddlware(http.HandlerFunc(mail_handler.SendMailFileHandler)))
+	mux.Handle("GET /mail", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.ServeMail))))
+	mux.Handle("POST /api/mail", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.SendMailHandler))))
+	mux.Handle("POST /api/mailFile", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.SendMailFileHandler))))
 
 	return mux, nil
 }
