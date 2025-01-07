@@ -56,7 +56,16 @@ func (h *userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (h *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to fetch all users")
 
-	users, err := h.userService.GetAllUsers()
+	filterStart := r.URL.Query().Get("filterStart")
+	filterEnd := r.URL.Query().Get("filterEnd")
+	sort := r.URL.Query().Get("sort")
+	pageStr := r.URL.Query().Get("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	users, err := h.userService.GetAllUsers(sort, filterStart, filterEnd, page)
 	if err != nil {
 		l.Log.Error().Msg(fmt.Sprintf("Error fetching users: %v", err))
 		http.Error(w, fmt.Sprintf("Error fetching users: %v", err), http.StatusInternalServerError)

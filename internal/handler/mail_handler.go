@@ -2,15 +2,16 @@ package handler
 
 import (
 	"fmt"
-	"github.com/zhxauda9/StayMate/internal/config"
-	l "github.com/zhxauda9/StayMate/internal/myLogger"
-	"github.com/zhxauda9/StayMate/internal/service"
-	"github.com/zhxauda9/StayMate/models"
 	"io"
 	"net/http"
 	"net/mail"
 	"strconv"
 	"text/template"
+
+	"github.com/zhxauda9/StayMate/internal/config"
+	l "github.com/zhxauda9/StayMate/internal/myLogger"
+	"github.com/zhxauda9/StayMate/internal/service"
+	"github.com/zhxauda9/StayMate/models"
 )
 
 type mailHandler struct {
@@ -37,7 +38,7 @@ func (h *mailHandler) ServeMail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//Getting user
+	// Getting user
 	users, err := h.userService.GetAllUsers()
 	if err != nil {
 		http.Error(w, "Could not get users", http.StatusInternalServerError)

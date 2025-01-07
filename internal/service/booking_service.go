@@ -15,10 +15,9 @@ type bookingService struct {
 type BookingServ interface {
 	CreateBooking(booking models.Booking) error
 	GetBookingByID(id int) (models.Booking, error)
-	GetAllBookings() ([]models.Booking, error)
+	GetAllBookings(sort, filterStart, filterEnd string, page int) ([]models.Booking, error)
 	UpdateBooking(id int, booking models.Booking) error
 	DeleteBooking(id int) error
-	GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error)
 }
 
 func NewBookingService(bookingRepo postgres.BookingRepo) BookingServ {
@@ -27,7 +26,6 @@ func NewBookingService(bookingRepo postgres.BookingRepo) BookingServ {
 
 func (s *bookingService) CreateBooking(booking models.Booking) error {
 	if !s.bookingRepo.CheckUserExists(booking.UserID) {
-
 		return errors.New("user does not exist")
 	}
 
@@ -50,14 +48,6 @@ func (s *bookingService) GetBookingByID(id int) (models.Booking, error) {
 	return booking, nil
 }
 
-func (s *bookingService) GetAllBookings() ([]models.Booking, error) {
-	bookings, err := s.bookingRepo.GetAllBookings()
-	if err != nil {
-		return nil, fmt.Errorf("error in service layer while fetching all bookings: %v", err)
-	}
-	return bookings, nil
-}
-
 func (s *bookingService) UpdateBooking(id int, booking models.Booking) error {
 	err := s.bookingRepo.UpdateBooking(id, booking)
 	if err != nil {
@@ -74,8 +64,11 @@ func (s *bookingService) DeleteBooking(id int) error {
 	return nil
 }
 
-func (s *bookingService) GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error) {
-	bookings, err := s.bookingRepo.GetBookingsFiltered(filterStart, filterEnd)
+func (s *bookingService) GetAllBookings(sort, filterStart, filterEnd string, page int) ([]models.Booking, error) {
+	const limit = 10
+	offset := (page - 1) * limit
+
+	bookings, err := s.bookingRepo.GetAllBookings(sort, filterStart, filterEnd, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching filtered bookings: %v", err)
 	}
