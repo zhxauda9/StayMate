@@ -29,8 +29,7 @@ func LoggingMiddleware(next http.Handler, logger *zerolog.Logger) http.Handler {
 		if responseWriter.status == 0 {
 			responseWriter.status = 200
 		}
-		duration :=
-			logger.Info().Str("method", r.Method).Str("path", r.URL.Path).Int("status", responseWriter.status).Int64("duration(ms)", time.Since(start).Milliseconds()).Msg("Request processed")
+		logger.Info().Str("method", r.Method).Str("path", r.URL.Path).Int("status", responseWriter.status).Int64("duration(ms)", time.Since(start).Milliseconds()).Str("IP", r.RemoteAddr).Msg("Request processed")
 	})
 }
 

@@ -11,6 +11,7 @@ import (
 func RateLimiterMiddleware(next http.Handler, limiter *rate.Limiter) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !limiter.Allow() {
+			myLogger.Log.Debug().Str("IP", r.RemoteAddr).Msg("Rate limit exceeded")
 			http.Error(w, "Rate limit exceeded", http.StatusTooManyRequests)
 			return
 		}
@@ -21,14 +22,7 @@ func RateLimiterMiddleware(next http.Handler, limiter *rate.Limiter) http.Handle
 // Returns function that add middleware with Rate Limit
 func RateLimiterMiddlewareFunc(limiter *rate.Limiter) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if !limiter.Allow() {
-				myLogger.Log.Debug().Str("IP", r.RemoteAddr).Int("Status Code", http.StatusTooManyRequests).Msg("Rate limit exceeded")
-				http.Error(w, "Rate limit exceeded", http.StatusTooManyRequests)
-				return
-			}
-			next.ServeHTTP(w, r)
-		})
+		return RateLimiterMiddleware(next, limiter)
 	}
 }
 
