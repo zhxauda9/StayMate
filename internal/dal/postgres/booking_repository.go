@@ -16,6 +16,7 @@ type BookingRepo interface {
 	CheckUserExists(userID int) bool
 	CheckRoomExists(roomID int) bool
 	BookingExists(roomID int, checkIn, checkOut string) bool
+	GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error)
 }
 
 type bookingRepository struct {
@@ -98,4 +99,17 @@ func (r *bookingRepository) DeleteBooking(id int) error {
 		return fmt.Errorf("error deleting booking: %v", err)
 	}
 	return nil
+}
+
+// repository.go
+func (r *bookingRepository) GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error) {
+	var bookings []models.Booking
+	query := r.db.Model(&models.Booking{})
+	if filterStart != "" && filterEnd != "" {
+		query = query.Where("check_in >= ? AND check_in <= ?", filterStart, filterEnd)
+	}
+	if err := query.Find(&bookings).Error; err != nil {
+		return nil, fmt.Errorf("error fetching filtered bookings: %v", err)
+	}
+	return bookings, nil
 }

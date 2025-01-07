@@ -1,12 +1,12 @@
 const BASE_URL = 'http://localhost:8080';
 
-async function loadBookings() {
+async function loadBookings(filterStart='',filterEnd='') {
     try {
-        const response = await fetch(`${BASE_URL}/bookings`);
+        let url = `${BASE_URL}/bookings?filterStart=${filterStart}&filterEnd=${filterEnd}`;
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Не удалось загрузить бронирования.');
         }
-
         const bookings = await response.json();
         const table = document.getElementById('bookings-table');
         table.innerHTML = '';
@@ -32,6 +32,13 @@ async function loadBookings() {
 }
 
 loadBookings();
+
+document.getElementById('filter-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const filterStart = document.getElementById('filterStart').value.trim();
+    const filterEnd=document.getElementById('filterEnd').value.trim();
+    loadBookings(filterStart,filterEnd);
+});
 
 function isValidDate(date) {
     return !isNaN(Date.parse(date));

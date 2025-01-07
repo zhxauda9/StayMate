@@ -41,7 +41,18 @@
             </form>
         </section>
 
-        <!-- Bookings Table -->
+        <section id="filter-section" class="my-4 p-3 rounded">
+            <h2>Filter Bookings</h2>
+            <form id="filter-form">
+                <div class="form-group">
+                    <h1>Search Bookings:</h1>
+                    <input type="text" id="filterStart" class="form-control" placeholder="Enter start date">
+                    <input type="text" id="filterEnd" class="form-control" placeholder="Enter end date">
+                </div>
+                <button type="submit" class="btn btn-secondary">Apply Filter</button>
+            </form>
+        </section>
+
         <section id="bookings" class="my-4 p-4 rounded">
             <h2>Bookings</h2>
             <table class="table table-hover text-center">

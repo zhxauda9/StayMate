@@ -18,6 +18,7 @@ type BookingServ interface {
 	GetAllBookings() ([]models.Booking, error)
 	UpdateBooking(id int, booking models.Booking) error
 	DeleteBooking(id int) error
+	GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error)
 }
 
 func NewBookingService(bookingRepo postgres.BookingRepo) BookingServ {
@@ -71,4 +72,12 @@ func (s *bookingService) DeleteBooking(id int) error {
 		return fmt.Errorf("error in service layer while deleting booking: %v", err)
 	}
 	return nil
+}
+
+func (s *bookingService) GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error) {
+	bookings, err := s.bookingRepo.GetBookingsFiltered(filterStart, filterEnd)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching filtered bookings: %v", err)
+	}
+	return bookings, nil
 }
