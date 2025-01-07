@@ -59,7 +59,14 @@ func (h *bookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
 
 	filterStart := r.URL.Query().Get("filterStart")
 	filterEnd := r.URL.Query().Get("filterEnd")
-	bookings, err := h.bookingService.GetBookingsFiltered(filterStart, filterEnd)
+	sort := r.URL.Query().Get("sort")
+	pageStr := r.URL.Query().Get("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	bookings, err := h.bookingService.GetAllBookings(sort, filterStart, filterEnd, page)
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Error fetching bookings")
 		http.Error(w, "Error fetching bookings", http.StatusInternalServerError)

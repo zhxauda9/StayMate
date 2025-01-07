@@ -10,13 +10,12 @@ import (
 type BookingRepo interface {
 	CreateBooking(booking models.Booking) error
 	GetBookingByID(id int) (models.Booking, error)
-	GetAllBookings() ([]models.Booking, error)
+	GetAllBookings(sort, filterStart, filterEnd string, limit, offset int) ([]models.Booking, error)
 	UpdateBooking(id int, booking models.Booking) error
 	DeleteBooking(id int) error
 	CheckUserExists(userID int) bool
 	CheckRoomExists(roomID int) bool
 	BookingExists(roomID int, checkIn, checkOut string) bool
-	GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error)
 }
 
 type bookingRepository struct {
@@ -43,14 +42,6 @@ func (r *bookingRepository) GetBookingByID(id int) (models.Booking, error) {
 		return models.Booking{}, fmt.Errorf("error fetching booking by ID: %v", err)
 	}
 	return booking, nil
-}
-
-func (r *bookingRepository) GetAllBookings() ([]models.Booking, error) {
-	var bookings []models.Booking
-	if err := r.db.Find(&bookings).Error; err != nil {
-		return nil, fmt.Errorf("error fetching all bookings: %v", err)
-	}
-	return bookings, nil
 }
 
 func (r *bookingRepository) CheckUserExists(userID int) bool {
@@ -101,8 +92,7 @@ func (r *bookingRepository) DeleteBooking(id int) error {
 	return nil
 }
 
-// repository.go
-func (r *bookingRepository) GetBookingsFiltered(filterStart string, filterEnd string) ([]models.Booking, error) {
+func (r *bookingRepository) GetAllBookings(sort, filterStart, filterEnd string, limit, offset int) ([]models.Booking, error) {
 	var bookings []models.Booking
 	query := r.db.Model(&models.Booking{})
 	if filterStart != "" && filterEnd != "" {
@@ -110,6 +100,14 @@ func (r *bookingRepository) GetBookingsFiltered(filterStart string, filterEnd st
 	}
 	if err := query.Find(&bookings).Error; err != nil {
 		return nil, fmt.Errorf("error fetching filtered bookings: %v", err)
+	}
+
+	query1 := r.db
+	if sort != "" {
+		query1 = query1.Order(sort)
+	}
+	if err := query1.Limit(limit).Offset(offset).Find(&bookings).Error; err != nil {
+		return nil, fmt.Errorf("error fetching all bookings: %v", err)
 	}
 	return bookings, nil
 }

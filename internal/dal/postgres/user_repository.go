@@ -11,7 +11,7 @@ import (
 type UserRepo interface {
 	CreateUser(user models.User) error
 	GetUserByID(id int) (models.User, error)
-	GetAllUsers() ([]models.User, error)
+	GetAllUsers(sort, filterStart, filterEnd string, limit, offset int) ([]models.User, error)
 	UpdateUser(id int, user models.User) error
 	DeleteUser(id int) error
 }
@@ -45,11 +45,24 @@ func (r *userRepository) GetUserByID(id int) (models.User, error) {
 	return user, nil
 }
 
-func (r *userRepository) GetAllUsers() ([]models.User, error) {
+func (r *userRepository) GetAllUsers(sort, filterStart, filterEnd string, limit, offset int) ([]models.User, error) {
 	var users []models.User
-	if err := r.db.Find(&users).Error; err != nil {
+	query := r.db
+	if sort != "" {
+		query = query.Order(sort)
+	}
+	if err := query.Limit(limit).Offset(offset).Find(&users).Error; err != nil {
 		return nil, fmt.Errorf("error fetching all users: %v", err)
 	}
+
+	query1 := r.db.Model(&models.User{})
+	if filterStart != "" && filterEnd != "" {
+		query1 = query1.Where("price >= ? AND check_in <= ?", filterStart, filterEnd)
+	}
+	if err := query1.Find(&users).Error; err != nil {
+		return nil, fmt.Errorf("error fetching filtered users: %v", err)
+	}
+
 	return users, nil
 }
 

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/models"
@@ -10,7 +11,7 @@ import (
 type UserService interface {
 	CreateUser(user models.User) error
 	GetUserByID(id int) (models.User, error)
-	GetAllUsers() ([]models.User, error)
+	GetAllUsers(sort, filterStart, filterEnd string, page int) ([]models.User, error)
 	UpdateUser(id int, user models.User) error
 	DeleteUser(id int) error
 }
@@ -34,8 +35,16 @@ func (s *userService) GetUserByID(id int) (models.User, error) {
 	return s.repo.GetUserByID(id)
 }
 
-func (s *userService) GetAllUsers() ([]models.User, error) {
-	return s.repo.GetAllUsers()
+func (s *userService) GetAllUsers(sort, filterStart, filterEnd string, page int) ([]models.User, error) {
+	const limit = 10
+	offset := (page - 1) * limit
+
+	users, err := s.repo.GetAllUsers(sort, filterStart, filterEnd, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("error in service layer while fetching all users: %v", err)
+	}
+
+	return users, nil
 }
 
 func (s *userService) UpdateUser(id int, user models.User) error {

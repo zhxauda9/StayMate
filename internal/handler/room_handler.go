@@ -2,12 +2,13 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+	"strconv"
+
 	"github.com/go-playground/validator/v10"
 	l "github.com/zhxauda9/StayMate/internal/myLogger"
 	"github.com/zhxauda9/StayMate/internal/service"
 	"github.com/zhxauda9/StayMate/models"
-	"net/http"
-	"strconv"
 )
 
 type roomHandler struct {
@@ -54,15 +55,16 @@ func (h *roomHandler) PostRoom(w http.ResponseWriter, r *http.Request) {
 func (h *roomHandler) GetRooms(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to fetch all rooms.")
 
+	filterStart := r.URL.Query().Get("filterStart")
+	filterEnd := r.URL.Query().Get("filterEnd")
 	sort := r.URL.Query().Get("sort")
 	pageStr := r.URL.Query().Get("page")
-
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page < 1 {
 		page = 1
 	}
 
-	rooms, err := h.roomService.GetAllRooms(sort, page)
+	rooms, err := h.roomService.GetAllRooms(sort, filterStart, filterEnd, page)
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Error fetching rooms")
 		http.Error(w, "Error fetching rooms", http.StatusInternalServerError)

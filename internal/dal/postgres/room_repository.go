@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+
 	"github.com/zhxauda9/StayMate/models"
 	"gorm.io/gorm"
 )
@@ -9,7 +10,7 @@ import (
 type RoomRepo interface {
 	CreateRoom(room models.Room) error
 	GetRoomByID(id int) (models.Room, error)
-	GetAllRooms(sort string, limit, offset int) ([]models.Room, error)
+	GetAllRooms(sort, filterStart, filterEnd string, limit, offset int) ([]models.Room, error)
 	UpdateRoom(id int, room models.Room) error
 	DeleteRoom(id int) error
 	RoomExists(roomID int) bool
@@ -41,16 +42,22 @@ func (r *roomRepository) GetRoomByID(id int) (models.Room, error) {
 	return room, nil
 }
 
-func (r *roomRepository) GetAllRooms(sort string, limit, offset int) ([]models.Room, error) {
+func (r *roomRepository) GetAllRooms(sort, filterStart, filterEnd string, limit, offset int) ([]models.Room, error) {
 	var rooms []models.Room
 	query := r.db
-
 	if sort != "" {
 		query = query.Order(sort)
 	}
-
 	if err := query.Limit(limit).Offset(offset).Find(&rooms).Error; err != nil {
 		return nil, fmt.Errorf("error fetching all rooms: %v", err)
+	}
+
+	query1 := r.db.Model(&models.Room{})
+	if filterStart != "" && filterEnd != "" {
+		query1 = query1.Where("price >= ? AND check_in <= ?", filterStart, filterEnd)
+	}
+	if err := query1.Find(&rooms).Error; err != nil {
+		return nil, fmt.Errorf("error fetching filtered rooms: %v", err)
 	}
 
 	return rooms, nil
