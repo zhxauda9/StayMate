@@ -46,7 +46,7 @@ func InitServer() (*http.ServeMux, error) {
 	// Serves home page
 	mux.HandleFunc("/", serveHTML)
 
-	rateLimitter := rate.NewLimiter(1, 3)                                 // Rate limit of 1 request per second with a burst of 3 requests
+	rateLimitter := rate.NewLimiter(1, 1)                                 // Rate limit of 1 request per second with a burst of 3 requests
 	limitMiddleware := middleware.RateLimiterMiddlewareFunc(rateLimitter) // Middleware Function to rate limit handlers
 	logMiddleware := middleware.LoggingMiddlewareFunc(l.Log)              // Middleware Function for logging
 

@@ -18,7 +18,10 @@ const address = "127.0.0.1:8080"
 func InitApp() {
 	// Load environment variables and initialize logger
 	config.LoadEnvVariables()
-	l.Log = l.NewZeroLogger()
+	l.Log = l.NewZeroLoggerV2()
+	if l.Log == nil {
+		return
+	}
 	l.Log.Info().Msg("Starting the application. Trying to initialize server...")
 
 	mux, err := server.InitServer()
