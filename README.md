@@ -30,7 +30,7 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/rooms_records.png)
 
 ### **Email sending** 📧
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/emailSend.png)
+![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/email.png)
 
 ## **Technologies Used** 🛠️
 - **Programming Language**: Go (Golang) 1.22.3 🖥️

@@ -36,7 +36,7 @@ func (s *userService) GetUserByID(id int) (models.User, error) {
 }
 
 func (s *userService) GetAllUsers(sort string, page int) ([]models.User, error) {
-	const limit = 10
+	const limit = 50
 	offset := (page - 1) * limit
 
 	users, err := s.repo.GetAllUsers(sort, limit, offset)
