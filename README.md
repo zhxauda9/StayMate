@@ -19,14 +19,14 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
 
 ## **Admin Panel** 🛠️
 ### **Bookings** 📅
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/booking.png)
+![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/booking.pn)
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/booking_records.png)
 ### **Users** 👤
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/users.png)
+![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/users.pn)
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/users_records.png)
 
 ### **Rooms** 🛏️
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/rooms.png)
+![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/rooms.pn)
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/rooms_records.png)
 
 ### **Email sending** 📧
