@@ -13,7 +13,7 @@ import (
 	"github.com/zhxauda9/StayMate/internal/server"
 )
 
-const address = "127.0.0.1:8080"
+const address = ":8080"
 
 func InitApp() {
 	// Load environment variables and initialize logger

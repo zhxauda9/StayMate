@@ -1,8 +1,6 @@
-const BASE_URL = 'http://localhost:8080'; // Backend server URL
-
 async function loadUsers() {
     try {
-        const response = await fetch(`${BASE_URL}/users`);
+        const response = await fetch(`/users`);
         const users = await response.json();
         const table = document.getElementById('users-table');
         table.innerHTML = '';
@@ -38,7 +36,7 @@ document.getElementById('create-user-form').addEventListener('submit', async (e)
     };
 
     try {
-        const response = await fetch(`${BASE_URL}/users`, {
+        const response = await fetch(`/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user),
@@ -59,7 +57,7 @@ document.getElementById('create-user-form').addEventListener('submit', async (e)
 
 async function deleteUser(id) {
     if (confirm("Are you sure you want to delete the user?")) {
-        await fetch(`${BASE_URL}/users/${id}`, { method: 'DELETE' });
+        await fetch(`/users/${id}`, { method: 'DELETE' });
         alert("User deleted.")
         loadUsers();
     } else {
@@ -73,7 +71,7 @@ async function updateUser(id) {
     const email = prompt('Enter new email:');
     const status=prompt('Enter new status:');
     if (!name || !email) return;
-    await fetch(`${BASE_URL}/users/${id}`, {
+    await fetch(`/users/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email,status }),
@@ -88,7 +86,7 @@ document.getElementById('search-user-form').addEventListener('submit', async (e)
     resultDiv.innerHTML = '';
 
     try {
-        const response = await fetch(`${BASE_URL}/users/${userId}`);
+        const response = await fetch(`/users/${userId}`);
         if (!response.ok) throw new Error('User not found.');
         const user = await response.json();
 

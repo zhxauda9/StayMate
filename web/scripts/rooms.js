@@ -1,5 +1,3 @@
-const BASE_URL = 'http://localhost:8080';
-
 let currentPage = 1;
 const limit = 10;
 const prevBtn = document.getElementById("prevBtn");
@@ -13,7 +11,7 @@ function updateButtons() {
 
 async function loadRooms(filterStart='',filterEnd='',sort='') {
     try {
-        let url = `${BASE_URL}/rooms?filterStart=${filterStart}&filterEnd=${filterEnd}&limit=${limit}&page=${currentPage}&sort=${sort}`;
+        let url = `/rooms?filterStart=${filterStart}&filterEnd=${filterEnd}&limit=${limit}&page=${currentPage}&sort=${sort}`;
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Failed to load rooms');
@@ -92,7 +90,7 @@ document.getElementById('create-room-form').addEventListener('submit', async (e)
     };
 
     try {
-        const response = await fetch(`${BASE_URL}/rooms`, {
+        const response = await fetch(`/rooms`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(room),
@@ -113,7 +111,7 @@ document.getElementById('create-room-form').addEventListener('submit', async (e)
 async function deleteRoom(id) {
     if (confirm("Are you sure you want to delete the room?")) {
         try {
-            const response = await fetch(`${BASE_URL}/rooms/${id}`, { method: 'DELETE' });
+            const response = await fetch(`/rooms/${id}`, { method: 'DELETE' });
 
             if (!response.ok) {
                 throw new Error('Failed to delete room.');
@@ -148,7 +146,7 @@ async function updateRoom(id) {
     };
 
     try {
-        const response = await fetch(`${BASE_URL}/rooms/${id}`, {
+        const response = await fetch(`/rooms/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(room),

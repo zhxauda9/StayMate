@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_USER=hoteladmin
+      - DB_PASSWORD=hotelpass
+      - DB_NAME=hoteldb
+      - DB_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=hoteladmin
+      - POSTGRES_PASSWORD=hotelpass
+      - POSTGRES_DB=hoteldb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hoteladmin -d hoteldb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

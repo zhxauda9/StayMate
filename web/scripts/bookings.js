@@ -1,5 +1,3 @@
-const BASE_URL = 'http://localhost:8080';
-
 let currentPage = 1;
 const limit = 10;
 const prevBtn = document.getElementById("prevBtn");
@@ -12,7 +10,7 @@ function updateButtons() {
 
 async function loadBookings(filterStart='',filterEnd='',sort='') {
     try {
-        let url = `${BASE_URL}/bookings?filterStart=${filterStart}&filterEnd=${filterEnd}&limit=${limit}&page=${currentPage}&sort=${sort}`;
+        let url = `/bookings?filterStart=${filterStart}&filterEnd=${filterEnd}&limit=${limit}&page=${currentPage}&sort=${sort}`;
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Не удалось загрузить бронирования.');
@@ -97,7 +95,7 @@ document.getElementById('create-booking-form').addEventListener('submit', async 
     };
 
     try {
-        const response = await fetch(`${BASE_URL}/bookings`, {
+        const response = await fetch(`/bookings`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(booking),
@@ -118,7 +116,7 @@ document.getElementById('create-booking-form').addEventListener('submit', async 
 async function deleteBooking(id) {
     if (confirm("Are you sure you want to delete the booking?")) {
         try {
-            const response = await fetch(`${BASE_URL}/bookings/${id}`, { method: 'DELETE' });
+            const response = await fetch(`/bookings/${id}`, { method: 'DELETE' });
 
             if (!response.ok) {
                 throw new Error('Failed to delete booking.');
@@ -154,7 +152,7 @@ async function updateBooking(id) {
     };
 
     try {
-        const response = await fetch(`${BASE_URL}/bookings/${id}`, {
+        const response = await fetch(`/bookings/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(booking),
