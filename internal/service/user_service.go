@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/zhxauda9/StayMate/internal/dal/postgres"
@@ -42,6 +43,7 @@ func (s *userService) CreateUser(user models.User) error {
 	user.Password = string(hashedPassword)
 	return s.repo.CreateUser(user)
 }
+
 func (s *userService) GetUserByEmail(email string) (models.User, error) {
 	return s.repo.GetUserByEmail(email)
 }

@@ -30,7 +30,7 @@ func NewZeroLogger() *zerolog.Logger {
 }
 
 func NewZeroLoggerV2() *zerolog.Logger {
-	file, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	file, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o666)
 	if err != nil {
 		// Fall back to only logging to stderr if the file cannot be opened
 		logWriter := zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339}
