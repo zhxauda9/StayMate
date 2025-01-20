@@ -4,9 +4,10 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/zhxauda9/StayMate/internal/service"
 	"github.com/zhxauda9/StayMate/models"
-	"net/http"
 )
 
 type authHandler struct {
@@ -54,10 +55,10 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 		Name:     "Authorization",
 		Value:    token,
 		Path:     "/",
-		HttpOnly: true,                 // Секретность куки
-		Secure:   false,                // Установите в true для https
-		SameSite: http.SameSiteLaxMode, // Логика безопасности
-		MaxAge:   3600 * 24 * 30,       // Время жизни куки (30 дней)
+		HttpOnly: true,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   3600 * 24 * 30,
 	})
 
 	w.Header().Set("Content-Type", "application/json")

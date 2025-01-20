@@ -2,10 +2,11 @@ package service
 
 import (
 	"errors"
-	"github.com/golang-jwt/jwt"
-	"golang.org/x/crypto/bcrypt"
 	"os"
 	"time"
+
+	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/zhxauda9/StayMate/models"
 )
@@ -62,7 +63,6 @@ func (s *authService) ValidateToken(tokenString string) (bool, error) {
 		}
 		return []byte(os.Getenv("SECRET")), nil
 	})
-
 	if err != nil {
 		return false, err
 	}

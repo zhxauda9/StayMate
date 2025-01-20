@@ -39,7 +39,6 @@ func (r *userRepository) GetUserByID(id int) (models.User, error) {
 	var user models.User
 	if err := r.db.First(&user, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-
 			return models.User{}, fmt.Errorf("user with ID %d not found", id)
 		}
 		return models.User{}, fmt.Errorf("error fetching user by ID: %v", err)
