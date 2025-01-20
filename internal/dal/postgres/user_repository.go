@@ -11,6 +11,7 @@ import (
 type UserRepo interface {
 	CreateUser(user models.User) error
 	GetUserByID(id int) (models.User, error)
+	GetUserByEmail(email string) (models.User, error)
 	GetAllUsers(sort string, limit, offset int) ([]models.User, error)
 	UpdateUser(id int, user models.User) error
 	DeleteUser(id int) error
@@ -38,9 +39,21 @@ func (r *userRepository) GetUserByID(id int) (models.User, error) {
 	var user models.User
 	if err := r.db.First(&user, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
+
 			return models.User{}, fmt.Errorf("user with ID %d not found", id)
 		}
 		return models.User{}, fmt.Errorf("error fetching user by ID: %v", err)
+	}
+	return user, nil
+}
+
+func (r *userRepository) GetUserByEmail(email string) (models.User, error) {
+	var user models.User
+	if err := r.db.First(&user, "email=?", email).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return models.User{}, errors.New("user not found")
+		}
+		return models.User{}, err
 	}
 	return user, nil
 }

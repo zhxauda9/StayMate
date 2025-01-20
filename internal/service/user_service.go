@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/models"
@@ -11,6 +12,7 @@ import (
 type UserService interface {
 	CreateUser(user models.User) error
 	GetUserByID(id int) (models.User, error)
+	GetUserByEmail(email string) (models.User, error)
 	GetAllUsers(sort string, page int) ([]models.User, error)
 	UpdateUser(id int, user models.User) error
 	DeleteUser(id int) error
@@ -25,10 +27,23 @@ func NewUserService(repo postgres.UserRepo) UserService {
 }
 
 func (s *userService) CreateUser(user models.User) error {
+	var err error
+	existingUser, _ := s.repo.GetUserByEmail(user.Email)
+	if existingUser.ID != 0 {
+		return errors.New("email already exists")
+	}
 	if user.Name == "" || user.Email == "" || user.Status == "" {
 		return errors.New("name and email cannot be empty")
 	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
 	return s.repo.CreateUser(user)
+}
+func (s *userService) GetUserByEmail(email string) (models.User, error) {
+	return s.repo.GetUserByEmail(email)
 }
 
 func (s *userService) GetUserByID(id int) (models.User, error) {
