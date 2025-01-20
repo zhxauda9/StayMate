@@ -16,14 +16,15 @@ import (
 const address = ":8080"
 
 func InitApp() {
-	// Load environment variables and initialize logger
-	config.LoadEnvVariables()
 	l.Log = l.NewZeroLoggerV2()
 	if l.Log == nil {
 		return
 	}
-	l.Log.Info().Msg("Starting the application. Trying to initialize server...")
 
+	// Load environment variables and initialize logger
+	config.LoadEnvVariables()
+
+	l.Log.Info().Msg("Starting the application. Trying to initialize server...")
 	mux, err := server.InitServer()
 	if err != nil {
 		l.Log.Fatal().Err(err).Msg("Error initializing server")
