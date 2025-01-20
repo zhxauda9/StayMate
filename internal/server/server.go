@@ -82,16 +82,23 @@ func InitServer() (*http.ServeMux, error) {
 	mux.Handle("PUT /rooms/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.PutRoom))))
 	mux.Handle("DELETE /rooms/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.DeleteRoom))))
 
+	authService := service.NewAuthService(user_service)
+	authHandler := handler.NewAuthHandler(authService)
+
+	mux.Handle("POST /register", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Register))))
+	mux.Handle("POST /login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
+	mux.Handle("GET /validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken))))
+
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")
 	email := os.Getenv("EMAIL")
 	password := os.Getenv("PASSWORD")
+
 	mailServ, err := service.NewMailService(smtpHost, smtpPort, email, password)
 	if err != nil {
 		os.Exit(1)
 	}
 	mail_handler := handler.NewMailHandler(mailServ, user_service)
-
 	mux.Handle("GET /mail", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.ServeMail))))
 	mux.Handle("POST /api/mail", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.SendMailHandler))))
 	mux.Handle("POST /api/mailFile", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.SendMailFileHandler))))
