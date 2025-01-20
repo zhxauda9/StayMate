@@ -1,9 +1,8 @@
 package config
 
 import (
-	"log"
-
 	"github.com/joho/godotenv"
+	"github.com/zhxauda9/StayMate/internal/myLogger"
 )
 
 var AvailiableMimeTypes = map[string]bool{
@@ -16,6 +15,6 @@ var AvailiableMimeTypes = map[string]bool{
 func LoadEnvVariables() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+		myLogger.Log.Warn().Err(err).Msg("Could not load environment variables")
 	}
 }
