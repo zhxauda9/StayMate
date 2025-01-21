@@ -3,9 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Register</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8f1e4; /* Нежный бежевый */
+            color: #4a3323; /* Коричневый текст */
+            margin: 0;
+            padding: 0;
+            padding-top: 80px; /* Для фиксированного хедера */
+        }
+
+        /* Хедер */
+        header {
+            border-bottom: 1px solid #e6dbc9; /* Тонкая линия внизу */
+        }
+
+        /* Секция регистрации */
+        #register-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-wrapper {
+            max-width: 780px;
+            width: 550px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e6dbc9;
+        }
+
+        h2 {
+            color: #7b4d29; /* Тёплый коричневый для заголовка */
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input {
+            border: 1px solid #d3c5b3;
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            border-radius: 8px;
+            background-color: #fdfaf5;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #a3835a;
+        }
+
+        button {
+            background: #7b4d29;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #5a3820;
+        }
+
+    </style>
 </head>
 <body>
-    
+<header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="logo font-weight-bold h4 mb-0">StayMate</div>
+        <div class="d-flex align-items-center">
+            <a href="#" aria-label="Facebook">
+                <img class="ml-2" src="pictures/icons/icons8-facebook-новый-100 (1).png" width="20" height="20" alt="Facebook">
+            </a>
+            <a href="#" aria-label="Instagram">
+                <img class="ml-2" src="pictures/icons/icons8-instagram-64.png" width="20" height="20" alt="Instagram">
+            </a>
+            <a href="#" aria-label="TikTok">
+                <img class="ml-2" src="pictures/icons/icons8-тикток-100.png" width="20" height="20" alt="TikTok">
+            </a>
+            <a href="login.html" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">Login</a>
+            <div class="ml-3">
+                <a href="#" class="text-dark">Kz</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section id="register-section" class="container mt-5 py-5">
+    <div class="form-wrapper">
+        <h2 class="text-center">Create Your Account</h2>
+        <form id="register-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <input type="text" id="status" class="form-control" placeholder="Your current status" required>
+            </div>
+            <button type="submit" class="btn btn-block" style="background-color: #a3835a">Register</button>
+        </form>
+    </div>
+</section>
+<script src="scripts/register.js"></script>
 </body>
 </html>
