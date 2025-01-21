@@ -14,8 +14,7 @@ async function loadRooms(filterStart = '', filterEnd = '', sort = '') {
         let url = `/rooms?filterStart=${filterStart}&filterEnd=${filterEnd}&limit=${limit}&page=${currentPage}&sort=${sort}`;
         const response = await fetch(url);
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Failed to load rooms: ${errorText}`);
+            throw new Error('Failed to load rooms');
         }
 
         const rooms = await response.json();
@@ -25,7 +24,7 @@ async function loadRooms(filterStart = '', filterEnd = '', sort = '') {
         rooms.forEach(room => {
             const card = document.createElement('div');
             card.className = 'card m-4 grow';
-            card.style = 'width: 18rem; border-radius: 15px; overflow: hidden;';
+            card.style = 'width: 18rem; border-radius: 15px; overflow: hidden;box-shadow: 0 5px 15px rgba(0, 0, 0, 0.11);';
 
             card.innerHTML = `
                 <img src="${room.photo}" class="card-img-top" alt="Room Photo" style="height: 200px; object-fit: cover;">
@@ -42,11 +41,10 @@ async function loadRooms(filterStart = '', filterEnd = '', sort = '') {
 
             cardsContainer.appendChild(card);
         });
-s
         currentPageSpan.textContent = `Page ${currentPage}`;
     } catch (error) {
         console.error(error);
-        alert('Failed to load rooms');
+        alert("Failed to load rooms");
     }
 }
 
@@ -74,3 +72,26 @@ document.getElementById('filter-sort').addEventListener('submit', (e) => {
     loadRooms(filterStart, filterEnd, sortSelect);
 });
 
+document.getElementById('contact-email-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('user-email').value;
+
+    const formData = new FormData();
+    formData.append('emails', email);
+    formData.append('subject',"Hi, how can we help you?");
+    formData.append('message',"Thank you for reaching out! How can we assist you?")
+    const endpoint = file ? '/api/mailFile' : '/api/mail';
+    fetch(endpoint, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.text())
+        .then(data => {
+            alert(`Message sent: ${data}`);
+        })
+        .catch(error => {
+            console.error('Error sending email:', error);
+            alert('Failed to send your email.');
+        });
+});
