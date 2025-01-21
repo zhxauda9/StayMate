@@ -2,19 +2,148 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html {
+        scroll-behavior: smooth;
+    }
+    </style>
 </head>
 <body>
-<!-- Пример для home.html -->
-<div class="d-flex flex-column justify-content-center align-items-center text-center text-white vh-100" style="background-image: url('/static/background/home.jpg'); background-size: cover;">
-    <h2 class="font-weight-bold">StayMate</h2>
-    <h1 class="display-4 font-weight-bold" style="text-shadow: 5px 5px 5px rgba(33, 32, 32, 0.51);">Booking Management<br>StayMate</h1>
-    <a href="/static/bookings.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Bookings</a>
-    <a href="/static/rooms.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Rooms</a>
-    <a href="/static/users.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Users</a>
+<header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="logo font-weight-bold h4 mb-0">Touro</div>
+        <div class="d-flex align-items-center">
+            <a href="#" aria-label="Facebook">
+                <img class="ml-2" src="static/pictures/icons/icons8-facebook-новый-100 (1).png" width="20" height="20" alt="Facebook">
+            </a>
+            <a href="#" aria-label="Instagram">
+                <img class="ml-2" src="static/pictures/icons/icons8-instagram-64.png" width="20" height="20" alt="Instagram">
+            </a>
+            <a href="#" aria-label="TikTok">
+                <img class="ml-2" src="static/pictures/icons/icons8-тикток-100.png" width="20" height="20" alt="TikTok">
+            </a>
+            <a href="register.html" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">Sign Up</a>
+            <a href="#contact-email" class="btn font-weight-normal ml-3 p-2 px-3 text-dark">Contact Us</a>
+            <div class="ml-3">
+                <a href="#" class="text-dark">Kz</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="d-flex flex-column justify-content-center align-items-center text-center text-white"
+     style="background-image: url('/static/pictures/background/home.jpg'); background-size: cover; height: 700px; position: relative;">
+    <h1 class="display-4 font-weight-bold text-shadow">Booking Management<br>StayMate</h1>
+
+    <form id="filter-sort"
+          class="d-flex justify-content-between align-items-center p-4"
+          style="gap: 15px; position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 80%; background-color: #fdfcfa; border-radius: 30px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+        <input type="number" placeholder="Start price" id="filterStart" class="form-control" style="height: 50px;">
+        <input type="number" placeholder="End price" id="filterEnd" class="form-control" style="height: 50px;">
+        <select id="class" name="class" class="form-control" style="height: 50px;">
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="suite">Suite</option>
+        </select>
+        <select id="sort" name="sort" class="form-control" style="height: 50px;">
+            <option value="price asc">Price: Low to High</option>
+            <option value="price desc">Price: High to Low</option>
+        </select>
+        <button type="submit"
+                class="btn font-weight-bold"
+                style="height: 50px; padding: 0 20px; background-color: blanchedalmond; border-radius: 15px;">Submit</button>
+    </form>
 </div>
 
+<section id="rooms" class="my-5 p-4" >
+    <h2 class="text-center font-weight-bold mb-4" style="font-size: 2rem;">Rooms</h2>
+    <div class="d-flex flex-wrap justify-content-center" id="rooms-cards" style="gap: 20px;">
+    </div>
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        <button id="prevBtn" class="btn px-4 py-2 mr-3" style="background-color: rgb(190, 161, 131);">Back</button>
+        <span id="currentPage"> | </span>
+        <button id="nextBtn" class="btn px-4 py-2 ml-3" style="background-color: rgb(190, 161, 131);">Next</button>
+    </div>
+</section>
 
+<section id="about-us" style="padding: 50px; background-color: #fbe7cc;">
+    <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+        <h2 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 20px;">About Us</h2>
+        <p style="font-size: 1.2rem; line-height: 1.8;">
+            Welcome to our luxury hotel, where comfort meets elegance.
+            Located in the heart of the city, we offer a perfect blend of modern amenities and timeless hospitality.
+            Whether you're here for a weekend getaway or a business trip, we're here to make your stay unforgettable.
+        </p>
+    </div>
+</section>
+
+<section id="amenities" style="padding: 50px; background-color: #fff;">
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+      <div style="width: 300px; margin: 20px; text-align: center;">
+        <img src="/static/pictures/additional/spa.webp" alt="Spa" style="width: 100%; border-radius: 15px;">
+        <h3 style="font-size: 1.5rem; margin-top: 15px;">Luxury Spa</h3>
+        <p>Relax and rejuvenate with our premium spa services.</p>
+      </div>
+      <div style="width: 460px; margin: 20px; text-align: center;">
+        <img src="/static/pictures/additional/restaurant.jpg" alt="Restaurant" style="width: 100%; border-radius: 15px;">
+        <h3 style="font-size: 1.5rem; margin-top: 15px;">Fine Dining</h3>
+        <p>Enjoy world-class cuisines prepared by top chefs.</p>
+      </div>
+      <div style="width: 300px; margin: 20px; text-align: center;">
+        <img src="/static/pictures/additional/pool.jpg" alt="Pool" style="width: 100%; border-radius: 15px;">
+        <h3 style="font-size: 1.5rem; margin-top: 15px;">Infinity Pool</h3>
+        <p>Take a dip in our stunning rooftop infinity pool.</p>
+      </div>
+    </div>
+  </section>
+
+<section id="testimonials" style="padding: 50px; background-color: #fcf5ee;">
+    <div style="text-align: center;">
+        <h2 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 20px;">What Our Guests Say</h2>
+    </div>
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; max-width: 1000px; margin: 0 auto;">
+        <div style="width: 300px; margin: 20px; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <p>"The service was outstanding, and the rooms were immaculate. Highly recommend!"</p>
+            <h4>- Sarah L.</h4>
+        </div>
+        <div style="width: 300px; margin: 20px; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <p>"Best hotel experience I've ever had. The infinity pool was breathtaking!"</p>
+            <h4>- David K.</h4>
+        </div>
+        <div style="width: 300px; margin: 20px; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <p>"Amazing food, friendly staff, and the most comfortable beds!"</p>
+            <h4>- Emma R.</h4>
+        </div>
+    </div>
+</section>
+
+
+<section id="contact-email" class="form-section" style="padding: 50px; background-color: #fbe7cc;">
+    <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+    <h2 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 20px;">Contact Us</h2>
+    <form id="contact-email-form">
+        <div class="form-group">
+            <input type="email" id="user-email" name="email" class="form-control"
+                   placeholder="Enter your email address" required>
+        </div>
+        <button type="submit" class="btn btn-block" style="background-color: rgb(190, 161, 131)">Submit</button>
+        <p style="font-size: 1.2rem; line-height: 1.8;">
+            Have questions or need assistance? Reach out to us anytime!
+        </p>
+    </form>
+    </div>
+</section>
+
+  
+
+
+<a href="static/rooms.html" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">rooms</a>
+<a href="static/users.html" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">users</a>
+<a href="static/bookings.html" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">bookings</a>
+
+<script src="static/scripts/home.js"></script>
 </body>
 </html>

@@ -27,6 +27,7 @@ async function loadRooms(filterStart='',filterEnd='',sort='') {
             <td>${room.class}</td>
             <td>${room.price}</td>
             <td>${room.status}</td>
+            <td>${room.photo}</td>
             <td>
                 <button class="btn btn-warning btn-sm" onclick="updateRoom(${room.id})">Update</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteRoom(${room.id})">Delete</button>
@@ -76,6 +77,7 @@ document.getElementById('create-room-form').addEventListener('submit', async (e)
     const classRoom = document.getElementById('class').value;
     const price = document.getElementById('price').value;
     const status=document.getElementById('status').value;
+    const photo=document.getElementById('photo').value;
 
     if (!number || !classRoom || !price) {
         alert("Please provide valid input data.");
@@ -87,6 +89,7 @@ document.getElementById('create-room-form').addEventListener('submit', async (e)
         class: classRoom,
         price: parseFloat(price),
         status:status,
+        photo:photo,
     };
 
     try {
