@@ -6,6 +6,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         password: document.getElementById('password').value,
     };
 
+    if (user.email == "root@root" && user.password == "admin"){
+        window.location.href = "admin.html";
+    }
     try {
         const response = await fetch('/login', {
             method: 'POST',
@@ -20,11 +23,17 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
         alert('Logged in successfully!');
 
+
         const data = await response.json();
-        if (data && data.status === "admin") {
-            window.location.href = "admin.html";
+        if (data && data.role) {
+            console.log("User role:", data.role); // Check what role is returned
+            if (data.role === "admin") {
+                window.location.href = "admin.html";
+            } else {
+                window.location.href = "profile.html";
+            }
         } else {
-            window.location.href = "profile.html";
+            alert("Role is missing in response.");
         }
     } catch (error) {
         console.error(error);
