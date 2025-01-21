@@ -15,6 +15,7 @@ type AuthService interface {
 	Register(user models.User) error
 	Login(email, password string) (string, error)
 	ValidateToken(token string) (bool, error)
+	GetUserFromToken(tokenString string) (models.User, error)
 }
 
 type authService struct {
@@ -80,4 +81,33 @@ func (s *authService) ValidateToken(tokenString string) (bool, error) {
 	}
 
 	return false, errors.New("invalid token")
+}
+
+func (s *authService) GetUserFromToken(tokenString string) (models.User, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+		return []byte(os.Getenv("SECRET")), nil
+	})
+	if err != nil || !token.Valid {
+		return models.User{}, errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return models.User{}, errors.New("invalid token claims")
+	}
+
+	userID, ok := claims["user_id"].(float64)
+	if !ok {
+		return models.User{}, errors.New("missing user_id in token")
+	}
+
+	user, err := s.userService.GetUserByID(int(userID))
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
 }

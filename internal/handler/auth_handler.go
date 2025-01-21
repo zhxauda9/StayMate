@@ -84,3 +84,25 @@ func (h *authHandler) ValidateToken(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "I'm logging!", "token": tokenString})
 }
+
+func (h *authHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("Authorization")
+	if err != nil {
+		http.Error(w, "No token provided", http.StatusUnauthorized)
+		return
+	}
+
+	tokenString := cookie.Value
+	isValid, err := h.authService.ValidateToken(tokenString)
+	if err != nil || !isValid {
+		http.Error(w, fmt.Sprintf("Invalid token: %v", err), http.StatusUnauthorized)
+		return
+	}
+	user, err := h.authService.GetUserFromToken(tokenString)
+	if err != nil {
+		http.Error(w, "Failed to get user data", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+}
