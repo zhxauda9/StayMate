@@ -6,22 +6,19 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>Register</title>
     <style>
-        /* Общие стили */
         body {
             font-family: 'Arial', sans-serif;
-            background: #f8f1e4; /* Нежный бежевый */
-            color: #4a3323; /* Коричневый текст */
+            background: #f8f1e4;
+            color: #4a3323;
             margin: 0;
             padding: 0;
-            padding-top: 80px; /* Для фиксированного хедера */
+            padding-top: 80px;
         }
 
-        /* Хедер */
         header {
-            border-bottom: 1px solid #e6dbc9; /* Тонкая линия внизу */
+            border-bottom: 1px solid #e6dbc9;
         }
 
-        /* Секция регистрации */
         #register-section {
             display: flex;
             justify-content: center;
@@ -39,7 +36,7 @@
         }
 
         h2 {
-            color: #7b4d29; /* Тёплый коричневый для заголовка */
+            color: #7b4d29;
             margin-bottom: 20px;
             font-size: 24px;
             font-weight: bold;
@@ -81,32 +78,26 @@
         button:hover {
             background: #5a3820;
         }
+        .btn-link {
+            text-decoration: none;
+            color: #82a35a;
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .btn-link:hover {
+            color: #82a35a;
+            text-decoration: underline;
+        }
 
     </style>
 </head>
 <body>
-<header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="logo font-weight-bold h4 mb-0">StayMate</div>
-        <div class="d-flex align-items-center">
-            <a href="#" aria-label="Facebook">
-                <img class="ml-2" src="pictures/icons/icons8-facebook-новый-100 (1).png" width="20" height="20" alt="Facebook">
-            </a>
-            <a href="#" aria-label="Instagram">
-                <img class="ml-2" src="pictures/icons/icons8-instagram-64.png" width="20" height="20" alt="Instagram">
-            </a>
-            <a href="#" aria-label="TikTok">
-                <img class="ml-2" src="pictures/icons/icons8-тикток-100.png" width="20" height="20" alt="TikTok">
-            </a>
-            <a href="login.html" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">Login</a>
-            <div class="ml-3">
-                <a href="#" class="text-dark">Kz</a>
-            </div>
-        </div>
-    </div>
-</header>
 
-<section id="register-section" class="container mt-5 py-5">
+<section id="register-section" class="container mt-1 py-5">
     <div class="form-wrapper">
         <h2 class="text-center">Create Your Account</h2>
         <form id="register-form">
@@ -127,6 +118,7 @@
                 <input type="text" id="status" class="form-control" placeholder="Your current status" required>
             </div>
             <button type="submit" class="btn btn-block" style="background-color: #a3835a">Register</button>
+            <a href="login.html" class="btn btn-link mt-3">If you already have an account, Log In</a>
         </form>
     </div>
 </section>
