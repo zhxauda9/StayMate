@@ -35,36 +35,44 @@
     <h1 class="display-4 font-weight-bold" 
         style="text-shadow: 5px 5px 10px rgba(66, 66, 66, 0.919);">Booking Management<br>StayMate</h1>
 
-        <!-- <a href="/static/bookings.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Bookings</a>
-    <a href="/static/rooms.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Rooms</a>
-    <a href="/static/users.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Users</a> -->
-
-    
-    <!-- Форма -->
-    <form action="#" method="post" 
+    <form id="filter-sort" 
         class="d-flex justify-content-between align-items-center"
         style="gap: 15px; position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 80%; background-color: rgb(253, 252, 250); padding: 20px; border-radius: 30px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); border-radius: 40px;">
-        
-        <!-- Поля ввода -->
-        <input type="text" placeholder="Madrid" class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
-        <input type="text" placeholder="USA" class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
-        <input type="date" value="2024-09-21" class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
-        <select class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
-            <option>Bus</option>
-            <option>Train</option>
-            <option>Plane</option>
+        <input type="text" placeholder="Enter start price" id="filterStart" class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
+        <input type="text" placeholder="Enter end price" id="filterEnd" class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
+        <select id="class" name="class" class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="suite">Suite</option>
+        </select>
+        <select id="sort" name="sort" class="form-control" style="flex: 1; min-width: 150px; height: 50px;">
+            <option value="price asc">Price: Low to High</option>
+            <option value="price desc">Price: High to Low</option>
         </select>
 
-        <!-- Кнопка -->
         <button type="submit" 
             class="btn text-dark font-weight-bold"
             style="height: 50px; padding: 0 20px; background-color: blanchedalmond; border-radius: 15px; font-size: 1rem;">Submit</button>
     </form>
+    <!-- <a href="/static/bookings.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Bookings</a>
+    <a href="/static/rooms.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Rooms</a>
+    <a href="/static/users.html" class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond; border-radius: 15px;">Users</a> -->
 </div>
 
+<section id="rooms" class="my-4 p-4 rounded" style="margin-top: 130px;">
+    <h2 class="text-center font-weight-bold mb-4" style="font-size: 2rem;">Rooms</h2>
+    <div class="d-flex flex-wrap justify-content-center" id="rooms-cards" style="gap: 20px;">
+    </div>
+    <div class="pagination mt-4 text-center align-items-center justify-content-center">
+        <button id="prevBtn" class="btn px-4 py-2" style="border-radius: 30px;background-color:rgb(112, 105, 62);color: aliceblue;">Back</button>
+        <span id="currentPage" class="mx-3 font-weight-bold" style="font-size: 1.25rem;">Page 1</span>
+        <button id="nextBtn" class="btn px-4 py-2" style="border-radius: 30px;background-color:rgb(112, 105, 62);color: aliceblue;">Next</button>
+    </div>
+</section>
 
 
+<script src="static/scripts/home.js">
 
-
+</script>
 </body>
 </html>
