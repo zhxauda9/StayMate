@@ -1,0 +1,75 @@
+<!-- profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <link rel="stylesheet" href="path/to/bootstrap.css">
+    <style>
+        .profile-container {
+            margin-top: 20px;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-info label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container profile-container">
+    <h2 class="text-center">Your Profile</h2>
+    <div id="profile-content">
+        <!-- Данные пользователя будут отображаться здесь -->
+    </div>
+    <div class="text-center">
+        <a href="index.html">Go Back</a>
+    </div>
+</div>
+
+<script>
+    // Функция для получения профиля пользователя
+    async function fetchProfile() {
+        const response = await fetch('/profile', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'  // Отправляем cookie с запросом
+        });
+
+        if (!response.ok) {
+            // Ошибка при получении данных
+            document.getElementById('profile-content').innerHTML = "<p>Error fetching profile data.</p>";
+            return;
+        }
+
+        const userData = await response.json();
+
+        // Отображаем данные пользователя на странице
+        const profileHTML = `
+                <div class="profile-info">
+                    <label>Name:</label>
+                    <p>${userData.name}</p>
+                </div>
+                <div class="profile-info">
+                    <label>Email:</label>
+                    <p>${userData.email}</p>
+                </div>
+                <div class="profile-info">
+                    <label>Status:</label>
+                    <p>${userData.status}</p>
+                </div>
+            `;
+        document.getElementById('profile-content').innerHTML = profileHTML;
+    }
+
+    // Загружаем данные профиля при загрузке страницы
+    window.onload = fetchProfile;
+</script>
+
+</body>
+</html>

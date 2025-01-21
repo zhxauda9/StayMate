@@ -19,6 +19,13 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         }
 
         alert('Logged in successfully!');
+
+        const data = await response.json();
+        if (data && data.status === "admin") {
+            window.location.href = "admin.html";
+        } else {
+            window.location.href = "profile.html";
+        }
     } catch (error) {
         console.error(error);
         alert(`Error: ${error.message}`);
