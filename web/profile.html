@@ -1,6 +1,7 @@
 <!-- profile.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,95 +11,101 @@
         .profile-container {
             margin-top: 30px;
         }
+
         .profile-info {
             margin-bottom: 20px;
         }
+
         .profile-info label {
             font-weight: bold;
         }
+
         .profile-photo {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
         }
+
         .update-btn {
             margin-top: 10px;
         }
+
         .form-group input[type="file"] {
             padding: 10px;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container profile-container">
-    <h2 class="text-center">Your Profile</h2>
-    <div id="profile-content">
-        <!-- Данные пользователя будут отображаться здесь -->
+    <div class="container profile-container">
+        <h2 class="text-center">Your Profile</h2>
+        <div id="profile-content">
+            <!-- Данные пользователя будут отображаться здесь -->
+        </div>
+        <div class="text-center">
+            <a href="/" class="btn btn-secondary">Go Back</a>
+        </div>
     </div>
-    <div class="text-center">
-        <a href="index.html" class="btn btn-secondary">Go Back</a>
-    </div>
-</div>
 
-<!-- Модальное окно для обновления данных -->
-<div class="modal" tabindex="-1" role="dialog" id="editProfileModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Profile</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="editProfileForm">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <input type="text" class="form-control" id="status" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="profilePhoto">Profile Picture</label>
-                        <input type="file" class="form-control-file" id="profilePhoto">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
+    <!-- Модальное окно для обновления данных -->
+    <div class="modal" tabindex="-1" role="dialog" id="editProfileModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <input type="text" class="form-control" id="status" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profilePhoto">Profile Picture</label>
+                            <input type="file" class="form-control-file" id="profilePhoto">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    async function fetchProfile() {
-        const response = await fetch('/profile', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include'
-        });
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        async function fetchProfile() {
+            const response = await fetch('/api/profile', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
 
-        if (!response.ok) {
-            document.getElementById('profile-content').innerHTML = "<p>Error fetching profile data.</p>";
-            return;
-        }
+            if (!response.ok) {
+                document.getElementById('profile-content').innerHTML = "<p>Error fetching profile data.</p>";
+                return;
+            }
 
-        const userData = await response.json();
+            const userData = await response.json();
 
-        // Отображаем данные пользователя на странице
-        const profileHTML = `
+            // Отображаем данные пользователя на странице
+            const profileHTML = `
             <div class="text-center">
                 <img src="${userData.photo || 'default-photo.jpg'}" class="profile-photo" alt="Profile Photo">
             </div>
@@ -118,37 +125,38 @@
                 <button class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">Edit Profile</button>
             </div>
         `;
-        document.getElementById('profile-content').innerHTML = profileHTML;
-    }
-
-    document.getElementById('editProfileForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const formData = new FormData();
-        formData.append('name', document.getElementById('name').value);
-        formData.append('email', document.getElementById('email').value);
-        formData.append('status', document.getElementById('status').value);
-        const fileInput = document.getElementById('profilePhoto');
-        if (fileInput.files.length > 0) {
-            formData.append('profilePhoto', fileInput.files[0]);
+            document.getElementById('profile-content').innerHTML = profileHTML;
         }
 
-        const response = await fetch('/users/{id}', {
-            method: 'PUT',
-            body: formData,
-            credentials: 'include',
+        document.getElementById('editProfileForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('status', document.getElementById('status').value);
+            const fileInput = document.getElementById('profilePhoto');
+            if (fileInput.files.length > 0) {
+                formData.append('profilePhoto', fileInput.files[0]);
+            }
+
+            const response = await fetch('/users/{id}', {
+                method: 'PUT',
+                body: formData,
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                $('#editProfileModal').modal('hide');
+                fetchProfile(); // Обновим профиль после успешного обновления
+            } else {
+                alert('Error updating profile.');
+            }
         });
 
-        if (response.ok) {
-            $('#editProfileModal').modal('hide');
-            fetchProfile(); // Обновим профиль после успешного обновления
-        } else {
-            alert('Error updating profile.');
-        }
-    });
-
-    window.onload = fetchProfile;
-</script>
+        window.onload = fetchProfile;
+    </script>
 
 </body>
+
 </html>

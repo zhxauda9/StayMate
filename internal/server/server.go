@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"golang.org/x/time/rate"
 	"gorm.io/driver/postgres"
@@ -18,10 +17,6 @@ import (
 	l "github.com/zhxauda9/StayMate/internal/myLogger"
 	"github.com/zhxauda9/StayMate/internal/service"
 )
-
-func serveHTML(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, filepath.Join("web", "home.html"))
-}
 
 func InitServer() (*http.ServeMux, error) {
 	mux := http.NewServeMux()
@@ -43,12 +38,20 @@ func InitServer() (*http.ServeMux, error) {
 	fs := http.FileServer(http.Dir("./web"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	// Serves home page
-	mux.HandleFunc("/", serveHTML)
-
 	rateLimitter := rate.NewLimiter(1, 1)                                 // Rate limit of 1 request per second with a burst of 3 requests
 	limitMiddleware := middleware.RateLimiterMiddlewareFunc(rateLimitter) // Middleware Function to rate limit handlers
 	logMiddleware := middleware.LoggingMiddlewareFunc(l.Log)              // Middleware Function for logging
+
+	// Serves html pages
+	mux.HandleFunc("/", handler.ServeHome)
+	mux.HandleFunc("/register", handler.ServeRegister)
+	mux.HandleFunc("/profile", handler.ServeProfile)
+
+	mux.HandleFunc("/admin", handler.ServeAdmin)
+	mux.HandleFunc("/admin/bookings", handler.ServeBookings)
+	mux.HandleFunc("/admin/rooms", handler.ServeRooms)
+	mux.HandleFunc("/admin/users", handler.ServeUsers)
+	mux.HandleFunc("/login", handler.ServeLogin)
 
 	// Init booking service
 	booking_repo := dalpostgres.NewBookingRepository(db)
@@ -85,10 +88,10 @@ func InitServer() (*http.ServeMux, error) {
 	authService := service.NewAuthService(user_service)
 	authHandler := handler.NewAuthHandler(authService)
 
-	mux.Handle("POST /register", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Register))))
-	mux.Handle("POST /login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
-	mux.Handle("GET /validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken))))
-	mux.Handle("GET /profile", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.GetProfile))))
+	mux.Handle("POST /api/register", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Register))))
+	mux.Handle("POST /api/login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
+	mux.Handle("GET /api/validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken))))
+	mux.Handle("GET /api/profile", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.GetProfile))))
 
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")

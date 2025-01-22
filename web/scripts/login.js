@@ -10,7 +10,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         window.location.href = "admin.html";
     }
     try {
-        const response = await fetch('/login', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user),
@@ -28,9 +28,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         if (data && data.role) {
             console.log("User role:", data.role); // Check what role is returned
             if (data.role === "admin") {
-                window.location.href = "admin.html";
+                window.location.href = "/admin";
             } else {
-                window.location.href = "profile.html";
+                window.location.href = "/profile";
             }
         } else {
             alert("Role is missing in response.");

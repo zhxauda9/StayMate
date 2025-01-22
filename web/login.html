@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,6 +79,7 @@
         button:hover {
             background: #5a3820;
         }
+
         .btn-link {
             text-decoration: none;
             color: #82a35a;
@@ -92,29 +94,30 @@
             color: #82a35a;
             text-decoration: underline;
         }
-
     </style>
 </head>
+
 <body>
 
-<section id="login-section" class="container mt-5 py-5">
-    <div class="form-wrapper">
-        <h2 class="text-center">Log in Your Account</h2>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" class="form-control" placeholder="Create a password" required>
-            </div>
-            <button type="submit" class="btn btn-block" style="background-color: #a3835a">Log in</button>
-            <a href="register.html" class="btn btn-link mt-3">If you do not have an account, Sign In</a>
+    <section id="login-section" class="container mt-5 py-5">
+        <div class="form-wrapper">
+            <h2 class="text-center">Log in Your Account</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+                </div>
+                <button type="submit" class="btn btn-block" style="background-color: #a3835a">Log in</button>
+                <a href="/register" class="btn btn-link mt-3">If you do not have an account, Sign In</a>
 
-        </form>
-    </div>
-</section>
-<script src="scripts/login.js"></script>
+            </form>
+        </div>
+    </section>
+    <script src="scripts/login.js"></script>
 </body>
+
 </html>
