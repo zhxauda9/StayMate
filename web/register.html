@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8f1e4;
+            color: #4a3323;
+            margin: 0;
+            padding: 0;
+            padding-top: 80px;
+        }
+
+        header {
+            border-bottom: 1px solid #e6dbc9;
+        }
+
+        #register-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-wrapper {
+            max-width: 780px;
+            width: 550px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e6dbc9;
+        }
+
+        h2 {
+            color: #7b4d29;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input {
+            border: 1px solid #d3c5b3;
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            border-radius: 8px;
+            background-color: #fdfaf5;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #a3835a;
+        }
+
+        button {
+            background: #7b4d29;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #5a3820;
+        }
+        .btn-link {
+            text-decoration: none;
+            color: #82a35a;
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .btn-link:hover {
+            color: #82a35a;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+<section id="register-section" class="container mt-1 py-5">
+    <div class="form-wrapper">
+        <h2 class="text-center">Create Your Account</h2>
+        <form id="register-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <input type="text" id="status" class="form-control" placeholder="Your current status" required>
+            </div>
+            <button type="submit" class="btn btn-block" style="background-color: #a3835a">Register</button>
+            <a href="login.html" class="btn btn-link mt-3">If you already have an account, Log In</a>
+        </form>
+    </div>
+</section>
+<script src="scripts/register.js"></script>
+</body>
+</html>

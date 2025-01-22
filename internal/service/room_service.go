@@ -40,7 +40,7 @@ func (s *roomService) GetRoomByID(id int) (models.Room, error) {
 }
 
 func (s *roomService) GetAllRooms(sort, filterStart, filterEnd string, page int) ([]models.Room, error) {
-	const limit = 10
+	const limit = 8
 	offset := (page - 1) * limit
 
 	rooms, err := s.roomRepo.GetAllRooms(sort, filterStart, filterEnd, limit, offset)
