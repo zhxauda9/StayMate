@@ -96,6 +96,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.Handle("POST /api/login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
 	mux.Handle("GET /api/validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken))))
 	mux.Handle("GET /api/profile", logMiddleware(userMid(limitMiddleware(http.HandlerFunc(authHandler.GetProfile)))))
+	mux.Handle("POST /api/logout", logMiddleware(limitMiddleware((http.HandlerFunc(authHandler.Logout)))))
 
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")

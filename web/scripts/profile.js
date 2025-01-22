@@ -66,7 +66,7 @@ function logout() {
 
     fetch('/api/logout', { method: 'POST', credentials: 'include' })
         .then(() => {
-            window.location.href = '/login.html';
+            window.location.href = '/login';
         })
         .catch(err => {
             console.error('Logout failed:', err);
