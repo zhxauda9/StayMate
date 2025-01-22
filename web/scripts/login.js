@@ -6,10 +6,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         password: document.getElementById('password').value,
     };
 
-    if (user.email == "root@root" && user.password == "admin"){
-        window.location.href = "/admin";
-        return
-    }
     try {
         const response = await fetch('/api/login', {
             method: 'POST',
@@ -24,15 +20,8 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
         alert('Logged in successfully!');
 
-
-        const data = await response.json();
-        if (data && data.role) {
-            console.log("User role:", data.role);
-            if (data.role === "admin") {
-                window.location.href = "/admin";
-            } else {
-                window.location.href = "/profile";
-            }
+        if (user.email == "root@root" && user.password == "admin"){
+            window.location.href = "/admin";
         } else {
             window.location.href = "/profile";
         }

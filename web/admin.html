@@ -6,20 +6,93 @@
     <title>Home page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+    body {
+        background-image: url('/static/pictures/background/admin.jpg');
+    }
+</style>
 
 <body>
+<header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="logo font-weight-bold h4 mb-0">StayMate</div>
+        <div class="d-flex align-items-center">
+            <a href="#" aria-label="Facebook">
+                <img class="ml-2" src="static/pictures/icons/icons8-facebook-новый-100 (1).png" width="20" height="20" alt="Facebook">
+            </a>
+            <a href="#" aria-label="Instagram">
+                <img class="ml-2" src="static/pictures/icons/icons8-instagram-64.png" width="20" height="20" alt="Instagram">
+            </a>
+            <a href="#" aria-label="TikTok">
+                <img class="ml-2" src="static/pictures/icons/icons8-тикток-100.png" width="20" height="20" alt="TikTok">
+            </a>
+            <button class="btn font-weight-bold ml-3 p-2 px-3 text-dark" onclick="logout()">Log Out</button>
+        </div>
+    </div>
+</header>
     <div class="d-flex flex-column justify-content-center align-items-center text-center text-white vh-100"
-        style="background-color: darkblue; background-size: cover;">
-        <h2 class="font-weight-bold">StayMate</h2>
-        <h1 class="display-4 font-weight-bold" style="text-shadow: 5px 5px 5px rgba(33, 32, 32, 0.51);">Booking
-            Management<br>Admin MODE</h1>
+        style="background-size: cover;">
+        <h1 class="display-4 font-weight-bold" style="text-shadow: 5px 5px 5px rgba(33, 32, 32, 0.51);">Welcome to Admin MODE<br>Databases:</h1>
         <a href="/admin/bookings" class="btn mt-3 px-5 py-2 font-weight-bold"
             style="background-color: blanchedalmond; border-radius: 15px;">Bookings</a>
         <a href="/admin/rooms" class="btn mt-3 px-5 py-2 font-weight-bold"
             style="background-color: blanchedalmond; border-radius: 15px;">Rooms</a>
         <a href="/admin/users" class="btn mt-3 px-5 py-2 font-weight-bold"
             style="background-color: blanchedalmond; border-radius: 15px;">Users</a>
+        <button class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond;border-radius: 15px;" onclick="logout()">Log Out</button>
     </div>
 </body>
+<script>
+    function logout() {
+        document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; Secure; SameSite=Lax';
+
+        localStorage.clear();
+
+        if ('caches' in window) {
+            caches.keys().then(cacheNames => {
+                cacheNames.forEach(cacheName => caches.delete(cacheName));
+            });
+        }
+
+        fetch('/api/logout', { method: 'POST', credentials: 'include' })
+            .then(() => {
+                window.location.href = '/login';
+            })
+            .catch(err => {
+                console.error('Logout failed:', err);
+                alert('Failed to logout');
+            });
+    }
+</script>
+<footer style="background-color: #333; color: #fff; padding: 40px 20px; text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
+        <div style="flex: 1 1 300px; margin: 10px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">About Us</h3>
+            <p style="font-size: 0.9rem; line-height: 1.6;">
+                We are committed to providing exceptional hospitality and unforgettable experiences. Your comfort is our
+                priority.
+            </p>
+        </div>
+        <div style="flex: 1 1 200px; margin: 10px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Quick Links</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="home.html#about-us" style="color: #fff; text-decoration: none;">About Us</a></li>
+                <li><a href="home.html#amenities" style="color: #fff; text-decoration: none;">Amenities</a></li>
+                <li><a href="home.html#contact-email" style="color: #fff; text-decoration: none;">Contact Us</a></li>
+                <li><a href="home.html#testimonials" style="color: #fff; text-decoration: none;">Testimonials</a></li>
+            </ul>
+        </div>
+        <div style="flex: 1 1 250px; margin: 10px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Contact Us</h3>
+            <p style="font-size: 0.9rem; line-height: 1.6;">
+                Temutjin Koszhanov, 2308 <br>
+                Aida Zhalgassova, 2307
+            </p>
+        </div>
+    </div>
+    <div style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
+        &copy; 2025 Staymate. All rights reserved.
+    </div>
+</footer>
 
 </html>
