@@ -1,4 +1,3 @@
-<!-- profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,155 +7,166 @@
     <title>Your Profile</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        body {
+            background-image: url('/static/pictures/background/profile.jpg');
+            font-family: 'Arial', sans-serif;
+        }
+
         .profile-container {
-            margin-top: 30px;
+            margin-top: 80px;
         }
 
-        .profile-info {
-            margin-bottom: 20px;
-        }
-
-        .profile-info label {
-            font-weight: bold;
+        .profile-header {
+            background: linear-gradient(to right, #c8b39c, #9e7e67);
+            color: #fff;
+            border-radius: 20px 20px 0 0;
+            padding: 30px;
         }
 
         .profile-photo {
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
+            border: 5px solid #fff;
             object-fit: cover;
         }
 
-        .update-btn {
-            margin-top: 10px;
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .form-group input[type="file"] {
-            padding: 10px;
+        .card-body {
+            background-color: #fff8ee;
+            border-radius: 0 0 20px 20px;
+            padding: 20px;
+        }
+
+        .btn-primary {
+            background-color: #9e7e67;
+            border-color: #9e7e67;
+        }
+
+        .btn-primary:hover {
+            background-color: #7f634f;
+            border-color: #7f634f;
+        }
+
+        h1, p {
+            margin-bottom: 10px;
+        }
+
+        h6 {
+            color: #7f634f;
         }
     </style>
 </head>
 
 <body>
-
-    <div class="container profile-container">
-        <h2 class="text-center">Your Profile</h2>
-        <div id="profile-content">
-            <!-- Данные пользователя будут отображаться здесь -->
-        </div>
-        <div class="text-center">
-            <a href="/" class="btn btn-secondary">Go Back</a>
+<!-- Header -->
+<header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="logo font-weight-bold h4 mb-0">StayMate</div>
+        <div class="d-flex align-items-center">
+            <a href="#" aria-label="Facebook">
+                <img class="ml-2" src="static/pictures/icons/icons8-facebook-новый-100 (1).png" width="20" height="20" alt="Facebook">
+            </a>
+            <a href="#" aria-label="Instagram">
+                <img class="ml-2" src="static/pictures/icons/icons8-instagram-64.png" width="20" height="20" alt="Instagram">
+            </a>
+            <a href="#" aria-label="TikTok">
+                <img class="ml-2" src="static/pictures/icons/icons8-тикток-100.png" width="20" height="20" alt="TikTok">
+            </a>
+            <button class="btn font-weight-bold ml-3 p-2 px-3 text-dark" onclick="logout()">Log Out</button>
         </div>
     </div>
+</header>
 
-    <!-- Модальное окно для обновления данных -->
-    <div class="modal" tabindex="-1" role="dialog" id="editProfileModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Profile</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="editProfileForm">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <input type="text" class="form-control" id="status" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="profilePhoto">Profile Picture</label>
-                            <input type="file" class="form-control-file" id="profilePhoto">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </form>
-                </div>
+<!-- Profile Section -->
+<main class="profile-container" >
+    <div class="container d-flex justify-content-center" style="margin-top: 120px; margin-bottom: 80px;">
+        <div class="card shadow-lg" style="width: 100%; max-width: 700px; border: none; border-radius: 20px;">
+            <div class="profile-header text-center p-5" style="background: linear-gradient(to right, #d2b48c, #8b5e3c); color: white; border-radius: 20px 20px 0 0;">
+                <img id="profilePhoto" src="default-photo.jpg" alt="Profile Picture" class="profile-photo mb-3" style="width: 150px; height: 150px; border: 5px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                <h2 id="profileName" class="mb-2">Your Name</h2>
+                <p id="just" class="mb-0" style="font-size: 1rem;">Our honoured guest</p>
+            </div>
+            <div class="card-body text-center px-4 py-5" style="background-color: #f5f5dc; border-radius: 0 0 20px 20px;">
+                <h6 class="text-muted mb-4" style="font-size: 1rem;">User Information</h6>
+                <p id="profileStatus" style="font-size: 1.2rem; margin-bottom: 10px;">Our honoured guest</p>
+                <p id="profileEmail" style="font-size: 1rem; color: #555;">Email: user@example.com</p>
+                <button class="btn btn-outline-dark btn-sm px-4" data-toggle="modal" data-target="#editProfileModal" style="margin-top: 10px;">Edit Profile</button>
+                <button class="btn btn-outline-danger btn-sm px-4 mt-2" onclick="logout()">Log Out</button>
             </div>
         </div>
     </div>
+</main>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        async function fetchProfile() {
-            const response = await fetch('/api/profile', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include'
-            });
+</main>
 
-            if (!response.ok) {
-                document.getElementById('profile-content').innerHTML = "<p>Error fetching profile data.</p>";
-                return;
-            }
-
-            const userData = await response.json();
-
-            // Отображаем данные пользователя на странице
-            const profileHTML = `
-            <div class="text-center">
-                <img src="${userData.photo || 'default-photo.jpg'}" class="profile-photo" alt="Profile Photo">
+<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="profile-info">
-                <label>Name:</label>
-                <p>${userData.name}</p>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="editName">Name</label>
+                        <input type="text" class="form-control" id="editName">
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhoto">Profile Photo</label>
+                        <input type="file" class="form-control-file" id="editPhoto">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+                </form>
             </div>
-            <div class="profile-info">
-                <label>Email:</label>
-                <p>${userData.email}</p>
-            </div>
-            <div class="profile-info">
-                <label>Status:</label>
-                <p>${userData.status}</p>
-            </div>
-            <div class="text-center">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">Edit Profile</button>
-            </div>
-        `;
-            document.getElementById('profile-content').innerHTML = profileHTML;
-        }
+        </div>
+    </div>
+</div>
 
-        document.getElementById('editProfileForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
+<script src="static/scripts/profile.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
-            const formData = new FormData();
-            formData.append('name', document.getElementById('name').value);
-            formData.append('email', document.getElementById('email').value);
-            formData.append('status', document.getElementById('status').value);
-            const fileInput = document.getElementById('profilePhoto');
-            if (fileInput.files.length > 0) {
-                formData.append('profilePhoto', fileInput.files[0]);
-            }
-
-            const response = await fetch('/users/{id}', {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                $('#editProfileModal').modal('hide');
-                fetchProfile(); // Обновим профиль после успешного обновления
-            } else {
-                alert('Error updating profile.');
-            }
-        });
-
-        window.onload = fetchProfile;
-    </script>
-
+<footer style="background-color: #333; color: #fff; padding: 40px 20px; text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
+        <div style="flex: 1 1 300px; margin: 10px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">About Us</h3>
+            <p style="font-size: 0.9rem; line-height: 1.6;">
+                We are committed to providing exceptional hospitality and unforgettable experiences. Your comfort is our
+                priority.
+            </p>
+        </div>
+        <div style="flex: 1 1 200px; margin: 10px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Quick Links</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="#about-us" style="color: #fff; text-decoration: none;">About Us</a></li>
+                <li><a href="#amenities" style="color: #fff; text-decoration: none;">Amenities</a></li>
+                <li><a href="#contact-email" style="color: #fff; text-decoration: none;">Contact Us</a></li>
+                <li><a href="#testimonials" style="color: #fff; text-decoration: none;">Testimonials</a></li>
+            </ul>
+        </div>
+        <div style="flex: 1 1 250px; margin: 10px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Contact Us</h3>
+            <p style="font-size: 0.9rem; line-height: 1.6;">
+                Temutjin Koszhanov, 2308 <br>
+                Aida Zhalgassova, 2307
+            </p>
+        </div>
+    </div>
+    <div style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
+        &copy; 2025 Staymate. All rights reserved.
+    </div>
+</footer>
 </body>
-
 </html>

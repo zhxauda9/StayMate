@@ -27,14 +27,14 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
         const data = await response.json();
         if (data && data.role) {
-            console.log("User role:", data.role); // Check what role is returned
+            console.log("User role:", data.role);
             if (data.role === "admin") {
                 window.location.href = "/admin";
             } else {
                 window.location.href = "/profile";
             }
         } else {
-            alert("Role is missing in response.");
+            window.location.href = "/profile";
         }
     } catch (error) {
         console.error(error);
