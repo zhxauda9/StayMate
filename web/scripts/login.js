@@ -7,7 +7,8 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     };
 
     if (user.email == "root@root" && user.password == "admin"){
-        window.location.href = "admin.html";
+        window.location.href = "/admin";
+        return
     }
     try {
         const response = await fetch('/api/login', {

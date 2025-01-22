@@ -37,12 +37,13 @@ func (s *authService) Login(email, password string) (string, error) {
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return "", errors.New("Invalid credentials")
+		return "", errors.New("invalid credentials")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"email":   user.Email,
+		"role":    user.Role,
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	})
 
