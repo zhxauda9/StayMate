@@ -10,7 +10,9 @@ async function loadUsers() {
         <td>${user.id}</td>
         <td>${user.name}</td>
         <td>${user.email}</td>
+        <td>${user.role}</td>
         <td>${user.status ? user.status : 'No status'}</td>
+        <td><img src="${user.photo}" alt="Room Photo" style="width: 100px; height: auto;"></td>
         <td>
             <button class="btn btn-warning btn-sm" onclick="updateUser(${user.id})">Update</button>
             <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
@@ -29,17 +31,28 @@ loadUsers();
 
 document.getElementById('create-user-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const user = {
-        name: document.getElementById('user-name').value,
-        email: document.getElementById('user-email').value,
-        status: document.getElementById('user-status').value,
-    };
+    const name= document.getElementById('user-name').value;
+    const email= document.getElementById('user-email').value;
+    const role=document.getElementById('user-role').value;
+    const status= document.getElementById('user-status').value;
+    const photoInput = document.getElementById('photo');
+    const photoFile = photoInput.files[0];
+
+    if(!name || !email || !role || !status){
+        alert("Please provid valid input data");
+        return
+    }
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('role', role);
+    formData.append('status', status);
+    formData.append('photo', photoFile);
 
     try {
         const response = await fetch(`/users`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user),
+            body: formData,
         });
 
         if (!response.ok) {
@@ -69,12 +82,22 @@ async function deleteUser(id) {
 async function updateUser(id) {
     const name = prompt('Enter new name:');
     const email = prompt('Enter new email:');
+    const role=prompt('Enter new role');
     const status=prompt('Enter new status:');
+    const photoInput=prompt('Upload a new photo:');
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('role', role);
+    formData.append('status', status);
+    formData.append('photo', photoInput);
+
     if (!name || !email) return;
     await fetch(`/users/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email,status }),
+        body: formData,
     });
     alert("User updated!");
     loadUsers();

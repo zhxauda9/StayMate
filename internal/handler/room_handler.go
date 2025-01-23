@@ -2,7 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
@@ -26,22 +30,45 @@ func NewRoomHandler(roomService service.RoomServ) *roomHandler {
 func (h *roomHandler) PostRoom(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to create a new room.")
 
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		http.Error(w, "Unable to parse form data", http.StatusBadRequest)
+		return
+	}
+
+	file, fileheader, err := r.FormFile("photo")
+	if err != nil {
+		http.Error(w, "Error uploading file", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	photoPath := "/static/pictures/storage" + filepath.Base(fileheader.Filename)
+	outFile, err := os.Create(photoPath)
+	if err != nil {
+		http.Error(w, "Error saving file", http.StatusInternalServerError)
+		return
+	}
+	defer outFile.Close()
+
+	_, err = io.Copy(outFile, file)
+	if err != nil {
+		http.Error(w, "Error saving file", http.StatusInternalServerError)
+		return
+	}
+
 	var room models.Room
-	if err := json.NewDecoder(r.Body).Decode(&room); err != nil {
+	err = json.NewDecoder(r.Body).Decode(&room)
+	if err != nil {
 		l.Log.Error().Err(err).Msg("Error decoding room data")
 		http.Error(w, "Error decoding room data", http.StatusBadRequest)
 		return
 	}
 
-	if err := h.validate.Struct(room); err != nil {
-		l.Log.Warn().Err(err).Msg("Validation error for booking data")
-		http.Error(w, "Validation error for booking data", http.StatusBadRequest)
-		return
-	}
-
-	err := h.roomService.CreateRoom(room)
+	room.Photo = photoPath
+	err = h.roomService.CreateRoom(room)
 	if err != nil {
-		l.Log.Error().Err(err).Msg("Error creating room")
+		l.Log.Error().Msg(fmt.Sprintf("Error creating room: %v", err))
 		http.Error(w, "Error creating room", http.StatusInternalServerError)
 		return
 	}

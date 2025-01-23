@@ -10,5 +10,5 @@ type User struct {
 	Password string `json:"password"`
 	Role     string `json:"role" gorm:"default:user"`
 	Status   string `json:"status" gorm:"not null;default:active"`
-	Photo    string `json:"photo" gorm:"default:static/pictures/default/user.jpg"` // Добавили поле Photo
+	Photo    string `json:"photo" gorm:"default:static/pictures/default/user.jpg"`
 }

@@ -17,7 +17,6 @@
             <p class="lead">Manage bookings and users with ease</p>
         </header>
 
-        <!-- Create User -->
         <section id="create-user" class="form-section my-4 p-3 rounded">
             <h2>Create User</h2>
             <form id="create-user-form">
@@ -30,14 +29,21 @@
                     <input type="email" id="user-email" class="form-control" placeholder="Enter email" required>
                 </div>
                 <div class="form-group">
+                    <label for="user-status">Role:</label>
+                    <input type="text" id="user-role" class="form-control" placeholder="Enter role" required>
+                </div>
+                <div class="form-group">
                     <label for="user-status">Status:</label>
                     <input type="text" id="user-status" class="form-control" placeholder="Enter status" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-photo">Photo:</label>
+                    <input type="file" id="user-photo" class="form-control" accept="image/*" required>
                 </div>
                 <button type="submit" class="btn btn-success">Create User</button>
             </form>
         </section>
 
-        <!-- Search User by ID -->
         <section id="search-user" class="form-section my-4 p-3 rounded">
             <h2>Search User by ID</h2>
             <form id="search-user-form">

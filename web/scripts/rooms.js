@@ -27,7 +27,7 @@ async function loadRooms(filterStart='',filterEnd='',sort='') {
             <td>${room.class}</td>
             <td>${room.price}</td>
             <td>${room.status}</td>
-            <td>${room.photo}</td>
+            <td><img src="${room.photo}" alt="Room Photo" style="width: 100px; height: auto;"></td>
             <td>
                 <button class="btn btn-warning btn-sm" onclick="updateRoom(${room.id})">Update</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteRoom(${room.id})">Delete</button>
@@ -77,26 +77,26 @@ document.getElementById('create-room-form').addEventListener('submit', async (e)
     const classRoom = document.getElementById('class').value;
     const price = document.getElementById('price').value;
     const status=document.getElementById('status').value;
-    const photo=document.getElementById('photo').value;
+    const photoInput = document.getElementById('photo');
+    const photoFile = photoInput.files[0];
 
-    if (!number || !classRoom || !price) {
+    if (!number || !classRoom || !price || !photoFile) {
         alert("Please provide valid input data.");
         return;
     }
 
-    const room = {
-        number: parseInt(number),
-        class: classRoom,
-        price: parseFloat(price),
-        status:status,
-        photo:photo,
-    };
+    const formData = new FormData();
+    formData.append('number', number);
+    formData.append('class', classRoom);
+    formData.append('price', price);
+    formData.append('status', status);
+    formData.append('photo', photoFile);
+
 
     try {
         const response = await fetch(`/rooms`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(room),
+            body: formData,
         });
 
         if (!response.ok) {
@@ -135,24 +135,24 @@ async function updateRoom(id) {
     const classRoom = prompt('Enter new class:');
     const price = prompt('Enter new price numeric(10,2):');
     const status=prompt('Enter new status:')
+    const photoInput = prompt('Upload a new photo:');
 
     if (!number || !classRoom || !price) {
         alert("Please provide valid input data.");
         return;
     }
 
-    const room = {
-        number: parseInt(number),
-        class: classRoom,
-        price: parseFloat(price),
-        status:status,
-    };
+    const formData = new FormData();
+    formData.append('number', number);
+    formData.append('class', classRoom);
+    formData.append('price', price);
+    formData.append('status', status);
+    if (photoInput) formData.append('photo', photoInput);
 
     try {
         const response = await fetch(`/rooms/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(room),
+            body: formData,
         });
         if (!response.ok) {
             throw new Error("Failed to update room.");

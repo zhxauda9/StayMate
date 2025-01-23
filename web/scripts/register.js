@@ -1,12 +1,10 @@
 document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Get input values
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         alert('Please enter a valid email address.');
