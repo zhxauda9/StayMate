@@ -81,17 +81,13 @@ document.getElementById('contact-email-form').addEventListener('submit', functio
     formData.append('emails', email);
     formData.append('subject',"Hi, how can we help you?");
     formData.append('message',"Thank you for reaching out! How can we assist you?")
-    const endpoint = file ? '/api/mailFile' : '/api/mail';
-    fetch(endpoint, {
+    fetch('/api/mail', {
         method: 'POST',
         body: formData
     })
         .then(response => response.text())
-        .then(data => {
-            alert(`Message sent: ${data}`);
-        })
+
         .catch(error => {
             console.error('Error sending email:', error);
-            alert('Failed to send your email.');
         });
 });

@@ -38,7 +38,7 @@ func InitServer() (*http.ServeMux, error) {
 	fs := http.FileServer(http.Dir("./web"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	rateLimitter := rate.NewLimiter(1, 1)                                 // Rate limit of 1 request per second with a burst of 3 requests
+	rateLimitter := rate.NewLimiter(2, 2)                                 // Rate limit of 1 request per second with a burst of 3 requests
 	limitMiddleware := middleware.RateLimiterMiddlewareFunc(rateLimitter) // Middleware Function to rate limit handlers
 	logMiddleware := middleware.LoggingMiddlewareFunc(l.Log)              // Middleware Function for logging
 
@@ -51,6 +51,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("/register", handler.ServeRegister)
 	mux.Handle("/login", http.HandlerFunc(handler.ServeLogin))
 	mux.Handle("/profile", userMid(http.HandlerFunc(handler.ServeProfile)))
+	mux.Handle("/verify", userMid(http.HandlerFunc(handler.ServeVerify)))
 
 	mux.Handle("/admin", adminMid(http.HandlerFunc(handler.ServeAdmin)))
 	mux.Handle("/admin/bookings", adminMid(http.HandlerFunc(handler.ServeBookings)))

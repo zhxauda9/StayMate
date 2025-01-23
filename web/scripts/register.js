@@ -11,7 +11,6 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         return;
     }
 
-    // Password validation
     if (password.length < 8) {
         alert('Password must be at least 8 characters long.');
         return;
@@ -37,7 +36,21 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         return;
     }
 
-    const user = { name, email, password};
+    const user = { name, email, password };
+
+    const formData = new FormData();
+    formData.append('emails', email);
+    formData.append('subject', "Hi, Your Email Verified!");
+    formData.append('message', "Your email has been successfully verified. You can now log in to your account.");
+
+    fetch('/api/mail', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.text())
+        .catch(error => {
+            console.error('Error sending email:', error);
+        });
 
     try {
         const response = await fetch('/api/register', {
@@ -45,16 +58,20 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user),
         });
-
         if (!response.ok) {
-            const errorResponse = await response.json();
-            throw new Error(errorResponse.message || 'Failed to create user.');
+            const contentType = response.headers.get('Content-Type');
+            let errorMessage;
+            if (contentType && contentType.includes('application/json')) {
+                const errorResponse = await response.json();
+                errorMessage = errorResponse.message || 'Failed to create user.';
+            } else {
+                errorMessage = await response.text();
+            }
+            throw new Error(errorMessage);
         }
-
-        window.location.href = "/login";
+        window.location.href = "/verify";
     } catch (error) {
         console.error(error);
         alert(`Error: ${error.message}`);
     }
 });
-

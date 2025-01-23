@@ -11,15 +11,13 @@ async function fetchProfile() {
 
         const userData = await response.json();
         document.getElementById('profilePhoto').src = userData.photo || 'default-photo.jpg';
-        document.getElementById('profileName').textContent = userData.name;
-        document.getElementById('profileEmail').textContent = `Email: ${userData.email}`;
+        document.getElementById('profileName').textContent = userData.name || 'Your Name';
+        document.getElementById('profileEmail').textContent = `Email: ${userData.email || 'user@example.com'}`;
         document.getElementById('profileStatus').textContent = userData.status || 'Our honoured guest';
-
         document.getElementById('editName').value = userData.name;
         document.getElementById('editEmail').value = userData.email;
     } catch (error) {
         console.error('Error:', error);
-        document.body.innerHTML = `<p>Error loading profile</p>`;
     }
 }
 
