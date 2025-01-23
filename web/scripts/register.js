@@ -37,7 +37,6 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         return;
     }
 
-    // Construct user object
     const user = { name, email, password};
 
     try {

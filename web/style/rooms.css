@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient( 88.6deg,  rgba(6,67,105,1) 6.6%, rgb(163, 140, 13) 100.4% );
+    background-image: url('/static/pictures/background/rooms.jpg');
     margin-top: 20px;
 }
 
