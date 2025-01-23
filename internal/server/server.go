@@ -42,7 +42,7 @@ func InitServer() (*http.ServeMux, error) {
 	limitMiddleware := middleware.RateLimiterMiddlewareFunc(rateLimitter) // Middleware Function to rate limit handlers
 	logMiddleware := middleware.LoggingMiddlewareFunc(l.Log)              // Middleware Function for logging
 
-	//Auth middlewares
+	// Auth middlewares
 	adminMid := middleware.MiddlewareWrapper(middleware.AuthAdminMiddleware)
 	userMid := middleware.MiddlewareWrapper(middleware.AuthUserMiddleware)
 

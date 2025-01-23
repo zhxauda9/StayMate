@@ -25,8 +25,7 @@ func (m *mockMailService) Send(mails []string, subject, message, filename, mimeT
 }
 
 // Mock UserService
-type fakeService struct {
-}
+type fakeService struct{}
 
 func (m *fakeService) CreateUser(user models.User) error {
 	return nil
