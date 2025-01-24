@@ -9,6 +9,6 @@ type User struct {
 	Email    string `json:"email" gorm:"not null;unique"`
 	Password string `json:"password"`
 	Role     string `json:"role" gorm:"default:user"`
-	Status   string `json:"status" gorm:"not null"`
-	Photo    string `json:"photo" gorm:"default:static/pictures/default/user.jpg"` // Добавили поле Photo
+	Status   string `json:"status" gorm:"not null;default:inactive"`
+	Photo    string `json:"photo" gorm:"default:static/pictures/default/user.jpg"`
 }

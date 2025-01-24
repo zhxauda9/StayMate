@@ -18,8 +18,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             throw new Error(errorResponse.message || 'Failed to log in.');
         }
 
-        alert('Logged in successfully!');
-
         if (user.email == "root@root" && user.password == "admin"){
             window.location.href = "/admin";
         } else {

@@ -3,7 +3,10 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
@@ -27,6 +30,33 @@ func NewUserHandler(userService service.UserService) *userHandler {
 func (h *userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to create a new user")
 
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		http.Error(w, "Unable to parse form data", http.StatusBadRequest)
+		return
+	}
+
+	file, fileheader, err := r.FormFile("photo")
+	if err != nil {
+		http.Error(w, "Error uploading file", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	photoPath := "/static/pictures/storage" + filepath.Base(fileheader.Filename)
+	outFile, err := os.Create(photoPath)
+	if err != nil {
+		http.Error(w, "Error saving file", http.StatusInternalServerError)
+		return
+	}
+	defer outFile.Close()
+
+	_, err = io.Copy(outFile, file)
+	if err != nil {
+		http.Error(w, "Error saving file", http.StatusInternalServerError)
+		return
+	}
+
 	var user models.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		l.Log.Error().Err(err).Msg("Error decoding user data")
@@ -34,13 +64,9 @@ func (h *userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.validate.Struct(user); err != nil {
-		l.Log.Warn().Msg(fmt.Sprintf("Validation error: %v", err))
-		http.Error(w, fmt.Sprintf("Validation error: %v", err), http.StatusBadRequest)
-		return
-	}
+	user.Photo = photoPath
 
-	err := h.userService.CreateUser(user)
+	err = h.userService.CreateUser(user)
 	if err != nil {
 		l.Log.Error().Msg(fmt.Sprintf("Error creating user: %v", err))
 		http.Error(w, fmt.Sprintf("Error creating user: %v", err), http.StatusInternalServerError)

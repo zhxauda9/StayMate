@@ -6,7 +6,6 @@ import (
 )
 
 func Fill(db *gorm.DB) {
-	// Filling the bookings slice with sample data
 	users := []models.User{
 		{Name: "John Doe", Email: "john@example.com", Status: "active", Photo: ""},
 		{Name: "Jane Smith", Email: "jane@example.com", Status: "active", Photo: ""},

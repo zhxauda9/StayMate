@@ -9,6 +9,6 @@ type Room struct {
 	Class       string  `json:"class" gorm:"not null"`
 	Price       float64 `json:"price" gorm:"not null"`
 	Status      string  `json:"status" gorm:"not null"`
-	Photo       string  `json:"photo" gorm:"default:static/pictures/default/hotel.jpg"`   // Добавили поле Photo
-	Description string  `json:"description" gorm:"default:\"VERY BEAUITFUUUUULLLLLLLL\""` // Добавили поле Description
+	Photo       string  `json:"photo" gorm:"default:static/pictures/default/hotel.jpg"`
+	Description string  `json:"description" gorm:"default:\"VERY BEAUITFUUUUULLLLLLLL\""`
 }

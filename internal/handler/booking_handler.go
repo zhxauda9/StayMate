@@ -53,7 +53,6 @@ func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(booking)
 }
 
-// handler.go
 func (h *bookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Str("IP", r.RemoteAddr).Msg("Received request to fetch all bookings.")
 

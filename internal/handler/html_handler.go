@@ -36,3 +36,7 @@ func ServeRegister(w http.ResponseWriter, r *http.Request) {
 func ServeProfile(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, filepath.Join("web", "profile.html"))
 }
+
+func ServeVerify(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, filepath.Join("web", "verify.html"))
+}
