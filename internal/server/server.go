@@ -51,7 +51,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("/register", handler.ServeRegister)
 	mux.Handle("/login", http.HandlerFunc(handler.ServeLogin))
 	mux.Handle("/profile", userMid(http.HandlerFunc(handler.ServeProfile)))
-	mux.Handle("/verify", userMid(http.HandlerFunc(handler.ServeVerify)))
+	mux.Handle("/verify", http.HandlerFunc(handler.ServeVerify))
 
 	mux.Handle("/admin", adminMid(http.HandlerFunc(handler.ServeAdmin)))
 	mux.Handle("/admin/bookings", adminMid(http.HandlerFunc(handler.ServeBookings)))

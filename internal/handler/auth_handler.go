@@ -39,6 +39,7 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 	if err := h.authService.Register(user); err != nil {
 		http.Error(w, "Failed to register user", http.StatusInternalServerError)
 		fmt.Errorf("failed to create user: %w", err)
+		fmt.Println("failed to create user ", err)
 		return
 	}
 
