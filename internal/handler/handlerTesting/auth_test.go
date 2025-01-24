@@ -10,6 +10,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/zhxauda9/StayMate/internal/dal/migrations"
+	"github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/internal/handler"
 	"github.com/zhxauda9/StayMate/internal/myLogger"
 	"github.com/zhxauda9/StayMate/models"
@@ -40,11 +42,29 @@ func (m *mockAuthService) GetUserFromToken(token string) (models.User, error) {
 	return args.Get(0).(models.User), args.Error(1)
 }
 
+func (m *mockAuthService) VerifyEmail(email, code string) error {
+	return nil
+}
+
+type mockMailService struct {
+	mock.Mock
+}
+
+func (s *mockMailService) Send(mails []string, subject, message, filename, mimeType string, filedata []byte) error {
+	return nil
+}
+
 // Test for Register method
 func TestRegister(t *testing.T) {
 	myLogger.Log = myLogger.NewZeroLogger()
-	mockService := new(mockAuthService)
-	handler := handler.NewAuthHandler(mockService)
+	mockService := &mockAuthService{}
+	mockMail := &mockMailService{}
+	db, err := migrations.InitTestDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+	repo := postgres.NewVerifyRepository(db)
+	handler := handler.NewAuthHandler(mockService, mockMail, repo)
 
 	// Test case 1: Valid user
 	user := models.User{
@@ -56,7 +76,7 @@ func TestRegister(t *testing.T) {
 
 	t.Log("Running Test: Valid User Registration")
 	body, _ := json.Marshal(user)
-	req := httptest.NewRequest(http.MethodPost, "/auth/register", bytes.NewReader(body))
+	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewReader(body))
 	rec := httptest.NewRecorder()
 
 	handler.Register(rec, req)
@@ -64,7 +84,7 @@ func TestRegister(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, rec.Code)
 
 	var response map[string]string
-	err := json.NewDecoder(rec.Body).Decode(&response)
+	err = json.NewDecoder(rec.Body).Decode(&response)
 	assert.NoError(t, err)
 	assert.Equal(t, "User created successfully", response["message"])
 
@@ -89,7 +109,13 @@ func TestRegister(t *testing.T) {
 func TestLogin(t *testing.T) {
 	myLogger.Log = myLogger.NewZeroLogger()
 	mockService := new(mockAuthService)
-	handler := handler.NewAuthHandler(mockService)
+	mockMail := new(mockMailService)
+	db, err := migrations.InitTestDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+	repo := postgres.NewVerifyRepository(db)
+	handler := handler.NewAuthHandler(mockService, mockMail, repo)
 
 	credentials := struct {
 		Email    string `json:"email"`
@@ -112,7 +138,7 @@ func TestLogin(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rec.Code)
 
 	var response map[string]string
-	err := json.NewDecoder(rec.Body).Decode(&response)
+	err = json.NewDecoder(rec.Body).Decode(&response)
 	assert.NoError(t, err)
 	assert.Equal(t, "Login successful", response["message"])
 	assert.Equal(t, token, response["token"])
@@ -137,7 +163,13 @@ func TestValidateToken(t *testing.T) {
 
 	myLogger.Log = myLogger.NewZeroLogger()
 	mockService := new(mockAuthService)
-	handler := handler.NewAuthHandler(mockService)
+	mockMail := new(mockMailService)
+	db, err := migrations.InitTestDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+	repo := postgres.NewVerifyRepository(db)
+	handler := handler.NewAuthHandler(mockService, mockMail, repo)
 
 	token := "mocked-token"
 	mockService.On("ValidateToken", token).Return(true, nil)
@@ -152,7 +184,7 @@ func TestValidateToken(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rec.Code)
 
 	var response map[string]string
-	err := json.NewDecoder(rec.Body).Decode(&response)
+	err = json.NewDecoder(rec.Body).Decode(&response)
 	assert.NoError(t, err)
 	assert.Equal(t, "I'm logging!", response["message"])
 	assert.Equal(t, token, response["token"])
