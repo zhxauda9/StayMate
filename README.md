@@ -3,19 +3,43 @@
 ## **Project Overview** 🌍
 Stay Mate is a sophisticated software solution built to enhance and automate hotel management processes. Designed for hotel staff and management, it simplifies tasks like reservation management, customer tracking, and room availability. By integrating key features, Stay Mate aims to streamline daily operations, reduce manual workload, and increase efficiency.
 
-### **Features** 🚀
-- **Booking Management**: Create, update, view, and delete bookings easily.
-- **User Management**: Manage users, including their personal information and details.
-- **Room Management**: Add, update, view, and delete room details.
-- **Efficient Database Handling**: Uses PostgreSQL with GORM ORM for seamless database interactions.
-- **Sending emails**: Sending emails to users. Attaching files and images.
+## ✨ Key Features  
+
+- **📅 Booking Management**:  
+  Effortlessly create, update, view, and delete bookings.  
+
+- **👥 User Management**:  
+  Manage user information, including personal details and account data.  
+
+- **🏨 Room Management**:  
+  Add, update, view, and delete room details with ease.  
+
+- **⚙️ Efficient Database Handling**:  
+  Powered by PostgreSQL and GORM ORM for smooth and reliable database operations.  
+
+- **📧 Email Functionality**:  
+  - Send emails to users.  
+  - Attach files and images effortlessly.  
+  - Includes email verification for secure account setup.  
+
+- **📊 Data Handling**:  
+  - **Sorting**: Sort data based on various parameters for better insights.  
+  - **Pagination**: Navigate large datasets with ease using pagination.  
+  - **Filtering**: Apply filters to display only relevant data.  
+
+- **🔐 Registration and Authorization**:  
+  - User registration for new accounts.  
+  - Secure login for existing users.  
+
+- **👤 User Profile Management**:  
+  Users can view and update their profile information effortlessly. 
 
 ## **Team Members** 👥
 - **[Temutjin Koszhanov](https://github.com/Temutjin2k)** (SE-2308) 👨🏻‍💻
 - **[Aida Zhalgassova](https://github.com/zhxauda9)** (SE-2307) 👩🏻‍💻
 
 ## **Home Page** 🏠
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/home.png)
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/home.png)
 
 ## **Login** 👤
 ![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/login.png)
