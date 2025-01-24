@@ -17,18 +17,25 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
 ## **Home Page** 🏠
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/home.png)
 
+## **Login** 👤
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/login.png)
+
+## **Sign Up** 👤
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/signup.png)
+
+## **Verify** 🖥️
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/verify.png)
+
+## **Profile** 👤
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/profile.png)
+
 ## **Admin Panel** 🛠️
 ### **Bookings** 📅
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/booking1.png)
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/booking_records1.png)
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/bookings.png)
 ### **Users** 👤
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/users1.png)
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/users_records.png)
-
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/image.png)
 ### **Rooms** 🛏️
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/rooms1.png)
-![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/rooms_records.png)
-
+![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/rooms.png)
 ### **Email sending** 📧
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/email.png)
 
