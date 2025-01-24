@@ -51,7 +51,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("/register", handler.ServeRegister)
 	mux.Handle("/login", http.HandlerFunc(handler.ServeLogin))
 	mux.Handle("/profile", userMid(http.HandlerFunc(handler.ServeProfile)))
-	mux.Handle("/verify", userMid(http.HandlerFunc(handler.ServeVerify)))
+	mux.Handle("/verify", http.HandlerFunc(handler.ServeVerify))
 
 	mux.Handle("/admin", adminMid(http.HandlerFunc(handler.ServeAdmin)))
 	mux.Handle("/admin/bookings", adminMid(http.HandlerFunc(handler.ServeBookings)))
@@ -90,15 +90,6 @@ func InitServer() (*http.ServeMux, error) {
 	mux.Handle("PUT /rooms/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(room_handler.PutRoom)))))
 	mux.Handle("DELETE /rooms/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(room_handler.DeleteRoom)))))
 
-	authService := service.NewAuthService(user_service)
-	authHandler := handler.NewAuthHandler(authService)
-
-	mux.Handle("POST /api/register", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Register))))
-	mux.Handle("POST /api/login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
-	mux.Handle("GET /api/validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken))))
-	mux.Handle("GET /api/profile", logMiddleware(userMid(limitMiddleware(http.HandlerFunc(authHandler.GetProfile)))))
-	mux.Handle("POST /api/logout", logMiddleware(limitMiddleware((http.HandlerFunc(authHandler.Logout)))))
-
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")
 	email := os.Getenv("EMAIL")
@@ -110,9 +101,21 @@ func InitServer() (*http.ServeMux, error) {
 	}
 	mail_handler := handler.NewMailHandler(mailServ, user_service)
 	mux.Handle("GET /mail", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(mail_handler.ServeMail)))))
-	mux.Handle("POST /api/mail", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(mail_handler.SendMailHandler)))))
-	mux.Handle("POST /api/mailFile", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(mail_handler.SendMailFileHandler)))))
+	mux.Handle("POST /api/mail", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.SendMailHandler))))
+	mux.Handle("POST /api/mailFile", logMiddleware(limitMiddleware(http.HandlerFunc(mail_handler.SendMailFileHandler))))
 
+	verifyRepo := dalpostgres.NewVerifyRepository(db)
+	authService := service.NewAuthService(user_service)
+	authHandler := handler.NewAuthHandler(authService, mailServ, verifyRepo)
+
+	mux.Handle("POST /api/register", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Register))))
+	mux.Handle("POST /api/login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
+	mux.Handle("GET /api/validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken))))
+	mux.Handle("GET /api/profile", logMiddleware(userMid(limitMiddleware(http.HandlerFunc(authHandler.GetProfile)))))
+	mux.Handle("POST /api/logout", logMiddleware(userMid(limitMiddleware((http.HandlerFunc(authHandler.Logout))))))
+
+	verifyHandler := handler.NewVerifyHandler(db)
+	mux.HandleFunc("POST /api/verify", verifyHandler.Verify)
 	return mux, nil
 }
 

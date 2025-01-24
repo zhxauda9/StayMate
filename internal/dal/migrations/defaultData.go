@@ -6,26 +6,9 @@ import (
 )
 
 func Fill(db *gorm.DB) {
+	// Filling the bookings slice with sample data
 	users := []models.User{
-		{Name: "John Doe", Email: "john@example.com", Status: "active", Photo: ""},
-		{Name: "Jane Smith", Email: "jane@example.com", Status: "active", Photo: ""},
-		{Name: "Michael Johnson", Email: "michael@example.com", Status: "inactive", Photo: ""},
-		{Name: "Emily Davis", Email: "emily@example.com", Status: "active", Photo: ""},
-		{Name: "Sarah Williams", Email: "sarah@example.com", Status: "inactive", Photo: ""},
-		{Name: "David Brown", Email: "david@example.com", Status: "active", Photo: ""},
-		{Name: "Linda Garcia", Email: "linda@example.com", Status: "active", Photo: ""},
-		{Name: "James Martinez", Email: "james@example.com", Status: "inactive", Photo: ""},
-		{Name: "Patricia Lee", Email: "patricia@example.com", Status: "active", Photo: ""},
-		{Name: "Robert Wilson", Email: "robert@example.com", Status: "inactive", Photo: ""},
-		{Name: "Maria Lopez", Email: "maria@example.com", Status: "active", Photo: ""},
-		{Name: "William Walker", Email: "william@example.com", Status: "inactive", Photo: ""},
-		{Name: "Elizabeth Moore", Email: "elizabeth@example.com", Status: "active", Photo: ""},
-		{Name: "Joseph Taylor", Email: "joseph@example.com", Status: "inactive", Photo: ""},
-		{Name: "Linda Anderson", Email: "linda.anderson@example.com", Status: "active", Photo: ""},
-		{Name: "Charles Thomas", Email: "charles@example.com", Status: "inactive", Photo: ""},
-		{Name: "Nancy Jackson", Email: "nancy@example.com", Status: "active", Photo: ""},
-		{Name: "Donald Harris", Email: "donald@example.com", Status: "inactive", Photo: ""},
-		{Name: "Barbara Clark", Email: "barbara@example.com", Status: "active", Photo: ""},
+		{Name: "admin", Email: "admin@admin.com", Status: "active", Role: "admin", Password: "$2a$10$HrM2zGHRB8HWibZEXfbN6OkBqvm9LOguPV8MfVJbexX9IXfo7hai2"},
 	}
 
 	for _, user := range users {
@@ -39,26 +22,26 @@ func Fill(db *gorm.DB) {
 	}
 
 	rooms := []models.Room{
-		{Number: 101, Class: "single", Price: 100.00, Status: "available", Photo: "", Description: ""},
-		{Number: 102, Class: "double", Price: 150.00, Status: "occupied", Photo: "", Description: ""},
-		{Number: 103, Class: "suite", Price: 250.00, Status: "available", Photo: "", Description: ""},
-		{Number: 104, Class: "single", Price: 120.00, Status: "available", Photo: "", Description: ""},
-		{Number: 105, Class: "double", Price: 180.00, Status: "occupied", Photo: "", Description: ""},
-		{Number: 106, Class: "suite", Price: 300.00, Status: "available", Photo: "", Description: ""},
-		{Number: 107, Class: "single", Price: 90.00, Status: "occupied", Photo: "", Description: ""},
-		{Number: 108, Class: "double", Price: 160.00, Status: "available", Photo: "", Description: ""},
-		{Number: 109, Class: "suite", Price: 280.00, Status: "available", Photo: "", Description: ""},
-		{Number: 110, Class: "single", Price: 110.00, Status: "available", Photo: "", Description: ""},
-		{Number: 111, Class: "double", Price: 170.00, Status: "occupied", Photo: "", Description: ""},
-		{Number: 112, Class: "suite", Price: 350.00, Status: "available", Photo: "", Description: ""},
-		{Number: 113, Class: "single", Price: 95.00, Status: "occupied", Photo: "", Description: ""},
-		{Number: 114, Class: "double", Price: 140.00, Status: "available", Photo: "", Description: ""},
-		{Number: 115, Class: "suite", Price: 290.00, Status: "occupied", Photo: "", Description: ""},
-		{Number: 116, Class: "single", Price: 105.00, Status: "available", Photo: "", Description: ""},
-		{Number: 117, Class: "double", Price: 155.00, Status: "available", Photo: "", Description: ""},
-		{Number: 118, Class: "suite", Price: 320.00, Status: "available", Photo: "", Description: ""},
-		{Number: 119, Class: "single", Price: 115.00, Status: "occupied", Photo: "", Description: ""},
-		{Number: 120, Class: "double", Price: 165.00, Status: "available", Photo: "", Description: ""},
+		{Number: 101, Class: "single", Price: 100.00, Status: "available", Description: ""},
+		{Number: 102, Class: "double", Price: 150.00, Status: "occupied", Description: ""},
+		{Number: 103, Class: "suite", Price: 250.00, Status: "available", Description: ""},
+		{Number: 104, Class: "single", Price: 120.00, Status: "available", Description: ""},
+		{Number: 105, Class: "double", Price: 180.00, Status: "occupied", Description: ""},
+		{Number: 106, Class: "suite", Price: 300.00, Status: "available", Description: ""},
+		{Number: 107, Class: "single", Price: 90.00, Status: "occupied", Description: ""},
+		{Number: 108, Class: "double", Price: 160.00, Status: "available", Description: ""},
+		{Number: 109, Class: "suite", Price: 280.00, Status: "available", Description: ""},
+		{Number: 110, Class: "single", Price: 110.00, Status: "available", Description: ""},
+		{Number: 111, Class: "double", Price: 170.00, Status: "occupied", Description: ""},
+		{Number: 112, Class: "suite", Price: 350.00, Status: "available", Description: ""},
+		{Number: 113, Class: "single", Price: 95.00, Status: "occupied", Description: ""},
+		{Number: 114, Class: "double", Price: 140.00, Status: "available", Description: ""},
+		{Number: 115, Class: "suite", Price: 290.00, Status: "occupied", Description: ""},
+		{Number: 116, Class: "single", Price: 105.00, Status: "available", Description: ""},
+		{Number: 117, Class: "double", Price: 155.00, Status: "available", Description: ""},
+		{Number: 118, Class: "suite", Price: 320.00, Status: "available", Description: ""},
+		{Number: 119, Class: "single", Price: 115.00, Status: "occupied", Description: ""},
+		{Number: 120, Class: "double", Price: 165.00, Status: "available", Description: ""},
 	}
 
 	for _, room := range rooms {

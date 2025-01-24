@@ -26,7 +26,7 @@ func NewUserRepository(db *gorm.DB) UserRepo {
 }
 
 func (r *userRepository) CreateUser(user models.User) error {
-	if user.Name == "" || user.Email == "" || user.Status == "" {
+	if user.Name == "" || user.Email == "" {
 		return errors.New("name and email fields cannot be empty")
 	}
 	if err := r.db.Create(&user).Error; err != nil {

@@ -22,7 +22,7 @@ type authService struct {
 	userService UserService // Используем сервис пользователей
 }
 
-func NewAuthService(userService UserService) AuthService {
+func NewAuthService(userService UserService) *authService {
 	return &authService{userService: userService}
 }
 

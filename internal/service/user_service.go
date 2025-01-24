@@ -33,11 +33,9 @@ func (s *userService) CreateUser(user models.User) error {
 	if existingUser.ID != 0 {
 		return errors.New("email already exists")
 	}
+
 	if user.Name == "" || user.Email == "" {
 		return errors.New("name and email cannot be empty")
-	}
-	if user.Status == "" {
-		user.Status = "active"
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
