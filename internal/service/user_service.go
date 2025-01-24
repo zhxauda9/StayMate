@@ -14,6 +14,7 @@ type UserService interface {
 	CreateUser(user models.User) error
 	GetUserByID(id int) (models.User, error)
 	GetUserByEmail(email string) (models.User, error)
+	GetUserByVerificationCode(verificationCode string) (models.User, error)
 	GetAllUsers(sort string, page int) ([]models.User, error)
 	UpdateUser(id int, user models.User) error
 	DeleteUser(id int) error
@@ -66,6 +67,10 @@ func (s *userService) GetAllUsers(sort string, page int) ([]models.User, error) 
 	}
 
 	return users, nil
+}
+
+func (s *userService) GetUserByVerificationCode(verificationCode string) (models.User, error) {
+	return s.repo.GetUserByVerificationCode(verificationCode)
 }
 
 func (s *userService) UpdateUser(id int, user models.User) error {

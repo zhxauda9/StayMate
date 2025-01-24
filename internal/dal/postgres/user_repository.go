@@ -12,6 +12,7 @@ type UserRepo interface {
 	CreateUser(user models.User) error
 	GetUserByID(id int) (models.User, error)
 	GetUserByEmail(email string) (models.User, error)
+	GetUserByVerificationCode(verificationCode string) (models.User, error)
 	GetAllUsers(sort string, limit, offset int) ([]models.User, error)
 	UpdateUser(id int, user models.User) error
 	DeleteUser(id int) error
@@ -49,6 +50,17 @@ func (r *userRepository) GetUserByID(id int) (models.User, error) {
 func (r *userRepository) GetUserByEmail(email string) (models.User, error) {
 	var user models.User
 	if err := r.db.First(&user, "email=?", email).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return models.User{}, errors.New("user not found")
+		}
+		return models.User{}, err
+	}
+	return user, nil
+}
+
+func (r *userRepository) GetUserByVerificationCode(verificationCode string) (models.User, error) {
+	var user models.User
+	if err := r.db.First(&user, "verification_code=?", verificationCode).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return models.User{}, errors.New("user not found")
 		}

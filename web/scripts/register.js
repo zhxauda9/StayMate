@@ -38,20 +38,6 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
 
     const user = { name, email, password };
 
-    const formData = new FormData();
-    formData.append('emails', email);
-    formData.append('subject', "Hi, Your Email Verified!");
-    formData.append('message', "Your email has been successfully verified. You can now log in to your account.");
-
-    fetch('/api/mail', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.text())
-        .catch(error => {
-            console.error('Error sending email:', error);
-        });
-
     try {
         const response = await fetch('/api/register', {
             method: 'POST',

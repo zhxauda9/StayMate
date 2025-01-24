@@ -16,10 +16,12 @@ type AuthService interface {
 	Login(email, password string) (string, error)
 	ValidateToken(token string) (bool, error)
 	GetUserFromToken(tokenString string) (models.User, error)
+	FindUserByVerificationCode(verificationCode string) (models.User, error)
+	UpdateUser(id int, user models.User) error
 }
 
 type authService struct {
-	userService UserService // Используем сервис пользователей
+	userService UserService
 }
 
 func NewAuthService(userService UserService) AuthService {
@@ -111,4 +113,16 @@ func (s *authService) GetUserFromToken(tokenString string) (models.User, error) 
 	}
 
 	return user, nil
+}
+
+func (s *authService) FindUserByVerificationCode(verificationCode string) (models.User, error) {
+	return s.userService.GetUserByVerificationCode(verificationCode)
+}
+
+func (s *authService) UpdateUser(id int, user models.User) error {
+	result := s.userService.UpdateUser(id, user)
+	if result.Error != nil {
+		return errors.New("failed to update user")
+	}
+	return nil
 }

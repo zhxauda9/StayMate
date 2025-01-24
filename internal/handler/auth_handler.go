@@ -4,7 +4,10 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/zhxauda9/StayMate/internal/service"
 	"github.com/zhxauda9/StayMate/models"
@@ -18,6 +21,11 @@ func NewAuthHandler(authService service.AuthService) *authHandler {
 	return &authHandler{authService: authService}
 }
 
+func generateVerificationCode() string {
+	rand.Seed(time.Now().UnixNano())
+	return fmt.Sprintf("%04d", rand.Intn(10000))
+}
+
 func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -25,10 +33,16 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	verificationCode := generateVerificationCode()
+	user.VerificationCode = verificationCode
+
 	if err := h.authService.Register(user); err != nil {
 		http.Error(w, "Failed to register user", http.StatusInternalServerError)
+		fmt.Errorf("failed to create user: %w", err)
 		return
 	}
+
+	sendEmail(user.Email, verificationCode)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"})
@@ -120,4 +134,48 @@ func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Logout successful"})
+}
+
+func (h *authHandler) Verify(w http.ResponseWriter, r *http.Request) {
+	var request struct {
+		VerificationCode string `json:"verificationCode"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.authService.FindUserByVerificationCode(request.VerificationCode)
+	if err != nil || user.Verified {
+		http.Error(w, "Invalid or expired code", http.StatusUnauthorized)
+		return
+	}
+
+	user.Verified = true
+	user.VerificationCode = ""
+	if err := h.authService.UpdateUser(user.ID, user); err != nil {
+		http.Error(w, "Failed to verify user", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "User verified successfully"})
+}
+
+func sendEmail(emailToCheck string, verificationCode string) error {
+	smtpHost := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	email := os.Getenv("EMAIL")
+	password := os.Getenv("PASSWORD")
+
+	mailServ, err := service.NewMailService(smtpHost, smtpPort, email, password)
+	subject := "Email Verification"
+	message := fmt.Sprintf("Your verification code is: %s", verificationCode)
+
+	err = mailServ.Send([]string{emailToCheck}, subject, message, "", "", nil)
+	if err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
+	}
+	return nil
 }
