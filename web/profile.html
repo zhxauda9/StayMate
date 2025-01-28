@@ -10,108 +10,118 @@
 </head>
 
 <body>
-<header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="logo font-weight-bold h4 mb-0">StayMate</div>
-        <div class="d-flex align-items-center">
-            <a href="#" aria-label="Facebook">
-                <img class="ml-2" src="static/pictures/icons/icons8-facebook-новый-100 (1).png" width="20" height="20" alt="Facebook">
-            </a>
-            <a href="#" aria-label="Instagram">
-                <img class="ml-2" src="static/pictures/icons/icons8-instagram-64.png" width="20" height="20" alt="Instagram">
-            </a>
-            <a href="#" aria-label="TikTok">
-                <img class="ml-2" src="static/pictures/icons/icons8-тикток-100.png" width="20" height="20" alt="TikTok">
-            </a>
-            <button class="btn font-weight-bold ml-3 p-2 px-3 text-dark" onclick="logout()">Log Out</button>
-        </div>
-    </div>
-</header>
-
-<main class="profile-container" >
-    <div class="container d-flex justify-content-center" style="margin-top: 120px; margin-bottom: 80px;">
-        <div class="card shadow-lg" style="width: 100%; max-width: 700px; border: none; border-radius: 20px;">
-            <div class="profile-header text-center p-5" style="background: linear-gradient(to right, #d2b48c, #8b5e3c); color: white; border-radius: 20px 20px 0 0;">
-                <img id="profilePhoto" src="default-photo.jpg" alt="Profile Picture" class="profile-photo mb-3" style="width: 150px; height: 150px; border: 5px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-                <h2 id="profileName" class="mb-2">Your Name</h2>
-                <p id="just" class="mb-0" style="font-size: 1rem;">Our honoured guest</p>
-            </div>
-            <div class="card-body text-center px-4 py-5" style="background-color: #f5f5dc; border-radius: 0 0 20px 20px;">
-                <h6 class="text-muted mb-4" style="font-size: 1rem;">User Information</h6>
-                <p id="profileStatus" style="font-size: 1.2rem; margin-bottom: 10px;">Our honoured guest</p>
-                <p id="profileEmail" style="font-size: 1rem; color: #555;">Email: user@example.com</p>
-                <button class="btn btn-outline-dark btn-sm px-4" data-toggle="modal" data-target="#editProfileModal" style="margin-top: 10px;">Edit Profile</button>
-                <button class="btn btn-outline-danger btn-sm px-4 mt-2" onclick="logout()">Log Out</button>
+    <header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="logo font-weight-bold h4 mb-0">StayMate</div>
+            <div class="d-flex align-items-center">
+                <a href="#" aria-label="Facebook">
+                    <img class="ml-2" src="static/pictures/icons/icons8-facebook-новый-100 (1).png" width="20"
+                        height="20" alt="Facebook">
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <img class="ml-2" src="static/pictures/icons/icons8-instagram-64.png" width="20" height="20"
+                        alt="Instagram">
+                </a>
+                <a href="https://github.com/zhxauda9/StayMate" aria-label="TikTok">
+                    <img class="ml-2" src="static/pictures/icons/github.png" width="20" height="20" alt="Github">
+                </a>
+                <button class="btn font-weight-bold ml-3 p-2 px-3 text-dark" onclick="logout()">Log Out</button>
             </div>
         </div>
-    </div>
-</main>
+    </header>
 
-</main>
-
-<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Profile</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="editProfileForm">
-                    <div class="form-group">
-                        <label for="editName">Name</label>
-                        <input type="text" class="form-control" id="editName">
-                    </div>
-                    <div class="form-group">
-                        <label for="editEmail">Email</label>
-                        <input type="email" class="form-control" id="editEmail" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="editPhoto">Profile Photo</label>
-                        <input type="file" class="form-control-file" id="editPhoto">
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
-                </form>
+    <main class="profile-container">
+        <div class="container d-flex justify-content-center" style="margin-top: 120px; margin-bottom: 80px;">
+            <div class="card shadow-lg" style="width: 100%; max-width: 700px; border: none; border-radius: 20px;">
+                <div class="profile-header text-center p-5"
+                    style="background: linear-gradient(to right, #d2b48c, #8b5e3c); color: white; border-radius: 20px 20px 0 0;">
+                    <img id="profilePhoto" src="default-photo.jpg" alt="Profile Picture" class="profile-photo mb-3"
+                        style="width: 150px; height: 150px; border: 5px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                    <h2 id="profileName" class="mb-2">Your Name</h2>
+                    <p id="just" class="mb-0" style="font-size: 1rem;">Our honoured guest</p>
+                </div>
+                <div class="card-body text-center px-4 py-5"
+                    style="background-color: #f5f5dc; border-radius: 0 0 20px 20px;">
+                    <h6 class="text-muted mb-4" style="font-size: 1rem;">User Information</h6>
+                    <p id="profileStatus" style="font-size: 1.2rem; margin-bottom: 10px;">Our honoured guest</p>
+                    <p id="profileEmail" style="font-size: 1rem; color: #555;">Email: user@example.com</p>
+                    <button class="btn btn-outline-dark btn-sm px-4" data-toggle="modal" data-target="#editProfileModal"
+                        style="margin-top: 10px;">Edit Profile</button>
+                    <button class="btn btn-outline-danger btn-sm px-4 mt-2" onclick="logout()">Log Out</button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </main>
 
-<script src="static/scripts/profile.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    </main>
 
-<footer style="background-color: #333; color: #fff; padding: 40px 20px; text-align: center;">
-    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
-        <div style="flex: 1 1 300px; margin: 10px;">
-            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">About Us</h3>
-            <p style="font-size: 0.9rem; line-height: 1.6;">
-                We are committed to providing exceptional hospitality and unforgettable experiences. Your comfort is our
-                priority.
-            </p>
-        </div>
-        <div style="flex: 1 1 200px; margin: 10px;">
-            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Quick Links</h3>
-            <ul style="list-style: none; padding: 0;">
-                <li><a href="home.html#about-us" style="color: #fff; text-decoration: none;">About Us</a></li>
-                <li><a href="home.html#amenities" style="color: #fff; text-decoration: none;">Amenities</a></li>
-                <li><a href="home.html#contact-email" style="color: #fff; text-decoration: none;">Contact Us</a></li>
-                <li><a href="home.html#testimonials" style="color: #fff; text-decoration: none;">Testimonials</a></li>
-            </ul>
-        </div>
-        <div style="flex: 1 1 250px; margin: 10px;">
-            <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Contact Us</h3>
-            <p style="font-size: 0.9rem; line-height: 1.6;">
-                Temutjin Koszhanov, 2308 <br>
-                Aida Zhalgassova, 2307
-            </p>
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="form-group">
+                            <label for="editName">Name</label>
+                            <input type="text" class="form-control" id="editName">
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" class="form-control" id="editEmail" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPhoto">Profile Photo</label>
+                            <input type="file" class="form-control-file" id="editPhoto">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    <div style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
-        &copy; 2025 Staymate. All rights reserved.
-    </div>
-</footer>
+
+    <script src="static/scripts/profile.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <footer style="background-color: #333; color: #fff; padding: 40px 20px; text-align: center;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
+            <div style="flex: 1 1 300px; margin: 10px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">About Us</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">
+                    We are committed to providing exceptional hospitality and unforgettable experiences. Your comfort is
+                    our
+                    priority.
+                </p>
+            </div>
+            <div style="flex: 1 1 200px; margin: 10px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Quick Links</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href="home.html#about-us" style="color: #fff; text-decoration: none;">About Us</a></li>
+                    <li><a href="home.html#amenities" style="color: #fff; text-decoration: none;">Amenities</a></li>
+                    <li><a href="home.html#contact-email" style="color: #fff; text-decoration: none;">Contact Us</a>
+                    </li>
+                    <li><a href="home.html#testimonials" style="color: #fff; text-decoration: none;">Testimonials</a>
+                    </li>
+                </ul>
+            </div>
+            <div style="flex: 1 1 250px; margin: 10px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Contact Us</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">
+                    Temutjin Koszhanov, 2308 <br>
+                    Aida Zhalgassova, 2307
+                </p>
+            </div>
+        </div>
+        <div style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
+            &copy; 2025 Staymate. All rights reserved.
+        </div>
+    </footer>
 </body>
+
 </html>

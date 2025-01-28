@@ -33,6 +33,7 @@ func (h *verifyHandler) SendVerifyCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if request.Email == "" {
+		myLogger.Log.Error().Msg("Email and verification code are required")
 		http.Error(w, "Email and verification code are required", http.StatusBadRequest)
 		return
 	}
@@ -43,6 +44,7 @@ func (h *verifyHandler) SendVerifyCode(w http.ResponseWriter, r *http.Request) {
 	var existingRecord models.UsersEmailConfirm
 	err = h.db.Where("email = ?", request.Email).First(&existingRecord).Error
 	if err == nil && time.Now().Before(existingRecord.CreatedAt.Add(5*time.Minute)) {
+		myLogger.Log.Error().Msg("A verification code has already been sent. Please wait 5 minutes before requesting another.")
 		http.Error(w, "A verification code has already been sent. Please wait 5 minutes before requesting another.", http.StatusTooManyRequests)
 		return
 	}

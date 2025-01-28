@@ -26,6 +26,18 @@
             width: 100%;
         }
 
+        h2 {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .instruction {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -52,14 +64,25 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            margin-top: 10px;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        .template-container {
-            display: none;
+        #request-have-btn {
+            background-color: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        #request-have-btn:hover {
+            background-color: #f0f8ff;
+            color: #0056b3;
+            border-color: #0056b3;
         }
     </style>
 </head>
@@ -67,24 +90,24 @@
 <body>
     <div class="container">
         <h2>Email Authentication</h2>
+        <p class="instruction">To complete your registration, please request a verification code by entering your email
+            below. If you already have a code, click the button below to verify it.</p>
         <div id="request-code-form">
             <div class="form-group">
                 <label for="email">Enter your email:</label>
                 <input type="email" id="email" placeholder="example@example.com">
             </div>
             <button id="request-code-btn">Request Code</button>
+            <button id="request-have-btn">Already have a code?</button>
         </div>
         <div id="verify-code-form" style="display: none;">
             <div class="form-group">
                 <label for="verification-code">Enter the code:</label>
                 <input type="text" id="verification-code" placeholder="12345">
             </div>
+            <p class="expiration-info">The code will expire in 5 minutes.</p>
             <button id="verify-code-btn">Verify Code</button>
         </div>
-        <template id="success-template">
-            <h3>Authentication Successful</h3>
-            <p>Welcome, <span id="user-email"></span>!</p>
-        </template>
     </div>
 
     <script>
@@ -94,6 +117,7 @@
         const verificationCodeInput = document.getElementById('verification-code');
         const requestCodeButton = document.getElementById('request-code-btn');
         const verifyCodeButton = document.getElementById('verify-code-btn');
+        const alreadyHaveCodeButton = document.getElementById('request-have-btn');
 
         // Handle requesting a verification code
         requestCodeButton.addEventListener('click', async () => {
@@ -146,10 +170,8 @@
                 });
 
                 if (response.ok) {
-                    const template = document.getElementById('success-template').content.cloneNode(true);
-                    template.querySelector('#user-email').textContent = email;
-                    document.querySelector('.container').innerHTML = '';
-                    document.querySelector('.container').appendChild(template);
+                    alert("Your email has been successfully verified. You can now log in!");
+                    window.location.href = "/login";
                 } else {
                     const error = await response.json();
                     alert(`Error: ${error.message}`);
@@ -158,6 +180,12 @@
                 console.error("Error verifying code:", error);
                 alert("An error occurred while verifying the code. Please try again.");
             }
+        });
+
+        // Handle "Already have a code?" button click
+        alreadyHaveCodeButton.addEventListener('click', () => {
+            requestCodeForm.style.display = 'none';
+            verifyCodeForm.style.display = 'block';
         });
     </script>
 </body>
