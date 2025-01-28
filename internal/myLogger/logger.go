@@ -59,3 +59,28 @@ func NewZeroLoggerV2() *zerolog.Logger {
 
 	return &logger
 }
+
+func NewZeroLoggerV3() *zerolog.Logger {
+	file, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o666)
+	if err != nil {
+		// Fall back to only logging to stderr if the file cannot be opened
+		logWriter := zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339}
+		logger := zerolog.New(logWriter).
+			Level(zerolog.TraceLevel).
+			With().
+			Timestamp().
+			Caller().
+			Logger()
+
+		logger.Warn().Msg("Logger initialized but only console logging availible")
+		return &logger
+	}
+	logger := zerolog.New(file).
+		Level(zerolog.TraceLevel).
+		With().
+		Timestamp().
+		Caller().
+		Logger()
+
+	return &logger
+}
