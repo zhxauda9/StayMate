@@ -37,6 +37,6 @@ func ServeProfile(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, filepath.Join("web", "profile.html"))
 }
 
-func ServeVerify(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, filepath.Join("web", "verify.html"))
+func ServeEmailVerify(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, filepath.Join("web", "email-confirm.html"))
 }

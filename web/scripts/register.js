@@ -16,48 +16,15 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         return;
     }
 
-    if (!/[A-Z]/.test(password)) {
-        alert('Password must contain at least one uppercase letter.');
-        return;
-    }
-
-    if (!/[a-z]/.test(password)) {
-        alert('Password must contain at least one lowercase letter.');
-        return;
-    }
-
-    if (!/[0-9]/.test(password)) {
-        alert('Password must contain at least one number.');
-        return;
-    }
-
-    if (!/[\W_]/.test(password)) {
-        alert('Password must contain at least one special character (e.g., @, #, $, etc.).');
-        return;
-    }
-
     const user = { name, email, password };
 
-    const formData = new FormData();
-    formData.append('emails', email);
-    formData.append('subject', "Hi, Your Email Verified!");
-    formData.append('message', "Your email has been successfully verified. You can now log in to your account.");
-
-    fetch('/api/mail', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.text())
-        .catch(error => {
-            console.error('Error sending email:', error);
-        });
-
     try {
-        const response = await fetch('/api/register', {
+        const response = await fetch('/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user),
         });
+
         if (!response.ok) {
             const contentType = response.headers.get('Content-Type');
             let errorMessage;
@@ -69,9 +36,10 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             }
             throw new Error(errorMessage);
         }
-        window.location.href = "/verify";
+        window.location.href = "/verify-email";
     } catch (error) {
         console.error(error);
         alert(`Error: ${error.message}`);
     }
 });
+

@@ -6,16 +6,19 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/zhxauda9/StayMate/internal/dal/postgres"
+	"github.com/zhxauda9/StayMate/internal/myLogger"
 	"github.com/zhxauda9/StayMate/internal/service"
 	"github.com/zhxauda9/StayMate/models"
 )
 
 type authHandler struct {
 	authService service.AuthService
+	verifyrepo  *postgres.VerifyRepository
 }
 
-func NewAuthHandler(authService service.AuthService) *authHandler {
-	return &authHandler{authService: authService}
+func NewAuthHandler(authService service.AuthService, verifyrepo *postgres.VerifyRepository) *authHandler {
+	return &authHandler{authService: authService, verifyrepo: verifyrepo}
 }
 
 func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -24,9 +27,10 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
-
+	myLogger.Log.Debug().Msg(fmt.Sprintf("name: %v, email:%v", user.Name, user.Email))
 	if err := h.authService.Register(user); err != nil {
 		http.Error(w, "Failed to register user", http.StatusInternalServerError)
+		myLogger.Log.Err(err).Msg("Failed to register user")
 		return
 	}
 

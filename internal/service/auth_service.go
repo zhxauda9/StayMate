@@ -22,7 +22,7 @@ type authService struct {
 	userService UserService // Используем сервис пользователей
 }
 
-func NewAuthService(userService UserService) AuthService {
+func NewAuthService(userService UserService) *authService {
 	return &authService{userService: userService}
 }
 
@@ -38,6 +38,10 @@ func (s *authService) Login(email, password string) (string, error) {
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		return "", errors.New("invalid credentials")
+	}
+
+	if user.Status != "active" {
+		return "", errors.New("user is not active")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
