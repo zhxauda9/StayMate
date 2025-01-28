@@ -1,6 +1,6 @@
 async function fetchProfile() {
     try {
-        const response = await fetch('/api/profile', {
+        const response = await fetch('/auth/profile', {
             method: 'GET',
             credentials: 'include',
         });
@@ -32,7 +32,7 @@ async function saveProfile() {
     }
 
     try {
-        const response = await fetch('/api/profile', {
+        const response = await fetch('/auth/profile', {
             method: 'PUT',
             credentials: 'include',
             body: formData,
@@ -62,7 +62,7 @@ function logout() {
         });
     }
 
-    fetch('/api/logout', { method: 'POST', credentials: 'include' })
+    fetch('/auth/logout', { method: 'POST', credentials: 'include' })
         .then(() => {
             window.location.href = '/login';
         })

@@ -13,33 +13,38 @@
 </style>
 
 <body>
-<header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="logo font-weight-bold h4 mb-0">StayMate</div>
-        <div class="d-flex align-items-center">
-            <a href="#" aria-label="Facebook">
-                <img class="ml-2" src="static/pictures/icons/icons8-facebook-новый-100 (1).png" width="20" height="20" alt="Facebook">
-            </a>
-            <a href="#" aria-label="Instagram">
-                <img class="ml-2" src="static/pictures/icons/icons8-instagram-64.png" width="20" height="20" alt="Instagram">
-            </a>
-            <a href="#" aria-label="TikTok">
-                <img class="ml-2" src="static/pictures/icons/icons8-тикток-100.png" width="20" height="20" alt="TikTok">
-            </a>
-            <button class="btn font-weight-bold ml-3 p-2 px-3 text-dark" onclick="logout()">Log Out</button>
+    <header class="text-dark py-3 shadow-lg fixed-top" style="background: rgb(249, 248, 248);">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="logo font-weight-bold h4 mb-0">StayMate</div>
+            <div class="d-flex align-items-center">
+                <a href="#" aria-label="Facebook">
+                    <img class="ml-2" src="static/pictures/icons/icons8-facebook-новый-100 (1).png" width="20"
+                        height="20" alt="Facebook">
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <img class="ml-2" src="static/pictures/icons/icons8-instagram-64.png" width="20" height="20"
+                        alt="Instagram">
+                </a>
+                <a href="#" aria-label="TikTok">
+                    <img class="ml-2" src="static/pictures/icons/icons8-тикток-100.png" width="20" height="20"
+                        alt="TikTok">
+                </a>
+                <button class="btn font-weight-bold ml-3 p-2 px-3 text-dark" onclick="logout()">Log Out</button>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
     <div class="d-flex flex-column justify-content-center align-items-center text-center text-white vh-100"
         style="background-size: cover;">
-        <h1 class="display-4 font-weight-bold" style="text-shadow: 5px 5px 5px rgba(33, 32, 32, 0.51);">Welcome to Admin MODE<br>Databases:</h1>
+        <h1 class="display-4 font-weight-bold" style="text-shadow: 5px 5px 5px rgba(33, 32, 32, 0.51);">Welcome to Admin
+            MODE<br>Databases:</h1>
         <a href="/admin/bookings" class="btn mt-3 px-5 py-2 font-weight-bold"
             style="background-color: blanchedalmond; border-radius: 15px;">Bookings</a>
         <a href="/admin/rooms" class="btn mt-3 px-5 py-2 font-weight-bold"
             style="background-color: blanchedalmond; border-radius: 15px;">Rooms</a>
         <a href="/admin/users" class="btn mt-3 px-5 py-2 font-weight-bold"
             style="background-color: blanchedalmond; border-radius: 15px;">Users</a>
-        <button class="btn mt-3 px-5 py-2 font-weight-bold" style="background-color: blanchedalmond;border-radius: 15px;" onclick="logout()">Log Out</button>
+        <button class="btn mt-3 px-5 py-2 font-weight-bold"
+            style="background-color: blanchedalmond;border-radius: 15px;" onclick="logout()">Log Out</button>
     </div>
 </body>
 <script>
@@ -54,7 +59,7 @@
             });
         }
 
-        fetch('/api/logout', { method: 'POST', credentials: 'include' })
+        fetch('/auth/logout', { method: 'POST', credentials: 'include' })
             .then(() => {
                 window.location.href = '/login';
             })

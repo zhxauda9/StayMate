@@ -40,6 +40,10 @@ func (s *authService) Login(email, password string) (string, error) {
 		return "", errors.New("invalid credentials")
 	}
 
+	if user.Status != "active" {
+		return "", errors.New("user is not active")
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"email":   user.Email,

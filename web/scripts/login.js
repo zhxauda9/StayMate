@@ -7,7 +7,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await fetch('/api/login', {
+        const response = await fetch('/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user),
@@ -17,12 +17,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             const errorResponse = await response.json();
             throw new Error(errorResponse.message || 'Failed to log in.');
         }
-
-        if (user.email == "root@root" && user.password == "admin"){
-            window.location.href = "/admin";
-        } else {
-            window.location.href = "/profile";
-        }
+        window.location.href = "/profile";
     } catch (error) {
         console.error(error);
         alert(`Error: ${error.message}`);

@@ -4,7 +4,6 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand/v2"
 	"net/http"
 
 	"github.com/zhxauda9/StayMate/internal/dal/postgres"
@@ -15,12 +14,11 @@ import (
 
 type authHandler struct {
 	authService service.AuthService
-	mailService service.MailServiceImpl
 	verifyrepo  *postgres.VerifyRepository
 }
 
-func NewAuthHandler(authService service.AuthService, mailService service.MailServiceImpl, verifyrepo *postgres.VerifyRepository) *authHandler {
-	return &authHandler{authService: authService, mailService: mailService, verifyrepo: verifyrepo}
+func NewAuthHandler(authService service.AuthService, verifyrepo *postgres.VerifyRepository) *authHandler {
+	return &authHandler{authService: authService, verifyrepo: verifyrepo}
 }
 
 func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -36,22 +34,6 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	code := GenerateCode()
-
-	row := models.UsersEmailConfirm{Code: code, Email: user.Email}
-	err := h.verifyrepo.InsertCode(row)
-	if err != nil {
-		myLogger.Log.Error().Err(err).Msg("Could not save code in repo")
-		http.Error(w, "Server error", http.StatusInternalServerError)
-		return
-	}
-
-	err = h.mailService.Send([]string{user.Email}, "Verifycation Code", fmt.Sprintf("Hello it's StayMate Verify your email.\nCode: %v", code), "", "", []byte{})
-	if err != nil {
-		myLogger.Log.Error().Err(err).Msg("User created but could not Send email")
-		http.Error(w, "User created but could not Send email", http.StatusInternalServerError)
-		return
-	}
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"})
 }
@@ -142,11 +124,4 @@ func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Logout successful"})
-}
-
-func GenerateCode() string {
-	// Generate a 4-digit code between 1000 and 9999
-	code := rand.IntN(9000) + 1000
-	// Return the code as a string
-	return fmt.Sprintf("%d", code)
 }

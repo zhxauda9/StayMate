@@ -16,30 +16,10 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         return;
     }
 
-    if (!/[A-Z]/.test(password)) {
-        alert('Password must contain at least one uppercase letter.');
-        return;
-    }
-
-    if (!/[a-z]/.test(password)) {
-        alert('Password must contain at least one lowercase letter.');
-        return;
-    }
-
-    if (!/[0-9]/.test(password)) {
-        alert('Password must contain at least one number.');
-        return;
-    }
-
-    if (!/[\W_]/.test(password)) {
-        alert('Password must contain at least one special character (e.g., @, #, $, etc.).');
-        return;
-    }
-
     const user = { name, email, password };
 
     try {
-        const response = await fetch('/api/register', {
+        const response = await fetch('/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user),
@@ -56,50 +36,10 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             }
             throw new Error(errorMessage);
         }
-
-        // Once registration is successful, show the verification code input
-        const verificationSection = document.getElementById('verification-section');
-        verificationSection.style.display = 'block';  // Show verification input fields
-
+        window.location.href = "/verify-email";
     } catch (error) {
         console.error(error);
         alert(`Error: ${error.message}`);
     }
 });
 
-// Handle verification code submission
-document.getElementById('verifyCodeButton').addEventListener('click', async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value.trim();
-    const verificationCode = document.getElementById('verificationCode').value.trim();
-
-
-    const verificationData = { email, code: verificationCode };
-
-    try {
-        const response = await fetch('/api/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(verificationData),
-        });
-
-        if (!response.ok) {
-            const contentType = response.headers.get('Content-Type');
-            let errorMessage;
-            if (contentType && contentType.includes('application/json')) {
-                const errorResponse = await response.json();
-                errorMessage = errorResponse.message || 'Verification failed.';
-            } else {
-                errorMessage = await response.text();
-            }
-            throw new Error(errorMessage);
-        }
-
-        alert('Email successfully verified!');
-        window.location.href = "/login";
-    } catch (error) {
-        console.error(error);
-        alert(`Error: ${error.message}`);
-    }
-});

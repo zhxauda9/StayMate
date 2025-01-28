@@ -51,7 +51,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("/register", handler.ServeRegister)
 	mux.Handle("/login", http.HandlerFunc(handler.ServeLogin))
 	mux.Handle("/profile", userMid(http.HandlerFunc(handler.ServeProfile)))
-	mux.Handle("/verify", http.HandlerFunc(handler.ServeVerify))
+	mux.Handle("/verify-email", http.HandlerFunc(handler.ServeEmailVerify))
 
 	mux.Handle("/admin", adminMid(http.HandlerFunc(handler.ServeAdmin)))
 	mux.Handle("/admin/bookings", adminMid(http.HandlerFunc(handler.ServeBookings)))
@@ -106,16 +106,17 @@ func InitServer() (*http.ServeMux, error) {
 
 	verifyRepo := dalpostgres.NewVerifyRepository(db)
 	authService := service.NewAuthService(user_service)
-	authHandler := handler.NewAuthHandler(authService, mailServ, verifyRepo)
+	authHandler := handler.NewAuthHandler(authService, verifyRepo)
 
-	mux.Handle("POST /api/register", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Register))))
-	mux.Handle("POST /api/login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
-	mux.Handle("GET /api/validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken))))
-	mux.Handle("GET /api/profile", logMiddleware(userMid(limitMiddleware(http.HandlerFunc(authHandler.GetProfile)))))
-	mux.Handle("POST /api/logout", logMiddleware(userMid(limitMiddleware((http.HandlerFunc(authHandler.Logout))))))
+	mux.Handle("POST /auth/register", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Register))))
+	mux.Handle("POST /auth/login", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.Login))))
+	mux.Handle("GET /auth/validate", logMiddleware(limitMiddleware(http.HandlerFunc(authHandler.ValidateToken)))) // is it useful????
+	mux.Handle("GET /auth/profile", logMiddleware(userMid(limitMiddleware(http.HandlerFunc(authHandler.GetProfile)))))
+	mux.Handle("POST /auth/logout", logMiddleware(userMid(limitMiddleware((http.HandlerFunc(authHandler.Logout))))))
 
-	verifyHandler := handler.NewVerifyHandler(db)
-	mux.HandleFunc("POST /api/verify", verifyHandler.Verify)
+	verifyHandler := handler.NewVerifyHandler(db, mailServ)
+	mux.HandleFunc("POST /auth/request-code", verifyHandler.SendVerifyCode)
+	mux.HandleFunc("POST /auth/verify", verifyHandler.Verify)
 	return mux, nil
 }
 

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .template-container {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Email Authentication</h2>
+        <div id="request-code-form">
+            <div class="form-group">
+                <label for="email">Enter your email:</label>
+                <input type="email" id="email" placeholder="example@example.com">
+            </div>
+            <button id="request-code-btn">Request Code</button>
+        </div>
+        <div id="verify-code-form" style="display: none;">
+            <div class="form-group">
+                <label for="verification-code">Enter the code:</label>
+                <input type="text" id="verification-code" placeholder="12345">
+            </div>
+            <button id="verify-code-btn">Verify Code</button>
+        </div>
+        <template id="success-template">
+            <h3>Authentication Successful</h3>
+            <p>Welcome, <span id="user-email"></span>!</p>
+        </template>
+    </div>
+
+    <script>
+        const requestCodeForm = document.getElementById('request-code-form');
+        const verifyCodeForm = document.getElementById('verify-code-form');
+        const emailInput = document.getElementById('email');
+        const verificationCodeInput = document.getElementById('verification-code');
+        const requestCodeButton = document.getElementById('request-code-btn');
+        const verifyCodeButton = document.getElementById('verify-code-btn');
+
+        // Handle requesting a verification code
+        requestCodeButton.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            if (!email) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/auth/request-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                if (response.ok) {
+                    alert(`A 5-digit code has been sent to ${email}.`);
+                    requestCodeForm.style.display = 'none';
+                    verifyCodeForm.style.display = 'block';
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
+                }
+            } catch (error) {
+                console.error("Error requesting code:", error);
+                alert("An error occurred while requesting the verification code. Please try again.");
+            }
+        });
+
+        // Handle verifying the code
+        verifyCodeButton.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            const code = verificationCodeInput.value.trim();
+
+            if (!email || !code) {
+                alert("Please enter your email and the verification code.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/auth/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, code })
+                });
+
+                if (response.ok) {
+                    const template = document.getElementById('success-template').content.cloneNode(true);
+                    template.querySelector('#user-email').textContent = email;
+                    document.querySelector('.container').innerHTML = '';
+                    document.querySelector('.container').appendChild(template);
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
+                }
+            } catch (error) {
+                console.error("Error verifying code:", error);
+                alert("An error occurred while verifying the code. Please try again.");
+            }
+        });
+    </script>
+</body>
+
+</html>
