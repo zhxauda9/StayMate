@@ -72,5 +72,35 @@ function logout() {
         });
 }
 
+// chat 
+function toggleChat() {
+    const chatBox = document.getElementById('chat-box');
+    chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
+}
+
+function sendMessage(event) {
+    // Отправка сообщения при нажатии на Enter
+    if (event.key && event.key !== "Enter") return;
+
+    const messageInput = document.getElementById('message');
+    const message = messageInput.value.trim();
+
+    if (message) {
+        const chatMessages = document.getElementById('chat-messages');
+
+        // Добавляем сообщение пользователя в чат
+        const userMessage = document.createElement('div');
+        userMessage.textContent = `You: ${message}`;
+        userMessage.style.marginBottom = "10px";
+        chatMessages.appendChild(userMessage);
+
+        messageInput.value = "";
+
+        // Здесь можно добавить отправку сообщения на сервер
+        // Пример:
+        // const socket = new WebSocket("ws://localhost:8080/ws");
+        // socket.send(JSON.stringify({ sender: "user", content: message }));
+    }
+}
 
 window.onload = fetchProfile;
