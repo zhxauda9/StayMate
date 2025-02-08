@@ -29,6 +29,7 @@ async function fetchProfile() {
 
 async function initChat() {
     const existingChatUUID = getCookie('admin_chat_uuid');
+    console.log(existingChatUUID)
     if (existingChatUUID) {
         ChatUUID = existingChatUUID;
         await fetchChatHistory(existingChatUUID);
@@ -40,6 +41,7 @@ async function initChat() {
 
 async function fetchChatHistory(chatUUID) {
     try {
+        console.log("Fetchin chat history")
         const response = await fetch(`/api/chat/history/${chatUUID}`, {
             method: 'GET',
             credentials: 'include',
@@ -56,6 +58,7 @@ async function fetchChatHistory(chatUUID) {
 }
 
 async function startNewChat() {
+    console.log("Starting new chat")
     try {
         const response = await fetch('/api/chat/start', {
             method: 'POST',
@@ -68,8 +71,7 @@ async function startNewChat() {
 
         const chatData = await response.json();
         ChatUUID = chatData.chat_uuid;
-
-        document.cookie = `admin_chat_uuid=${ChatUUID}; path=/; Secure; SameSite=Lax`;
+        console.log(document.cookie);
     } catch (error) {
         console.error('Error:', error);
     }
@@ -81,8 +83,8 @@ function renderChatHistory(messages) {
 
     messages.forEach(msg => {
         const messageElement = document.createElement('div');
-        messageElement.textContent = `${msg.sender}: ${msg.message}`;
-        messageElement.classList.add(msg.sender === 'user' ? 'user-message' : 'admin-message');
+        messageElement.textContent = `${msg.message}`;
+        messageElement.classList.add(msg.sender === 'admin' ? 'admin-message' : 'user-message');
         chatMessages.appendChild(messageElement);
     });
 
@@ -109,7 +111,7 @@ function connectWebSocket() {
         const message = messageData.split(':')[1];
 
         const adminMessage = document.createElement('div');
-        adminMessage.textContent = `Admin: ${message}`;
+        adminMessage.textContent = `${message}`;
         adminMessage.classList.add('admin-message');
         chatMessages.appendChild(adminMessage);
 

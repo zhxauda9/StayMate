@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"text/template"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/zhxauda9/StayMate/internal/dal/postgres"
@@ -84,9 +83,10 @@ func (h *ChatHandler) StartChat(w http.ResponseWriter, r *http.Request) {
 		Name:     "admin_chat_uuid",
 		Value:    chat.ChatUUID.String(),
 		Path:     "/",
-		HttpOnly: true,
-		Secure:   false,
-		Expires:  time.Now().Add(24 * time.Hour), // Storing Chat for 1 day
+		HttpOnly: false,                // Allow JavaScript access
+		Secure:   false,                // Secure must be false for HTTP (localhost)
+		SameSite: http.SameSiteLaxMode, // Prevents cross-site issues while allowing normal usage
+		MaxAge:   3600 * 24,            // 1 day
 	})
 
 	w.Header().Set("Content-Type", "application/json")

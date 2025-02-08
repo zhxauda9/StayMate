@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td>${chat.status}</td>
                     <td>${new Date(chat.created_at).toLocaleString()}</td>
                     <td>
-                        <a href="/admin/chats/${chat.chat_uuid}" class="btn btn-primary btn-sm">Открыть чат</a>
+                        <a href="/admin/chats/${chat.chat_uuid}" class="btn btn-primary btn-sm">Open Chat</a>
                     </td>
                 `;
                 chatList.appendChild(row);
