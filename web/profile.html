@@ -85,23 +85,22 @@
         </div>
     </div>
 
-    <!-- Иконка чата -->
-    <div id="chat-icon" onclick="toggleChat()" title="Chat with Admin">
-        <img src="/static/pictures/icons/chat.png" alt="Chat Icon">
+    <div id="chat-icon" title="Chat with Admin">
+        <img src="/static/pictures/icons/chat.png" alt="Chat">
     </div>
 
-    <!-- Окно чата -->
     <div id="chat-box">
         <div id="chat-header">
-            <h5>Chat with Admin</h5>
-            <button id="close-chat" onclick="toggleChat()">x</button>
+            <h5>Чат поддержки</h5>
+            <button id="close-chat">&times;</button>
         </div>
         <div id="chat-messages"></div>
         <div id="chat-input">
-            <input type="text" id="message" placeholder="Type your message..." onkeypress="sendMessage(event)">
-            <button onclick="sendMessage()">Send</button>
+            <input type="text" id="message" placeholder="Введите сообщение...">
+            <button id="send-button">➤</button>
         </div>
     </div>
+
     <footer style="background-color: #333; color: #fff; padding: 40px 20px; text-align: center;">
         <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
             <div style="flex: 1 1 300px; margin: 10px;">

@@ -17,6 +17,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             const errorResponse = await response.json();
             throw new Error(errorResponse.message || 'Failed to log in.');
         }
+        if (user.email == "admin@admin.com") return window.location.href = "/admin"
         window.location.href = "/profile";
     } catch (error) {
         console.error(error);

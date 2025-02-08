@@ -120,8 +120,8 @@ func InitServer() (*http.ServeMux, error) {
 
 	// Websocket handlers for chat
 	chatWebsocketHandler := handler.NewChatWebsocketHandler(l.Log)
-	mux.Handle("/ws/user", userMid(http.HandlerFunc(chatWebsocketHandler.UserHandler)))
-	mux.Handle("/ws/admin", adminMid(http.HandlerFunc(chatWebsocketHandler.AdminHandler)))
+	mux.Handle("/ws/user", http.HandlerFunc(chatWebsocketHandler.UserHandler))
+	mux.Handle("/ws/admin", http.HandlerFunc(chatWebsocketHandler.AdminHandler))
 	return mux, nil
 }
 
