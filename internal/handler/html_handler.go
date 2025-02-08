@@ -40,3 +40,8 @@ func ServeProfile(w http.ResponseWriter, r *http.Request) {
 func ServeEmailVerify(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, filepath.Join("web", "email-confirm.html"))
 }
+
+// /admin/chats
+func ServeAdminChats(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, filepath.Join("web", "admin-chats.html"))
+}

@@ -129,7 +129,7 @@ function sendMessage(event) {
     const chatMessages = document.getElementById('chat-messages');
 
     const userMessage = document.createElement('div');
-    userMessage.textContent = `You: ${message}`;
+    userMessage.textContent = `${message}`;
     userMessage.classList.add('user-message');
     chatMessages.appendChild(userMessage);
 
