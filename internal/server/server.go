@@ -117,6 +117,11 @@ func InitServer() (*http.ServeMux, error) {
 	verifyHandler := handler.NewVerifyHandler(db, mailServ)
 	mux.HandleFunc("POST /auth/request-code", verifyHandler.SendVerifyCode)
 	mux.HandleFunc("POST /auth/verify", verifyHandler.Verify)
+
+	// Websocket handlers for chat
+	chatWebsocketHandler := handler.NewChatWebsocketHandler(l.Log)
+	mux.Handle("/ws/user", userMid(http.HandlerFunc(chatWebsocketHandler.UserHandler)))
+	mux.Handle("/ws/admin", adminMid(http.HandlerFunc(chatWebsocketHandler.AdminHandler)))
 	return mux, nil
 }
 

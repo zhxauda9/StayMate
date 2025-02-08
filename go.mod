@@ -13,6 +13,7 @@ require (
 
 require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 )
 
