@@ -57,6 +57,7 @@ func InitServer() (*http.ServeMux, error) {
 	mux.Handle("/admin/bookings", adminMid(http.HandlerFunc(handler.ServeBookings)))
 	mux.Handle("/admin/rooms", adminMid(http.HandlerFunc(handler.ServeRooms)))
 	mux.Handle("/admin/users", adminMid(http.HandlerFunc(handler.ServeUsers)))
+	mux.Handle("/admin/chats", adminMid(http.HandlerFunc(handler.ServeAdminChats)))
 
 	// Init booking service
 	booking_repo := dalpostgres.NewBookingRepository(db)
@@ -117,6 +118,23 @@ func InitServer() (*http.ServeMux, error) {
 	verifyHandler := handler.NewVerifyHandler(db, mailServ)
 	mux.HandleFunc("POST /auth/request-code", verifyHandler.SendVerifyCode)
 	mux.HandleFunc("POST /auth/verify", verifyHandler.Verify)
+
+	// Chat Handlers
+	chatRepo := dalpostgres.NewChatRepository(db)
+	chatHandler := handler.NewChatHandler(chatRepo, user_repo)
+
+	// Chats
+	mux.HandleFunc("POST /api/chat/start", chatHandler.StartChat)
+	mux.HandleFunc("GET /api/chat/history/{id}", chatHandler.GetChatHistory)
+	mux.HandleFunc("PUT /api/chat/close/{id}", chatHandler.CloseChat)
+	mux.Handle("GET /api/admin/chats", http.HandlerFunc(chatHandler.GetActiveChats))
+	// Serves template page for admin
+	mux.Handle("GET /admin/chats/{id}", http.HandlerFunc(chatHandler.AdminChatPage))
+
+	// Websocket handlers for chat
+	chatWebsocketHandler := handler.NewChatWebsocketHandler(l.Log, chatRepo)
+	mux.Handle("/ws/user", http.HandlerFunc(chatWebsocketHandler.UserHandler))
+	mux.Handle("/ws/admin", http.HandlerFunc(chatWebsocketHandler.AdminHandler))
 	return mux, nil
 }
 

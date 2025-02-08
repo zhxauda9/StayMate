@@ -11,4 +11,6 @@ type User struct {
 	Role     string `json:"role" gorm:"default:user"`
 	Status   string `json:"status" gorm:"not null;default:inactive"`
 	Photo    string `json:"photo" gorm:"default:static/pictures/default/user.jpg"`
+
+	Chats []Chat `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }
