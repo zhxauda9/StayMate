@@ -21,7 +21,7 @@ type Chat struct {
 type Message struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
 	ChatID    uint      `gorm:"not null;index" json:"chat_id"` // Foreign Key -> chats.id
-	Sender    string    `gorm:"type:varchar(10);not null;check:sender IN ('user', 'admin')" json:"sender"`
+	Sender    string    `gorm:"type:text;not null;" json:"sender"`
 	Message   string    `gorm:"type:text;not null" json:"message"`
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 

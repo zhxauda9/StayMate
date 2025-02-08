@@ -119,22 +119,22 @@ func InitServer() (*http.ServeMux, error) {
 	mux.HandleFunc("POST /auth/request-code", verifyHandler.SendVerifyCode)
 	mux.HandleFunc("POST /auth/verify", verifyHandler.Verify)
 
-	// Websocket handlers for chat
-	chatWebsocketHandler := handler.NewChatWebsocketHandler(l.Log)
-	mux.Handle("/ws/user", http.HandlerFunc(chatWebsocketHandler.UserHandler))
-	mux.Handle("/ws/admin", http.HandlerFunc(chatWebsocketHandler.AdminHandler))
-
 	// Chat Handlers
 	chatRepo := dalpostgres.NewChatRepository(db)
-	chatHandler := handler.NewChatHandler(chatRepo)
+	chatHandler := handler.NewChatHandler(chatRepo, user_repo)
 
 	// Chats
 	mux.HandleFunc("POST /api/chat/start", chatHandler.StartChat)
 	mux.HandleFunc("GET /api/chat/history/{id}", chatHandler.GetChatHistory)
 	mux.HandleFunc("PUT /api/chat/close/{id}", chatHandler.CloseChat)
 	mux.Handle("GET /api/admin/chats", http.HandlerFunc(chatHandler.GetActiveChats))
-	// Serves page for admin
+	// Serves template page for admin
 	mux.Handle("GET /admin/chats/{id}", http.HandlerFunc(chatHandler.AdminChatPage))
+
+	// Websocket handlers for chat
+	chatWebsocketHandler := handler.NewChatWebsocketHandler(l.Log, chatRepo)
+	mux.Handle("/ws/user", http.HandlerFunc(chatWebsocketHandler.UserHandler))
+	mux.Handle("/ws/admin", http.HandlerFunc(chatWebsocketHandler.AdminHandler))
 	return mux, nil
 }
 

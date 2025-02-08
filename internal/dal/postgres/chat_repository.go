@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"errors"
+
 	"github.com/google/uuid"
 	"github.com/zhxauda9/StayMate/models"
 	"gorm.io/gorm"
@@ -66,8 +68,16 @@ func (r *ChatRepo) GetActiveChats() ([]models.Chat, error) {
 // SaveMessage - Saves message
 func (r *ChatRepo) SaveMessage(chatUUID uuid.UUID, sender, message string) error {
 	var chat models.Chat
-	if err := r.db.Where("chat_uuid = ?", chatUUID).First(&chat).Error; err != nil {
-		return err
+	err := r.db.Where("chat_uuid = ?", chatUUID).First(&chat).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			chat = models.Chat{ChatUUID: chatUUID}
+			if err := r.db.Create(&chat).Error; err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
 	}
 
 	msg := models.Message{

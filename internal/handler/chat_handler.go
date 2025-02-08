@@ -2,21 +2,26 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"text/template"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/zhxauda9/StayMate/internal/dal/postgres"
 	"github.com/zhxauda9/StayMate/models"
 )
 
-type ChatHandler struct {
-	chatRepo postgres.ChatRepository
+type UserByEmailInterface interface {
+	GetUserByEmail(email string) (models.User, error)
 }
 
-func NewChatHandler(chatRepo postgres.ChatRepository) *ChatHandler {
-	return &ChatHandler{chatRepo: chatRepo}
+type ChatHandler struct {
+	chatRepo postgres.ChatRepository
+	userRepo UserByEmailInterface
+}
+
+func NewChatHandler(chatRepo postgres.ChatRepository, userRepo UserByEmailInterface) *ChatHandler {
+	return &ChatHandler{chatRepo: chatRepo, userRepo: userRepo}
 }
 
 // takes UUID in path and return page with chat by given UUID
@@ -34,8 +39,8 @@ func (h *ChatHandler) AdminChatPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dataB, _ := json.MarshalIndent(chat, " ", "    ")
-	fmt.Println(string(dataB))
+	// dataB, _ := json.MarshalIndent(chat, " ", "    ")
+	// fmt.Println(string(dataB))
 	tmpl, err := template.ParseFiles("web/templates/admin-chat.html")
 	if err != nil {
 		http.Error(w, "Failed to load template", http.StatusInternalServerError)
@@ -56,22 +61,38 @@ func (h *ChatHandler) AdminChatPage(w http.ResponseWriter, r *http.Request) {
 // StartChat - creates new chat
 func (h *ChatHandler) StartChat(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		UserID uint `json:"user_id"`
+		Email string `json:"email"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	chat, err := h.chatRepo.CreateChat(req.UserID)
+	user, err := h.userRepo.GetUserByEmail(req.Email)
+	if err != nil {
+		http.Error(w, "Email does not exist", http.StatusBadRequest)
+		return
+	}
+
+	chat, err := h.chatRepo.CreateChat(uint(user.ID))
 	if err != nil {
 		http.Error(w, "Failed to create chat", http.StatusInternalServerError)
 		return
 	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "admin_chat_uuid",
+		Value:    chat.ChatUUID.String(),
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   false,
+		Expires:  time.Now().Add(24 * time.Hour), // Storing Chat for 1 day
+	})
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message": "Chat started",
-		"chat_id": chat.ID,
+		"message":   "Chat started",
+		"chat_uuid": chat.ChatUUID.String(),
 	})
 }
 

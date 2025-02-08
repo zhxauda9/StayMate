@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"sync"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/rs/zerolog"
+	"github.com/zhxauda9/StayMate/internal/dal/postgres"
 )
 
 type ChatWebsocketHandler struct {
@@ -15,24 +18,31 @@ type ChatWebsocketHandler struct {
 	adminConn   *websocket.Conn            // Admin WebSocket
 	sync.Mutex
 
-	logger *zerolog.Logger
+	chatRepo postgres.ChatRepository
+	logger   *zerolog.Logger
 }
 
-func NewChatWebsocketHandler(logger *zerolog.Logger) *ChatWebsocketHandler {
+func NewChatWebsocketHandler(logger *zerolog.Logger, chatRepo postgres.ChatRepository) *ChatWebsocketHandler {
 	return &ChatWebsocketHandler{
 		upgrader: websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool { return true },
 		},
 		connections: make(map[string]*websocket.Conn),
 		logger:      logger,
+		chatRepo:    chatRepo,
 	}
 }
 
-// WebSocket handler for users
 func (h *ChatWebsocketHandler) UserHandler(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("userID")
-	conn, err := h.upgrader.Upgrade(w, r, nil)
+	chatUUID, err := uuid.Parse(userID)
+	if err != nil {
+		h.logger.Error().Str("userID", userID).Msg("Invalid userID format")
+		http.Error(w, "Invalid userID", http.StatusBadRequest)
+		return
+	}
 
+	conn, err := h.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		h.logger.Error().Err(err).Msg("User websocket connection error")
 		http.Error(w, "WebSocket error", http.StatusInternalServerError)
@@ -53,6 +63,7 @@ func (h *ChatWebsocketHandler) UserHandler(w http.ResponseWriter, r *http.Reques
 		h.logger.Warn().Str("userID", userID).Msg("User disconnected from chat")
 	}()
 
+	fmt.Println("Connections", h.connections)
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
@@ -61,6 +72,11 @@ func (h *ChatWebsocketHandler) UserHandler(w http.ResponseWriter, r *http.Reques
 		}
 
 		h.logger.Info().Str("userID", userID).Str("message", string(msg)).Msg("Message from user")
+
+		// Save message to database
+		if err := h.chatRepo.SaveMessage(chatUUID, userID, string(msg)); err != nil {
+			h.logger.Error().Err(err).Msg("Failed to save user message to DB")
+		}
 
 		// Send message to admin
 		h.Lock()
@@ -76,7 +92,6 @@ func (h *ChatWebsocketHandler) UserHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// WebSocket handler for admin
 func (h *ChatWebsocketHandler) AdminHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := h.upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -98,7 +113,7 @@ func (h *ChatWebsocketHandler) AdminHandler(w http.ResponseWriter, r *http.Reque
 		conn.Close()
 		h.logger.Warn().Msg("Admin disconnected from chat")
 	}()
-
+	fmt.Println("Connections", h.connections)
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
@@ -106,16 +121,25 @@ func (h *ChatWebsocketHandler) AdminHandler(w http.ResponseWriter, r *http.Reque
 			break
 		}
 
-		// Expecting format "userID: message"
-		// Expecting format "userID: message"
-		msgParts := strings.SplitN(string(msg), ": ", 2) // Split only at the first ": "
+		msgParts := strings.SplitN(string(msg), ": ", 2)
 		if len(msgParts) < 2 {
 			h.logger.Warn().Str("rawMessage", string(msg)).Msg("Invalid message format from admin")
-			return
+			continue
 		}
 		userID, text := msgParts[0], msgParts[1]
 
+		chatUUID, err := uuid.Parse(userID)
+		if err != nil {
+			h.logger.Error().Str("userID", userID).Msg("Invalid userID format from admin")
+			continue
+		}
+
 		h.logger.Info().Str("userID", userID).Str("message", text).Msg("Message from admin")
+
+		// Save message to database
+		if err := h.chatRepo.SaveMessage(chatUUID, "admin", text); err != nil {
+			h.logger.Error().Err(err).Msg("Failed to save admin message to DB")
+		}
 
 		h.Lock()
 		if userConn, exists := h.connections[userID]; exists {
