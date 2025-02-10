@@ -64,7 +64,7 @@
 
         <div class="chat-box" id="chat-box">
             {{ range .Messages }}
-            <div class="message {{ if eq .Sender " admin" }}user-message{{ else }}admin-message{{ end }}">
+            <div class="message {{ if eq .Sender "admin" }}user-message{{ else }}admin-message{{ end }}">
                 {{ .Message }}
             </div>
             {{ else }}
