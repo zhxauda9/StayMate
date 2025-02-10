@@ -121,15 +121,15 @@ func InitServer() (*http.ServeMux, error) {
 
 	// Chat Handlers
 	chatRepo := dalpostgres.NewChatRepository(db)
-	chatHandler := handler.NewChatHandler(chatRepo, user_repo)
+	chatHandler := handler.NewChatHandler(chatRepo, user_repo, l.Log)
 
 	// Chats
-	mux.HandleFunc("POST /api/chat/start", chatHandler.StartChat)
-	mux.HandleFunc("GET /api/chat/history/{id}", chatHandler.GetChatHistory)
-	mux.HandleFunc("PUT /api/chat/close/{id}", chatHandler.CloseChat)
-	mux.Handle("GET /api/admin/chats", http.HandlerFunc(chatHandler.GetActiveChats))
+	mux.Handle("POST /api/chat/start", logMiddleware(userMid(http.HandlerFunc(chatHandler.StartChat))))
+	mux.Handle("GET /api/chat/history/{id}", logMiddleware(userMid(http.HandlerFunc(chatHandler.GetChatHistory))))
+	mux.Handle("PUT /api/chat/close/{id}", logMiddleware(adminMid(http.HandlerFunc(chatHandler.CloseChat))))
+	mux.Handle("GET /api/admin/chats", logMiddleware(adminMid(http.HandlerFunc(chatHandler.GetActiveChats))))
 	// Serves template page for admin
-	mux.Handle("GET /admin/chats/{id}", http.HandlerFunc(chatHandler.AdminChatPage))
+	mux.Handle("GET /admin/chats/{id}", logMiddleware(adminMid(http.HandlerFunc(chatHandler.AdminChatPage))))
 
 	// Websocket handlers for chat
 	chatWebsocketHandler := handler.NewChatWebsocketHandler(l.Log, chatRepo)

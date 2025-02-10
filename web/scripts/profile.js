@@ -31,7 +31,6 @@ async function initChat() {
     const existingChatUUID = getCookie('admin_chat_uuid');
     console.log(existingChatUUID)
     if (existingChatUUID) {
-        ChatUUID = existingChatUUID;
         await fetchChatHistory(existingChatUUID);
     } else {
         await startNewChat();
@@ -50,6 +49,11 @@ async function fetchChatHistory(chatUUID) {
         if (!response.ok) throw new Error('Failed to fetch chat history');
 
         const chatData = await response.json();
+        if (chatData.status === 'inactive') {
+            console.log("Last chat is inactive. Starting new chat...")
+            await startNewChat();
+            return;
+        }
         ChatUUID = chatData.chat_uuid;
         renderChatHistory(chatData.messages);
     } catch (error) {
@@ -58,8 +62,8 @@ async function fetchChatHistory(chatUUID) {
 }
 
 async function startNewChat() {
-    console.log("Starting new chat")
     try {
+        console.log("Starting new chat")
         const response = await fetch('/api/chat/start', {
             method: 'POST',
             credentials: 'include',
@@ -71,7 +75,6 @@ async function startNewChat() {
 
         const chatData = await response.json();
         ChatUUID = chatData.chat_uuid;
-        console.log(document.cookie);
     } catch (error) {
         console.error('Error:', error);
     }
@@ -83,7 +86,7 @@ function renderChatHistory(messages) {
 
     messages.forEach(msg => {
         const messageElement = document.createElement('div');
-        messageElement.textContent = `${msg.message}`;
+        messageElement.textContent = msg.message;
         messageElement.classList.add(msg.sender === 'admin' ? 'admin-message' : 'user-message');
         chatMessages.appendChild(messageElement);
     });
@@ -111,14 +114,24 @@ function connectWebSocket() {
         const message = messageData.split(':')[1];
 
         const adminMessage = document.createElement('div');
-        adminMessage.textContent = `${message}`;
+        adminMessage.textContent = message;
         adminMessage.classList.add('admin-message');
         chatMessages.appendChild(adminMessage);
 
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
-    socket.onclose = () => console.log("Disconnected from WebSocket");
+    socket.onclose = () => {
+        console.log("Disconnected from WebSocket");
+        const messageInput = document.getElementById("message");
+        const sendButton = document.getElementById("send-button");
+
+        if (messageInput) {
+            messageInput.placeholder = 'Something went wrong'
+            messageInput.disabled = true;
+        }
+        if (sendButton) sendButton.disabled = true;
+    };
 }
 
 function sendMessage(event) {
@@ -131,7 +144,7 @@ function sendMessage(event) {
 
     const chatMessages = document.getElementById('chat-messages');
     const userMessage = document.createElement('div');
-    userMessage.textContent = `${message}`;
+    userMessage.textContent = message;
     userMessage.classList.add('user-message');
     chatMessages.appendChild(userMessage);
     messageInput.value = "";
