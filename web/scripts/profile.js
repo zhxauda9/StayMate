@@ -121,7 +121,17 @@ function connectWebSocket() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
-    socket.onclose = () => console.log("Disconnected from WebSocket");
+    socket.onclose = () => {
+        console.log("Disconnected from WebSocket");
+        const messageInput = document.getElementById("message");
+        const sendButton = document.getElementById("send-button");
+
+        if (messageInput) {
+            messageInput.placeholder = 'Something went wrong'
+            messageInput.disabled = true;
+        }
+        if (sendButton) sendButton.disabled = true;
+    };
 }
 
 function sendMessage(event) {

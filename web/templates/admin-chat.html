@@ -76,7 +76,7 @@
             <input type="hidden" id="chat_uuid" value="{{ .ChatUUID }}">
             <div class="input-group">
                 <input type="text" id="message" class="form-control" placeholder="Type a message..." required>
-                <button type="submit" class="btn btn-primary">Send</button>
+                <button type="submit" id="send-button" class="btn btn-primary">Send</button>
             </div>
         </form>
 
@@ -103,8 +103,16 @@
                 chatBox.scrollTop = chatBox.scrollHeight;
             };
 
-            socket.onclose = function () {
-                console.log("Disconnected from WebSocket server");
+            socket.onclose = () => {
+                console.log("Disconnected from WebSocket");
+                const messageInput = document.getElementById("message");
+                const sendButton = document.getElementById("send-button");
+
+                if (messageInput) {
+                    messageInput.placeholder = 'Something went wrong'
+                    messageInput.disabled = true;
+                }
+                if (sendButton) sendButton.disabled = true;
             };
 
             chatForm.addEventListener("submit", function (event) {
