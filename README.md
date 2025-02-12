@@ -32,7 +32,10 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
   - Secure login for existing users.  
 
 - **👤 User Profile Management**:  
-  Users can view and update their profile information effortlessly. 
+  Users can view and update their profile information effortlessly.
+  
+- **💬 Support Chat**:  
+  Real-time chat between users and admin using WebSockets for seamless communication.
 
 ## **Team Members** 👥
 - **[Temutjin Koszhanov](https://github.com/Temutjin2k)** (SE-2308) 👨🏻‍💻
@@ -62,6 +65,13 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
 ![Image alt](https://github.com/zhxauda9/StayMate/blob/main/assets/rooms.png)
 ### **Email sending** 📧
 ![Image alt](https://github.com/zhxauda9/StayMate/raw/main/assets/email.png)
+### **Support chat** ❓
+### User page
+![image](https://github.com/user-attachments/assets/e1525677-6dca-4659-9f49-2f99012d576a)
+### Admin page
+![image](https://github.com/user-attachments/assets/866a9d41-3755-42fe-9a24-84724ff041a3)
+### Admin can see active chats
+![image](https://github.com/user-attachments/assets/52435e05-463d-46f4-b0e8-ef8dcc6963c0)
 
 ## **Technologies Used** 🛠️
 - **Programming Language**: Go (Golang) 1.22.3 🖥️
@@ -71,7 +81,8 @@ Stay Mate is a sophisticated software solution built to enhance and automate hot
     - **[GORM](https://github.com/go-gorm/gorm)**: For ORM (Object-Relational Mapping) 📦
     - **[Zerolog](https://github.com/rs/zerolog)**: For structured logging 📜
     - **[go-mail/mail/v2](https://github.com/go-gomail/gomail)**: For sending emails 📧  
-    - **[x/time/rate](https://pkg.go.dev/golang.org/x/time/rate)**: For rate-limiting ⏱️ 
+    - **[x/time/rate](https://pkg.go.dev/golang.org/x/time/rate)**: For rate-limiting ⏱️
+    - **[gorilla/websocket](https://pkg.go.dev/github.com/gorilla/websocket@v1.5.3)**: For support chat ❓
 
 ## **How it Works** 🔄
 Stay Mate integrates a robust system for handling the key functions of a hotel. By using GORM for interacting with the PostgreSQL database, it allows efficient data management. The clean and simple API design makes it easy to interact with and manage hotel resources.
