@@ -59,7 +59,7 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 		Name:     "Authorization",
 		Value:    token,
 		Path:     "/",
-		HttpOnly: true,
+		HttpOnly: false,
 		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 		MaxAge:   3600 * 24 * 30,

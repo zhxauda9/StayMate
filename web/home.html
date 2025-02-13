@@ -26,8 +26,14 @@
                 <a href="https://github.com/zhxauda9/StayMate" aria-label="TikTok">
                     <img class="ml-2" src="static/pictures/icons/github.png" width="20" height="20" alt="Github">
                 </a>
-                <a href="/register" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">Sign Up</a>
-                <a href="/login" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">Login</a>
+                <!-- Assign IDs to the Sign Up and Login buttons so we can hide them in JS -->
+                <a href="/register" id="registerBtn" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">Sign Up</a>
+                <a href="/login" id="loginBtn" class="btn font-weight-bold ml-3 p-2 px-3 text-dark">Login</a>
+
+                <!-- Profile button is hidden by default; only shown if Authorization cookie is found -->
+                <a href="/profile" id="profileBtn" class="btn font-weight-bold ml-3 p-2 px-3 text-dark"
+                    style="display: none;">Profile</a>
+
                 <a href="#contact-email" class="btn font-weight-normal ml-3 p-2 px-3 text-dark">Contact Us</a>
             </div>
         </div>
@@ -122,7 +128,6 @@
         </div>
     </section>
 
-
     <section id="contact-email" class="form-section" style="padding: 50px; background-color: #fbe7cc;">
         <div style="text-align: center; max-width: 800px; margin: 0 auto;">
             <h2 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 20px;">Contact Us</h2>
@@ -138,18 +143,16 @@
             </form>
         </div>
     </section>
+
     <footer style="background-color: #333; color: #fff; padding: 40px 20px; text-align: center;">
         <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
-
             <div style="flex: 1 1 300px; margin: 10px;">
                 <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">About Us</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6;">
                     We are committed to providing exceptional hospitality and unforgettable experiences. Your comfort is
-                    our
-                    priority.
+                    our priority.
                 </p>
             </div>
-
             <div style="flex: 1 1 200px; margin: 10px;">
                 <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Quick Links</h3>
                 <ul style="list-style: none; padding: 0;">
@@ -159,7 +162,6 @@
                     <li><a href="#testimonials" style="color: #fff; text-decoration: none;">Testimonials</a></li>
                 </ul>
             </div>
-
             <div style="flex: 1 1 250px; margin: 10px;">
                 <h3 style="font-size: 1.5rem; margin-bottom: 15px; font-weight: bold;">Contact Us</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6;">
@@ -167,10 +169,7 @@
                     Aida Zhalgassova, 2307
                 </p>
             </div>
-
-
         </div>
-
         <div style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
             &copy; 2025 Staymate. All rights reserved.
         </div>

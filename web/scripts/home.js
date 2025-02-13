@@ -93,35 +93,24 @@ document.getElementById('contact-email-form').addEventListener('submit', functio
 });
 
 
-// chat 
-function toggleChat() {
-    const chatBox = document.getElementById('chat-box');
-    chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-}
+function getCookieValue(name) {
+    const matches = document.cookie.match(new RegExp(
+        '(?:^|; )' + name.replace(/([.$?*|{}()[]\\\/+^])/g, '\\$1') + '=([^;]*)'
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
 
-function sendMessage(event) {
-    // // Отправка сообщения при нажатии на Enter
-    // if (event.key && event.key !== "Enter") return;
+    window.addEventListener('DOMContentLoaded', () => {
+    const token = getCookieValue('Authorization');
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const profileBtn = document.getElementById('profileBtn');
 
-    // const messageInput = document.getElementById('message');
-    // const message = messageInput.value.trim();
-
-    // if (message) {
-    //     const chatMessages = document.getElementById('chat-messages');
-
-    //     // Добавляем сообщение пользователя в чат
-    //     const userMessage = document.createElement('div');
-    //     userMessage.textContent = `You: ${message}`;
-    //     userMessage.style.marginBottom = "10px";
-    //     chatMessages.appendChild(userMessage);
-
-    //     messageInput.value = "";
-
-    //     // Здесь можно добавить отправку сообщения на сервер
-    //     // Пример:
-    //     // const socket = new WebSocket("ws://localhost:8080/ws");
-    //     // socket.send(JSON.stringify({ sender: "user", content: message }));
-    // }
-}
-
+    if (token) {
+        // Hide Login & Register, show Profile
+        loginBtn.style.display = 'none';
+        registerBtn.style.display = 'none';
+        profileBtn.style.display = 'inline-block';
+    }
+});
 
