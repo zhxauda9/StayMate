@@ -1,9 +1,12 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 
@@ -14,14 +17,101 @@ import (
 
 type bookingHandler struct {
 	bookingService service.BookingServ
+	roomService    service.RoomServ
 	validate       *validator.Validate
 }
 
-func NewBookingHandler(bookingService service.BookingServ) *bookingHandler {
+func NewBookingHandler(bookingService service.BookingServ, roomService service.RoomServ) *bookingHandler {
 	return &bookingHandler{
 		bookingService: bookingService,
+		roomService:    roomService,
 		validate:       validator.New(),
 	}
+}
+
+func (h *bookingHandler) PostBookingV2(w http.ResponseWriter, r *http.Request) {
+	var request struct {
+		UserID         int     `json:"user_id"`
+		Email          string  `json:"email"`
+		Address        string  `json:"address"`
+		CardNumber     string  `json:"card_number"`
+		ExpirationDate string  `json:"expiration_date"`
+		CVV            string  `json:"cvv"`
+		RoomID         int     `json:"room_id"`
+		Price          float64 `json:"price"`
+		CheckIn        string  `json:"check_in"`
+		CheckOut       string  `json:"check_out"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		l.Log.Error().Err(err).Msg("Error decoding booking data")
+		http.Error(w, "Error decoding booking data", http.StatusBadRequest)
+		return
+	}
+
+	l.Log.Info().
+		Int("User id", request.UserID).
+		Str("Email", request.Email).
+		Str("Address", request.Address).
+		Str("Card Number", maskCardNumber(request.CardNumber)).
+		Str("Expiration Date", request.ExpirationDate).
+		Int("Room ID", request.RoomID).Msg("Received booking request")
+
+	booking := models.Booking{
+		UserID:   request.UserID,
+		RoomID:   request.RoomID,
+		CheckIn:  request.CheckIn,
+		CheckOut: request.CheckOut,
+	}
+
+	err := h.bookingService.CreateBooking(booking)
+	if err != nil {
+		l.Log.Error().Err(err).Msg("Error creating booking")
+		http.Error(w, "Error creating booking", http.StatusInternalServerError)
+		return
+	}
+
+	// Should send request to 8081 port localhost POST /payment
+	//
+	paymentRequest := map[string]interface{}{
+		"user_id":         request.UserID,
+		"email":           request.Email,
+		"amount":          100.0,
+		"card_number":     request.CardNumber,
+		"expiration_date": request.ExpirationDate,
+		"cvv":             request.CVV,
+	}
+	paymentResponse, err := sendPaymentRequest(paymentRequest)
+	if err != nil {
+		l.Log.Error().Err(err).Msg("Error processing payment")
+		http.Error(w, "Error processing payment", http.StatusInternalServerError)
+		return
+	}
+
+	// Handle the response from the payment service
+	if paymentResponse["status"] != "success" {
+		l.Log.Error().Msg("Payment failed")
+		http.Error(w, "Payment failed", http.StatusPaymentRequired)
+		return
+	}
+
+	err = h.roomService.SetStatus(booking.RoomID, "occupied")
+	if err != nil {
+		l.Log.Error().Err(err).Msg("Error creating booking")
+		http.Error(w, "Error creating booking", http.StatusInternalServerError)
+		return
+	}
+
+	l.Log.Info().Msg("Booking(V2) created and payment processed successfully")
+
+	var responce = struct {
+		Message string `json:"message"`
+		Status  string `json:"status"`
+	}{
+		Message: "Booking and payment processed successfully",
+		Status:  "Paid",
+	}
+	json.NewEncoder(w).Encode(responce)
 }
 
 func (h *bookingHandler) PostBooking(w http.ResponseWriter, r *http.Request) {
@@ -153,4 +243,32 @@ func (h *bookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
 	l.Log.Info().Int("BookingID", id).Msg("Deleted booking successfully")
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func sendPaymentRequest(data map[string]interface{}) (map[string]interface{}, error) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling payment request: %w", err)
+	}
+
+	url := "http://localhost:8081/payment"
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("error making HTTP request to payment service: %w", err)
+	}
+	defer resp.Body.Close()
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("error decoding payment response: %w", err)
+	}
+
+	return response, nil
+}
+
+func maskCardNumber(cardNumber string) string {
+	if len(cardNumber) <= 4 {
+		return cardNumber
+	}
+	return strings.Repeat("*", len(cardNumber)-4) + cardNumber[len(cardNumber)-4:]
 }

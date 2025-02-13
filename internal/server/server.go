@@ -59,17 +59,6 @@ func InitServer() (*http.ServeMux, error) {
 	mux.Handle("/admin/users", adminMid(http.HandlerFunc(handler.ServeUsers)))
 	mux.Handle("/admin/chats", adminMid(http.HandlerFunc(handler.ServeAdminChats)))
 
-	// Init booking service
-	booking_repo := dalpostgres.NewBookingRepository(db)
-	booking_service := service.NewBookingService(booking_repo)
-	booking_handler := handler.NewBookingHandler(booking_service)
-
-	mux.Handle("POST /bookings", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.PostBooking)))))
-	mux.Handle("GET /bookings", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.GetBookings)))))
-	mux.Handle("GET /bookings/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.GetBooking)))))
-	mux.Handle("PUT /bookings/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.PutBooking)))))
-	mux.Handle("DELETE /bookings/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.DeleteBooking)))))
-
 	// Init user service
 	user_repo := dalpostgres.NewUserRepository(db)
 	user_service := service.NewUserService(user_repo)
@@ -90,6 +79,18 @@ func InitServer() (*http.ServeMux, error) {
 	mux.Handle("GET /rooms/{id}", logMiddleware(limitMiddleware(http.HandlerFunc(room_handler.GetRoom))))
 	mux.Handle("PUT /rooms/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(room_handler.PutRoom)))))
 	mux.Handle("DELETE /rooms/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(room_handler.DeleteRoom)))))
+
+	// Init booking service
+	booking_repo := dalpostgres.NewBookingRepository(db)
+	booking_service := service.NewBookingService(booking_repo)
+	booking_handler := handler.NewBookingHandler(booking_service, room_service)
+
+	mux.Handle("POST /api/v2/bookings", logMiddleware(http.HandlerFunc(booking_handler.PostBookingV2)))
+	mux.Handle("POST /bookings", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.PostBooking)))))
+	mux.Handle("GET /bookings", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.GetBookings)))))
+	mux.Handle("GET /bookings/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.GetBooking)))))
+	mux.Handle("PUT /bookings/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.PutBooking)))))
+	mux.Handle("DELETE /bookings/{id}", logMiddleware(adminMid(limitMiddleware(http.HandlerFunc(booking_handler.DeleteBooking)))))
 
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")

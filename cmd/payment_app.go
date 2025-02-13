@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zhxauda9/StayMate/internal/config"
+	"github.com/zhxauda9/StayMate/microservice/Mlogger"
 	"github.com/zhxauda9/StayMate/microservice/handlers"
 	"github.com/zhxauda9/StayMate/microservice/repositories"
 	"github.com/zhxauda9/StayMate/microservice/services"
@@ -18,7 +19,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func InitMicroservice() {
+func InitPaymantApp() {
 	config.LoadEnvVariables()
 	// Connect to Postgres
 	pgPool, err := repositories.InitPostgresDB(os.Getenv("MICRO_PG_DSN"))
@@ -41,6 +42,7 @@ func InitMicroservice() {
 			User: os.Getenv("EMAIL"),
 			Pass: os.Getenv("PASSWORD"),
 		},
+		Logger: Mlogger.NewZeroLogger(),
 	}
 
 	// Payment route
@@ -81,16 +83,15 @@ func ensureTransactionsTable(pgPool *pgxpool.Pool) {
 	defer cancel()
 
 	sql := `
-    CREATE TABLE IF NOT EXISTS transactions (
-        id SERIAL PRIMARY KEY,
-        user_email TEXT NOT NULL,
-        amount NUMERIC(10,2) NOT NULL,
-        products TEXT[] NOT NULL,
-        created_at TIMESTAMP NOT NULL,
-        payment_method TEXT,
-        card_details TEXT
-    );
-    `
+		CREATE TABLE IF NOT EXISTS transactions (
+			id SERIAL PRIMARY KEY,
+			user_email TEXT NOT NULL,
+			amount NUMERIC(10,2) NOT NULL,
+			created_at TIMESTAMP NOT NULL,
+			payment_method TEXT,
+			card_details TEXT
+		);
+	`
 	_, err := pgPool.Exec(ctx, sql)
 	if err != nil {
 		log.Printf("Failed to create transactions table: %v", err)

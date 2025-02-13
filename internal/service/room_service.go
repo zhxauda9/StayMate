@@ -16,6 +16,7 @@ type RoomServ interface {
 	CreateRoom(room models.Room) error
 	GetRoomByID(id int) (models.Room, error)
 	GetAllRooms(sort, filterStart, filterEnd string, page int) ([]models.Room, error)
+	SetStatus(id int, status string) error
 	UpdateRoom(id int, room models.Room) error
 	DeleteRoom(id int) error
 }
@@ -65,4 +66,13 @@ func (s *roomService) DeleteRoom(id int) error {
 		return fmt.Errorf("error in service layer while deleting room: %v", err)
 	}
 	return nil
+}
+
+func (s *roomService) SetStatus(id int, status string) error {
+	room, err := s.roomRepo.GetRoomByID(id)
+	if err != nil {
+		return err
+	}
+	room.Status = "occupied"
+	return s.roomRepo.UpdateRoom(id, room)
 }
