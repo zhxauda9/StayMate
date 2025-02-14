@@ -208,7 +208,7 @@ async function Loadtransactions(email) {
                         <strong>Payment Method:</strong> ${tx.payment_method}
                     </div>
                     <div>
-                        <span class="badge badge-success">Completed</span>
+                        <span class="badge badge-success">Status completed</span>
                     </div>
                 </div>
             `;

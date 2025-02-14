@@ -57,20 +57,6 @@ func (h *bookingHandler) PostBookingV2(w http.ResponseWriter, r *http.Request) {
 		Str("Expiration Date", request.ExpirationDate).
 		Int("Room ID", request.RoomID).Msg("Received booking request")
 
-	booking := models.Booking{
-		UserID:   request.UserID,
-		RoomID:   request.RoomID,
-		CheckIn:  request.CheckIn,
-		CheckOut: request.CheckOut,
-	}
-
-	err := h.bookingService.CreateBooking(booking)
-	if err != nil {
-		l.Log.Error().Err(err).Msg("Error creating booking")
-		http.Error(w, "Error creating booking", http.StatusInternalServerError)
-		return
-	}
-
 	// Should send request to 8081 port localhost POST /payment
 	//
 	paymentRequest := map[string]interface{}{
@@ -81,6 +67,7 @@ func (h *bookingHandler) PostBookingV2(w http.ResponseWriter, r *http.Request) {
 		"expiration_date": request.ExpirationDate,
 		"cvv":             request.CVV,
 	}
+
 	paymentResponse, err := sendPaymentRequest(paymentRequest)
 	if err != nil {
 		l.Log.Error().Err(err).Msg("Error processing payment")
@@ -92,6 +79,20 @@ func (h *bookingHandler) PostBookingV2(w http.ResponseWriter, r *http.Request) {
 	if paymentResponse["status"] != "success" {
 		l.Log.Error().Msg("Payment failed")
 		http.Error(w, "Payment failed", http.StatusPaymentRequired)
+		return
+	}
+
+	booking := models.Booking{
+		UserID:   request.UserID,
+		RoomID:   request.RoomID,
+		CheckIn:  request.CheckIn,
+		CheckOut: request.CheckOut,
+	}
+
+	err = h.bookingService.CreateBooking(booking)
+	if err != nil {
+		l.Log.Error().Err(err).Msg("Error creating booking")
+		http.Error(w, "Error creating booking", http.StatusInternalServerError)
 		return
 	}
 
