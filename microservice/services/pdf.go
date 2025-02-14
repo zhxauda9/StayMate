@@ -13,7 +13,7 @@ func GeneratePDFReceipt(tx models.Transaction, txID string) ([]byte, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "B", 20)
-	pdf.ImageOptions("assets/logo.png", 10, 10, 30, 0, false, gofpdf.ImageOptions{ImageType: "PNG"}, 0, "")
+	pdf.ImageOptions("assets/logo.png", 170, 10, 30, 0, false, gofpdf.ImageOptions{ImageType: "PNG"}, 0, "")
 	pdf.Cell(190, 10, "Invoice")
 	pdf.Ln(15)
 
@@ -37,18 +37,16 @@ func GeneratePDFReceipt(tx models.Transaction, txID string) ([]byte, error) {
 	pdf.SetFont("Arial", "B", 12)
 	pdf.SetFillColor(200, 200, 200)
 	pdf.CellFormat(100, 10, "Description", "1", 0, "C", true, 0, "")
-	pdf.CellFormat(45, 10, "Quantity", "1", 0, "C", true, 0, "")
-	pdf.CellFormat(45, 10, "Amount (USD)", "1", 0, "C", true, 0, "")
+	pdf.CellFormat(45, 10, "Hotel room", "1", 0, "C", true, 0, "")
+	pdf.CellFormat(45, 10, "Total (KZT)", "1", 0, "C", true, 0, "")
 	pdf.Ln(-1)
 
-	// Table Content (Example data, you can replace it with dynamic data)
 	pdf.SetFont("Arial", "", 12)
 	pdf.CellFormat(100, 10, "Room Booking (Staymate)", "1", 0, "L", false, 0, "")
 	pdf.CellFormat(45, 10, "1", "1", 0, "C", false, 0, "")
 	pdf.CellFormat(45, 10, fmt.Sprintf("%.2f", tx.Amount), "1", 0, "R", false, 0, "")
 	pdf.Ln(-1)
 
-	// Totals
 	pdf.Ln(5)
 	pdf.SetFont("Arial", "B", 12)
 	pdf.Cell(145, 10, "Total Amount:")
