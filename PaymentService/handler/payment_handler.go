@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"payment-service/models"
+	"payment-service/services"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog"
-	"github.com/zhxauda9/StayMate/microservice/models"
-	"github.com/zhxauda9/StayMate/microservice/services"
 )
 
 type PaymentHandler struct {
@@ -125,6 +125,59 @@ func (p *PaymentHandler) ProcessPayment(c *gin.Context) {
 		"message":        "Payment processed successfully",
 		"transaction_id": insertedIDStr,
 	})
+}
+
+func (p *PaymentHandler) GetPaymentHistory(c *gin.Context) {
+	email := c.Query("email") // Get the email from query parameters
+
+	if email == "" {
+		p.Logger.Error().Msg("Email is required")
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Email is required"})
+		return
+	}
+
+	p.Logger.Info().Str("email", email).Msg("Fetching payment history")
+
+	// Query to fetch transactions based on email
+	query := `
+		SELECT id, user_email, amount, created_at, payment_method, card_details
+		FROM transactions
+		WHERE user_email = $1
+		ORDER BY created_at DESC
+	`
+
+	// Execute the query
+	rows, err := p.PGPool.Query(context.Background(), query, email)
+	if err != nil {
+		p.Logger.Error().Err(err).Msg("Failed to fetch transactions from database")
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Failed to fetch transaction history"})
+		return
+	}
+	defer rows.Close()
+
+	// Collect transactions
+	var transactions []models.Transaction
+	for rows.Next() {
+		var tx models.Transaction
+		err := rows.Scan(&tx.ID, &tx.UserEmail, &tx.Amount, &tx.CreatedAt, &tx.PaymentMethod, &tx.CardDetails)
+		if err != nil {
+			p.Logger.Error().Err(err).Msg("Failed to scan transaction row")
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Error processing transaction history"})
+			return
+		}
+		transactions = append(transactions, tx)
+	}
+
+	// Check if no transactions were found
+	if len(transactions) == 0 {
+		p.Logger.Info().Str("email", email).Msg("No transactions found for this email")
+		c.JSON(http.StatusNotFound, gin.H{"status": "success", "message": "No transactions found", "transactions": []models.Transaction{}})
+		return
+	}
+
+	// Return transactions as JSON
+	p.Logger.Info().Int("transaction_count", len(transactions)).Str("email", email).Msg("Returning transaction history")
+	c.JSON(http.StatusOK, gin.H{"status": "success", "transactions": transactions})
 }
 
 func maskCardNumber(cardNumber string) string {

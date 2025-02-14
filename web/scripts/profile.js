@@ -22,6 +22,7 @@ async function fetchProfile() {
         document.getElementById('editEmail').value = userData.email;
 
         await initChat();
+        await Loadtransactions(userData.email)
     } catch (error) {
         console.error('Error:', error);
     }
@@ -173,3 +174,48 @@ document.getElementById('close-chat').addEventListener('click', function () {
 });
 
 window.onload = fetchProfile;
+
+
+
+async function Loadtransactions(email) {
+    console.log(`Fetching transaction on ${email}`)
+    const transactionHistoryContainer = document.getElementById("transactionHistory");
+
+    try {
+        const response = await fetch(`http://localhost:8081/payment-history?email=${email}`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch transaction history");
+        }
+
+        const result = await response.json();
+        transactionHistoryContainer.innerHTML = ""; // Clear the loading text
+
+        if (result.transactions.length === 0) {
+            transactionHistoryContainer.innerHTML = '<p class="text-muted text-center">No transactions found.</p>';
+            return;
+        }
+
+        result.transactions.forEach(tx => {
+            const transactionItem = document.createElement("div");
+            transactionItem.className = "list-group-item";
+
+            transactionItem.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Transaction ID:</strong> ${tx.id} <br>
+                        <strong>Amount:</strong> $${tx.amount.toFixed(2)} <br>
+                        <strong>Date:</strong> ${new Date(tx.created_at).toLocaleString()} <br>
+                        <strong>Payment Method:</strong> ${tx.payment_method}
+                    </div>
+                    <div>
+                        <span class="badge badge-success">Completed</span>
+                    </div>
+                </div>
+            `;
+            transactionHistoryContainer.appendChild(transactionItem);
+        });
+    } catch (error) {
+        console.error("Error fetching transaction history:", error);
+        transactionHistoryContainer.innerHTML = '<p class="text-danger text-center">Failed to load transaction history.</p>';
+    }
+};

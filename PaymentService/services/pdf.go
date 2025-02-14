@@ -3,10 +3,10 @@ package services
 import (
 	"bytes"
 	"fmt"
+	"payment-service/models"
 	"time"
 
 	"github.com/jung-kurt/gofpdf"
-	"github.com/zhxauda9/StayMate/microservice/models"
 )
 
 func GeneratePDFReceipt(tx models.Transaction, txID string) ([]byte, error) {

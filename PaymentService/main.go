@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"context"
@@ -6,21 +6,26 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"payment-service/Mlogger"
+	handlers "payment-service/handler"
+	"payment-service/repositories"
+	"payment-service/services"
 	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zhxauda9/StayMate/internal/config"
-	"github.com/zhxauda9/StayMate/microservice/Mlogger"
-	"github.com/zhxauda9/StayMate/microservice/handlers"
-	"github.com/zhxauda9/StayMate/microservice/repositories"
-	"github.com/zhxauda9/StayMate/microservice/services"
+	"github.com/joho/godotenv"
 
+	"github.com/gin-contrib/cors"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func InitPaymantApp() {
-	config.LoadEnvVariables()
+func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Could not load environment variables")
+	}
+
 	// Connect to Postgres
 	pgPool, err := repositories.InitPostgresDB(os.Getenv("MICRO_PG_DSN"))
 	if err != nil {
@@ -33,6 +38,13 @@ func InitPaymantApp() {
 
 	r := gin.Default()
 	r.Use(gin.Recovery()) // Handles panics
+	r.Use(cors.Default()) // Enable CORS with default settings
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:8080"}, // Replace with your frontend origin
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
 
 	paymentHandler := &handlers.PaymentHandler{
 		PGPool: pgPool,
@@ -47,7 +59,7 @@ func InitPaymantApp() {
 
 	// Payment route
 	r.POST("/payment", paymentHandler.ProcessPayment)
-
+	r.GET("/payment-history", paymentHandler.GetPaymentHistory)
 	// Graceful shutdown
 	srv := &http.Server{
 		Addr:    ":" + os.Getenv("MICRO_PORT"),
@@ -55,7 +67,7 @@ func InitPaymantApp() {
 	}
 
 	go func() {
-		log.Printf("Microservice running on port %s", os.Getenv("MICRO_PORT"))
+		log.Printf("Payment service is  running on port %s", os.Getenv("MICRO_PORT"))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Microservice server failed: %v", err)
 		}
