@@ -64,7 +64,7 @@
 
         <div class="chat-box" id="chat-box">
             {{ range .Messages }}
-            <div class="message {{ if eq .Sender "admin" }}user-message{{ else }}admin-message{{ end }}">
+            <div class="message {{ if eq .Sender " admin" }}user-message{{ else }}admin-message{{ end }}">
                 {{ .Message }}
             </div>
             {{ else }}
@@ -81,7 +81,7 @@
         </form>
 
         <script>
-            let socket = new WebSocket("ws://localhost:8080/ws/admin");
+            let socket = new WebSocket("wss://3.75.158.163/ws/admin");
             const chatBox = document.getElementById("chat-box");
             const chatForm = document.getElementById("chat-form");
             const messageInput = document.getElementById("message");
