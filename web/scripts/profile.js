@@ -105,7 +105,7 @@ function connectWebSocket() {
         return;
     }
 
-    socket = new WebSocket(`wss://3.75.158.163/ws/user?userID=${encodeURIComponent(ChatUUID)}`);
+    socket = new WebSocket(`wss://staymate-o3g2.onrender.com/ws/user?userID=${encodeURIComponent(ChatUUID)}`);
     socket.onopen = () => console.log("Connected to WebSocket");
 
     socket.onmessage = event => {
